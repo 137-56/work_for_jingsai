@@ -1,0 +1,33 @@
+# 红线自查 · 项目专属规则（**示例文件，可提交**）
+#
+# 真正的词表写在同目录的 redline.yaml 里 —— 那个文件含敏感串，已被 .gitignore 忽略。
+# 协作者拉下代码后：复制本文件为 redline.yaml，再按下面的格式填入自己的规则。
+#
+# 通用规则（手机号 / 学号 / 身份证 / 邮箱）已内置在 scripts/redline_check.py，不必重复。
+#
+# 用法：.venv/Scripts/python.exe scripts/redline_check.py ../文档/ dist/
+
+patterns:
+  # ---- 学校与院系（把占位符换成真实词）----
+  - pattern: "<学校全称>"
+    label: "学校全称"
+  - pattern: "<学校简称>"
+    label: "学校简称"
+  - pattern: "<承办学院>"
+    label: "承办学院"
+
+  # ---- 教师信息 ----
+  - pattern: "<教师姓氏>老师"
+    label: "教师称谓"
+  - pattern: "指导教师"
+    label: "需人工确认：报告里只能写角色，不能写姓名"
+
+  # ---- 校赛内部信息 ----
+  - pattern: "<QQ 群号>"
+    label: "校赛 QQ 群号"
+  - pattern: "<学习通邀请码>"
+    label: "学习通邀请码"
+
+  # ---- 其他 ----
+  - pattern: "校徽"
+    label: "校徽相关字样"

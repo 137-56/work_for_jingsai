@@ -1,0 +1,37 @@
+# 统一配置（模型名、阈值、路径）
+# 原则：所有可调参数集中在这里，不要散落在代码里。
+
+llm:
+  provider: dashscope
+  model: qwen-plus
+  temperature: 0.2          # 需要稳定 JSON，必须低温
+  max_retries: 3
+  timeout: 30
+
+clip:
+  model_name: ViT-B-16      # 188M 参数，CPU 可跑
+  device: cpu               # 有 GPU 就改 cuda
+  batch_size: 16
+  download_root: ./ckpt
+  top_k: 10
+
+validate:
+  severity_order: [high, medium, low]
+  min_confidence: 0.6
+
+compose:
+  canvas_size: 1024
+  dpi: 300
+  border_ratio: 0.15        # 边饰占画布比例
+
+copyright:
+  phash_size: 8
+  phash_highfreq: 4
+  phash_threshold: 6        # 汉明距离，<= 6 判为高度相似（需标定）
+  clip_sim_threshold: 0.92  # 余弦相似度阈值，需标定，不能照抄
+
+paths:
+  samples: data/samples.json
+  rules: rules/culture_rules.json
+  index: data/index
+  outputs: outputs

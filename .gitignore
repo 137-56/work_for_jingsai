@@ -1,0 +1,15 @@
+.env
+.venv/
+ckpt/
+data/raw/
+data/images/
+data/index/
+outputs/
+__pycache__/
+*.pyc
+
+# 红线自查的词表：含学校名/人名/群号等敏感串，绝不能作为代码包的一部分被提交
+redline.yaml
+
+# 报告合并产物
+dist/
