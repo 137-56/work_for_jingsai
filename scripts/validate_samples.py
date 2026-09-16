@@ -26,6 +26,9 @@ CARRIERS = {"瓷器", "织锦", "刺绣", "家具", "屏风", "建筑装饰", "�
 REQUIRED = ["id", "name", "category", "dynasty", "carrier", "meaning",
             "occasion", "elements", "source", "source_url", "license", "image_path"]
 
+OCCASIONS = {"春节", "婚庆", "寿诞", "开业", "乔迁", "节庆通用", "日常陈设", "祭祀", "文人雅玩"}
+
+
 
 def main() -> int:
     ap = argparse.ArgumentParser()
@@ -78,6 +81,16 @@ def main() -> int:
         if isinstance(ip, str) and ip and not (ROOT / ip).exists():
             problems.append(("⑤", sid, f"图片不存在：{ip}"))
 
+        # ---- ⑥ occasion 每个取值必须在场合词表内，且不能被分隔符粘在一起 ----
+        for o in s.get("occasion") or []:
+            if not isinstance(o, str):
+                problems.append(("⑥", sid, f"occasion 元素必须是字符串：{o!r}"))
+            elif o not in OCCASIONS:
+                problems.append(("⑥", sid,
+                                 f"occasion 不在场合词表内：{o!r}"
+                                 f"（多个值要拆成数组元素，不能用「、」拼接）"))
+
+
     # ---- strict 追加检查 ----
     if args.strict:
         for s in samples:
@@ -87,7 +100,7 @@ def main() -> int:
                 problems.append(("S", s.get("id", "?"), "clip_vec_index 未回填（需先跑 build_index.py）"))
 
     # ---- 报告 ----
-    print(f"样本数 {len(samples)}｜规则：①id唯一 ②必填非空 ③数组类型 ④受控词表 ⑤图片存在"
+    print(f"样本数 {len(samples)}｜规则：①id唯一 ②必填非空 ③数组类型 ④受控词表 ⑤图片存在 ⑥场合取值"
           + ("｜S 严格模式" if args.strict else ""))
     if not problems:
         print("\n[PASS] 五项检查全部通过")
