@@ -13,11 +13,11 @@
       "建筑装饰"
     ],
     "meaning": "以莲花与卷曲藤蔓连续展开，常见于瓷器、织锦与建筑装饰。寓意清雅、连绵、生生不息。",
-    "occasion": [],
+    "occasion": ["文人雅玩、日常陈设"],
     "elements": [
       "莲花",
       "卷草",
-      "连续藤蔓"
+      "藤蔓"
     ],
     "source": "中国传统纹样图鉴 Wényàng",
     "source_url": "https://github.com/dososo/chinese-traditional-patterns",
@@ -40,9 +40,9 @@
       "建筑装饰"
     ],
     "meaning": "融合莲花、牡丹等花形的理想化花卉纹样，形态饱满华丽。寓意庄严、富贵、圆满。",
-    "occasion": [],
+    "occasion": ["开业、乔迁"],
     "elements": [
-      "层叠花瓣"
+      "花瓣"
     ],
     "source": "中国传统纹样图鉴 Wényàng",
     "source_url": "https://github.com/dososo/chinese-traditional-patterns",
@@ -65,9 +65,9 @@
       "建筑装饰"
     ],
     "meaning": "牡丹被视为富贵之花，常用于瓷器、织绣、漆器与家具装饰。寓意富贵、繁荣、华美。",
-    "occasion": [],
+    "occasion": ["开业、乔迁"],
     "elements": [
-      "盛开牡丹",
+      "牡丹",
       "卷叶"
     ],
     "source": "中国传统纹样图鉴 Wényàng",
@@ -91,10 +91,9 @@
       "建筑装饰"
     ],
     "meaning": "菊花纹线条舒展，常见于器物、织物和文人审美图案中。寓意高洁、长寿、清雅。",
-    "occasion": [],
+    "occasion": ["文人雅玩、日常陈设"],
     "elements": [
-      "重瓣菊花",
-      "淡黄墨线"
+      "菊花"
     ],
     "source": "中国传统纹样图鉴 Wényàng",
     "source_url": "https://github.com/dososo/chinese-traditional-patterns",
@@ -117,9 +116,9 @@
       "建筑装饰"
     ],
     "meaning": "由莲花花瓣环绕组成，常见于佛教器物、瓷器口沿和器座装饰。寓意清净、庄重、安宁。",
-    "occasion": [],
+    "occasion": ["祭祀"],
     "elements": [
-      "环形莲瓣"
+      "莲瓣"
     ],
     "source": "中国传统纹样图鉴 Wényàng",
     "source_url": "https://github.com/dososo/chinese-traditional-patterns",
@@ -142,10 +141,10 @@
       "建筑装饰"
     ],
     "meaning": "以卷曲草叶连续延展，常作为边饰或填充纹样。寓意生命力、延展、装饰韵律。",
-    "occasion": [],
+    "occasion": ["节庆通用"],
     "elements": [
-      "藤草卷曲",
-      "连续边饰"
+      "藤草",
+      "边饰"
     ],
     "source": "中国传统纹样图鉴 Wényàng",
     "source_url": "https://github.com/dososo/chinese-traditional-patterns",
@@ -168,10 +167,10 @@
       "建筑装饰"
     ],
     "meaning": "忍冬纹枝叶翻卷灵动，常用于石刻、壁画和器物装饰。寓意生命延续、坚韧、繁盛。",
-    "occasion": [],
+    "occasion": ["节庆通用"],
     "elements": [
       "忍冬叶",
-      "翻卷叶片"
+      "叶片"
     ],
     "source": "中国传统纹样图鉴 Wényàng",
     "source_url": "https://github.com/dososo/chinese-traditional-patterns",
@@ -194,10 +193,10 @@
       "建筑装饰"
     ],
     "meaning": "以蔓草连续缠绕为特征，结构自由华丽，适合背景与边饰设计。寓意繁盛、流动、华丽。",
-    "occasion": [],
+    "occasion": ["节庆通用"],
     "elements": [
       "蔓草",
-      "花叶交织"
+      "花叶"
     ],
     "source": "中国传统纹样图鉴 Wényàng",
     "source_url": "https://github.com/dososo/chinese-traditional-patterns",
@@ -220,11 +219,11 @@
       "建筑装饰"
     ],
     "meaning": "石榴多籽，常见于织绣、瓷器与民俗装饰。寓意多子多福、家族兴旺。",
-    "occasion": [],
+    "occasion": ["婚庆"],
     "elements": [
-      "裂开石榴",
-      "多籽",
-      "花叶环绕"
+      "石榴",
+      "石榴籽",
+      "花叶"
     ],
     "source": "中国传统纹样图鉴 Wényàng",
     "source_url": "https://github.com/dososo/chinese-traditional-patterns",
@@ -247,9 +246,9 @@
       "建筑装饰"
     ],
     "meaning": "梅花凌寒开放，是传统纹样中极具文人气质的花卉主题。寓意坚韧、高洁、春信。",
-    "occasion": [],
+    "occasion": ["文人雅玩、日常陈设"],
     "elements": [
-      "五瓣梅花",
+      "梅花",
       "枝干"
     ],
     "source": "中国传统纹样图鉴 Wényàng",
@@ -273,9 +272,9 @@
       "建筑装饰"
     ],
     "meaning": "兰草纹清秀舒展，常表现幽雅、品格与文人气息。寓意清雅、品格、君子气。",
-    "occasion": [],
+    "occasion": ["文人雅玩、日常陈设"],
     "elements": [
-      "兰叶舒展"
+      "兰叶"
     ],
     "source": "中国传统纹样图鉴 Wényàng",
     "source_url": "https://github.com/dososo/chinese-traditional-patterns",
@@ -298,7 +297,7 @@
       "建筑装饰"
     ],
     "meaning": "竹叶纹常见于书画、器物和园林装饰图案。寓意虚心、气节、平安。",
-    "occasion": [],
+    "occasion": ["文人雅玩、日常陈设"],
     "elements": [
       "竹叶",
       "竹节"
@@ -324,9 +323,10 @@
       "建筑装饰"
     ],
     "meaning": "松针纹可用于表现古朴、沉稳、清雅的视觉氛围。寓意长寿、坚贞、稳重。",
-    "occasion": [],
+    "occasion": ["春节、寿诞"],
     "elements": [
-      "松枝松针"
+      "松枝",
+      "松针"
     ],
     "source": "中国传统纹样图鉴 Wényàng",
     "source_url": "https://github.com/dososo/chinese-traditional-patterns",
@@ -349,7 +349,7 @@
       "建筑装饰"
     ],
     "meaning": "桃花纹轻盈明丽，适合表现春日与美好祝愿。寓意生机、姻缘、美好。",
-    "occasion": [],
+    "occasion": ["婚庆"],
     "elements": [
       "桃花",
       "枝叶"
@@ -375,10 +375,10 @@
       "建筑装饰"
     ],
     "meaning": "海棠纹柔美端庄，常用于织绣、窗格、家具与器物装饰。寓意富贵满堂、柔美、雅致。",
-    "occasion": [],
+    "occasion": ["文人雅玩、日常陈设"],
     "elements": [
-      "海棠花形",
-      "圆润花瓣"
+      "海棠花",
+      "花瓣"
     ],
     "source": "中国传统纹样图鉴 Wényàng",
     "source_url": "https://github.com/dososo/chinese-traditional-patterns",
@@ -401,7 +401,7 @@
       "建筑装饰"
     ],
     "meaning": "荷叶纹常与莲花组合出现，叶片舒展，具有自然意象。寓意清净、自然、舒展。",
-    "occasion": [],
+    "occasion": ["节庆通用"],
     "elements": [
       "大荷叶",
       "莲茎"
@@ -427,11 +427,11 @@
       "建筑装饰"
     ],
     "meaning": "葡萄藤蔓枝叶繁密，果实成串，适合丰收主题纹样。寓意丰收、多子、繁盛。",
-    "occasion": [],
+    "occasion": ["婚庆"],
     "elements": [
       "葡萄串",
       "藤蔓",
-      "叶片缠绕"
+      "叶片"
     ],
     "source": "中国传统纹样图鉴 Wényàng",
     "source_url": "https://github.com/dososo/chinese-traditional-patterns",
@@ -454,7 +454,7 @@
       "建筑装饰"
     ],
     "meaning": "葫芦藤纹常用于吉祥主题装饰，形态亲切而富有民俗感。寓意福禄、绵延、护佑。",
-    "occasion": [],
+    "occasion": ["节庆通用"],
     "elements": [
       "葫芦",
       "藤蔓",
@@ -482,10 +482,10 @@
       "建筑装饰"
     ],
     "meaning": "折枝花以单枝花卉入纹，构图灵活，常见于瓷器、织物与装饰画。寓意雅致、自然、灵动。",
-    "occasion": [],
+    "occasion": ["文人雅玩、日常陈设"],
     "elements": [
-      "单枝花",
-      "花叶组合"
+      "单花",
+      "花叶"
     ],
     "source": "中国传统纹样图鉴 Wényàng",
     "source_url": "https://github.com/dososo/chinese-traditional-patterns",
@@ -508,9 +508,9 @@
       "建筑装饰"
     ],
     "meaning": "团花纹以圆形花卉构成中心图案，结构完整饱满。寓意圆满、和美、富丽。",
-    "occasion": [],
+    "occasion": ["开业、乔迁"],
     "elements": [
-      "花叶层叠"
+      "花叶"
     ],
     "source": "中国传统纹样图鉴 Wényàng",
     "source_url": "https://github.com/dososo/chinese-traditional-patterns",
@@ -535,9 +535,9 @@
       "民俗装饰"
     ],
     "meaning": "龙纹是中国传统纹样中的核心祥瑞题材，常见于服饰、器物和建筑装饰。寓意威仪、力量、尊贵、雨水。",
-    "occasion": [],
+    "occasion": ["祭祀"],
     "elements": [
-      "游龙",
+      "龙",
       "祥云",
       "鳞片"
     ],
@@ -564,9 +564,9 @@
       "民俗装饰"
     ],
     "meaning": "夔龙纹多见于青铜器装饰，形体抽象古拙。寓意礼制、威严、古朴。",
-    "occasion": [],
+    "occasion": ["祭祀"],
     "elements": [
-      "单足龙形"
+      "龙"
     ],
     "source": "中国传统纹样图鉴 Wényàng",
     "source_url": "https://github.com/dososo/chinese-traditional-patterns",
@@ -591,9 +591,9 @@
       "民俗装饰"
     ],
     "meaning": "螭龙纹常见于玉器、建筑和家具装饰，形态盘曲灵动。寓意守护、祥瑞、灵动。",
-    "occasion": [],
+    "occasion": ["祭祀"],
     "elements": [
-      "盘曲小龙",
+      "龙",
       "卷尾"
     ],
     "source": "中国传统纹样图鉴 Wényàng",
@@ -619,7 +619,7 @@
       "民俗装饰"
     ],
     "meaning": "凤鸟纹常与花卉、云纹组合，视觉华丽优雅。寓意祥瑞、高贵、和美。",
-    "occasion": [],
+    "occasion": ["文人雅玩、日常陈设"],
     "elements": [
       "凤凰",
       "羽尾",
@@ -648,9 +648,9 @@
       "民俗装饰"
     ],
     "meaning": "夔凤纹形态古雅，多以抽象鸟形和卷曲线条构成。寓意庄重、祥瑞、礼器感。",
-    "occasion": [],
+    "occasion": ["祭祀"],
     "elements": [
-      "抽象凤鸟"
+      "凤鸟"
     ],
     "source": "中国传统纹样图鉴 Wényàng",
     "source_url": "https://github.com/dososo/chinese-traditional-patterns",
@@ -675,10 +675,10 @@
       "民俗装饰"
     ],
     "meaning": "麒麟是传统瑞兽，常用于建筑、织绣与器物装饰。寓意仁德、太平、吉祥。",
-    "occasion": [],
+    "occasion": ["祭祀"],
     "elements": [
       "麒麟",
-      "火焰云",
+      "云",
       "鳞甲"
     ],
     "source": "中国传统纹样图鉴 Wényàng",
@@ -704,7 +704,7 @@
       "民俗装饰"
     ],
     "meaning": "狮纹常有镇守、威严与辟邪意味，适合作为气势强的纹样主题。寓意镇守、威严、辟邪。",
-    "occasion": [],
+    "occasion": ["日常陈设"],
     "elements": [
       "瑞狮",
       "卷毛",
@@ -733,8 +733,10 @@
       "民俗装饰"
     ],
     "meaning": "饕餮纹常见于青铜器，以对称兽面构成，神秘厚重。寓意神秘、威慑、礼制。",
-    "occasion": [],
-    "elements": [],
+    "occasion": ["祭祀"],
+    "elements": ["兽面",
+    "目纹",
+    "角纹"],
     "source": "中国传统纹样图鉴 Wényàng",
     "source_url": "https://github.com/dososo/chinese-traditional-patterns",
     "license": "CC BY-NC 4.0（署名 · 限非商业用途）",
@@ -758,7 +760,7 @@
       "民俗装饰"
     ],
     "meaning": "兽面纹以抽象动物面部为主体，风格庄重、神秘、古朴。寓意守护、威严、古意。",
-    "occasion": [],
+    "occasion": ["祭祀"],
     "elements": [
       "目纹",
       "角纹"
@@ -786,9 +788,9 @@
       "民俗装饰"
     ],
     "meaning": "蝙蝠因“蝠”谐音“福”，常用于吉祥图案。寓意福气、好运、吉祥。",
-    "occasion": [],
+    "occasion": ["开业、乔迁"],
     "elements": [
-      "五只蝙蝠",
+      "蝙蝠",
       "祥云"
     ],
     "source": "中国传统纹样图鉴 Wényàng",
