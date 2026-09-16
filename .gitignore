@@ -13,3 +13,6 @@ redline.yaml
 
 # 报告合并产物
 dist/
+
+# 索引脚本的自动备份
+*.bak

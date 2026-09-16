@@ -27,7 +27,7 @@
     "license": "CC BY-NC 4.0（署名 · 限非商业用途）",
     "image_path": "data/images/WENYANG-001.jpg",
     "phash": "ce4e91d9d2b241b5",
-    "clip_vec_index": null
+    "clip_vec_index": 0
   },
   {
     "id": "WENYANG-002",
@@ -48,16 +48,16 @@
       "乔迁"
     ],
     "elements": [
-      "花瓣"
-      ,"莲花"
-      ,"牡丹"
+      "花瓣",
+      "莲花",
+      "牡丹"
     ],
     "source": "中国传统纹样图鉴 Wényàng",
     "source_url": "https://github.com/dososo/chinese-traditional-patterns",
     "license": "CC BY-NC 4.0（署名 · 限非商业用途）",
     "image_path": "data/images/WENYANG-002.jpg",
     "phash": "ce679948b2d9a652",
-    "clip_vec_index": null
+    "clip_vec_index": 1
   },
   {
     "id": "WENYANG-003",
@@ -86,7 +86,7 @@
     "license": "CC BY-NC 4.0（署名 · 限非商业用途）",
     "image_path": "data/images/WENYANG-003.jpg",
     "phash": "ee6799689119b25a",
-    "clip_vec_index": null
+    "clip_vec_index": 2
   },
   {
     "id": "WENYANG-004",
@@ -114,7 +114,7 @@
     "license": "CC BY-NC 4.0（署名 · 限非商业用途）",
     "image_path": "data/images/WENYANG-004.jpg",
     "phash": "ce67994cb1d2a25a",
-    "clip_vec_index": null
+    "clip_vec_index": 3
   },
   {
     "id": "WENYANG-005",
@@ -134,16 +134,16 @@
       "祭祀"
     ],
     "elements": [
-      "莲瓣"
-      ,"莲花"
-      ,"花瓣"
+      "莲瓣",
+      "莲花",
+      "花瓣"
     ],
     "source": "中国传统纹样图鉴 Wényàng",
     "source_url": "https://github.com/dososo/chinese-traditional-patterns",
     "license": "CC BY-NC 4.0（署名 · 限非商业用途）",
     "image_path": "data/images/WENYANG-005.jpg",
     "phash": "cf6798c0b1f0b21d",
-    "clip_vec_index": null
+    "clip_vec_index": 4
   },
   {
     "id": "WENYANG-006",
@@ -171,7 +171,7 @@
     "license": "CC BY-NC 4.0（署名 · 限非商业用途）",
     "image_path": "data/images/WENYANG-006.jpg",
     "phash": "ce4f9948b253b45a",
-    "clip_vec_index": null
+    "clip_vec_index": 5
   },
   {
     "id": "WENYANG-007",
@@ -199,7 +199,7 @@
     "license": "CC BY-NC 4.0（署名 · 限非商业用途）",
     "image_path": "data/images/WENYANG-007.jpg",
     "phash": "ce6f9948b15ba612",
-    "clip_vec_index": null
+    "clip_vec_index": 6
   },
   {
     "id": "WENYANG-008",
@@ -227,7 +227,7 @@
     "license": "CC BY-NC 4.0（署名 · 限非商业用途）",
     "image_path": "data/images/WENYANG-008.jpg",
     "phash": "ce6f99489253a653",
-    "clip_vec_index": null
+    "clip_vec_index": 7
   },
   {
     "id": "WENYANG-009",
@@ -256,7 +256,7 @@
     "license": "CC BY-NC 4.0（署名 · 限非商业用途）",
     "image_path": "data/images/WENYANG-009.jpg",
     "phash": "ce4f9948b25bb612",
-    "clip_vec_index": null
+    "clip_vec_index": 8
   },
   {
     "id": "WENYANG-010",
@@ -285,7 +285,7 @@
     "license": "CC BY-NC 4.0（署名 · 限非商业用途）",
     "image_path": "data/images/WENYANG-010.jpg",
     "phash": "ce4e99d9b25ba412",
-    "clip_vec_index": null
+    "clip_vec_index": 9
   },
   {
     "id": "WENYANG-011",
@@ -313,7 +313,7 @@
     "license": "CC BY-NC 4.0（署名 · 限非商业用途）",
     "image_path": "data/images/WENYANG-011.jpg",
     "phash": "ce6a9948b351b45b",
-    "clip_vec_index": null
+    "clip_vec_index": 10
   },
   {
     "id": "WENYANG-012",
@@ -342,7 +342,7 @@
     "license": "CC BY-NC 4.0（署名 · 限非商业用途）",
     "image_path": "data/images/WENYANG-012.jpg",
     "phash": "ce6f9948b259a513",
-    "clip_vec_index": null
+    "clip_vec_index": 11
   },
   {
     "id": "WENYANG-013",
@@ -371,7 +371,7 @@
     "license": "CC BY-NC 4.0（署名 · 限非商业用途）",
     "image_path": "data/images/WENYANG-013.jpg",
     "phash": "ce4e93d9a616a4b4",
-    "clip_vec_index": null
+    "clip_vec_index": 12
   },
   {
     "id": "WENYANG-014",
@@ -399,7 +399,7 @@
     "license": "CC BY-NC 4.0（署名 · 限非商业用途）",
     "image_path": "data/images/WENYANG-014.jpg",
     "phash": "ce1e99e1b2d2b431",
-    "clip_vec_index": null
+    "clip_vec_index": 13
   },
   {
     "id": "WENYANG-015",
@@ -428,7 +428,7 @@
     "license": "CC BY-NC 4.0（署名 · 限非商业用途）",
     "image_path": "data/images/WENYANG-015.jpg",
     "phash": "ce4e99d0b353a4b4",
-    "clip_vec_index": null
+    "clip_vec_index": 14
   },
   {
     "id": "WENYANG-016",
@@ -456,7 +456,7 @@
     "license": "CC BY-NC 4.0（署名 · 限非商业用途）",
     "image_path": "data/images/WENYANG-016.jpg",
     "phash": "ce1e93c1a4caa5d3",
-    "clip_vec_index": null
+    "clip_vec_index": 15
   },
   {
     "id": "WENYANG-017",
@@ -485,7 +485,7 @@
     "license": "CC BY-NC 4.0（署名 · 限非商业用途）",
     "image_path": "data/images/WENYANG-017.jpg",
     "phash": "ce4e99c9b333a494",
-    "clip_vec_index": null
+    "clip_vec_index": 16
   },
   {
     "id": "WENYANG-018",
@@ -514,7 +514,7 @@
     "license": "CC BY-NC 4.0（署名 · 限非商业用途）",
     "image_path": "data/images/WENYANG-018.jpg",
     "phash": "cc5e93c1b612a5c7",
-    "clip_vec_index": null
+    "clip_vec_index": 17
   },
   {
     "id": "WENYANG-019",
@@ -543,7 +543,7 @@
     "license": "CC BY-NC 4.0（署名 · 限非商业用途）",
     "image_path": "data/images/WENYANG-019.jpg",
     "phash": "ce1e91c1b3b5b452",
-    "clip_vec_index": null
+    "clip_vec_index": 18
   },
   {
     "id": "WENYANG-020",
@@ -572,7 +572,7 @@
     "license": "CC BY-NC 4.0（署名 · 限非商业用途）",
     "image_path": "data/images/WENYANG-020.jpg",
     "phash": "ce0e91d1a6bea4b1",
-    "clip_vec_index": null
+    "clip_vec_index": 19
   },
   {
     "id": "WENYANG-021",
@@ -602,7 +602,7 @@
     "license": "CC BY-NC 4.0（署名 · 限非商业用途）",
     "image_path": "data/images/WENYANG-021.jpg",
     "phash": "ce479948b35ba692",
-    "clip_vec_index": null
+    "clip_vec_index": 20
   },
   {
     "id": "WENYANG-022",
@@ -631,7 +631,7 @@
     "license": "CC BY-NC 4.0（署名 · 限非商业用途）",
     "image_path": "data/images/WENYANG-022.jpg",
     "phash": "ce479948b359b652",
-    "clip_vec_index": null
+    "clip_vec_index": 21
   },
   {
     "id": "WENYANG-023",
@@ -661,7 +661,7 @@
     "license": "CC BY-NC 4.0（署名 · 限非商业用途）",
     "image_path": "data/images/WENYANG-023.jpg",
     "phash": "ce4e99c9b353a4d0",
-    "clip_vec_index": null
+    "clip_vec_index": 22
   },
   {
     "id": "WENYANG-024",
@@ -693,7 +693,7 @@
     "license": "CC BY-NC 4.0（署名 · 限非商业用途）",
     "image_path": "data/images/WENYANG-024.jpg",
     "phash": "cec79948b219b65a",
-    "clip_vec_index": null
+    "clip_vec_index": 23
   },
   {
     "id": "WENYANG-025",
@@ -722,7 +722,7 @@
     "license": "CC BY-NC 4.0（署名 · 限非商业用途）",
     "image_path": "data/images/WENYANG-025.jpg",
     "phash": "ce4f9948b359a61a",
-    "clip_vec_index": null
+    "clip_vec_index": 24
   },
   {
     "id": "WENYANG-026",
@@ -753,7 +753,7 @@
     "license": "CC BY-NC 4.0（署名 · 限非商业用途）",
     "image_path": "data/images/WENYANG-026.jpg",
     "phash": "ce479948b35ba692",
-    "clip_vec_index": null
+    "clip_vec_index": 25
   },
   {
     "id": "WENYANG-027",
@@ -784,7 +784,7 @@
     "license": "CC BY-NC 4.0（署名 · 限非商业用途）",
     "image_path": "data/images/WENYANG-027.jpg",
     "phash": "ce4e9948b35ba613",
-    "clip_vec_index": null
+    "clip_vec_index": 26
   },
   {
     "id": "WENYANG-028",
@@ -815,7 +815,7 @@
     "license": "CC BY-NC 4.0（署名 · 限非商业用途）",
     "image_path": "data/images/WENYANG-028.jpg",
     "phash": "ce4f99489359b652",
-    "clip_vec_index": null
+    "clip_vec_index": 27
   },
   {
     "id": "WENYANG-029",
@@ -845,7 +845,7 @@
     "license": "CC BY-NC 4.0（署名 · 限非商业用途）",
     "image_path": "data/images/WENYANG-029.jpg",
     "phash": "ce479940b359b61b",
-    "clip_vec_index": null
+    "clip_vec_index": 28
   },
   {
     "id": "WENYANG-030",
@@ -876,6 +876,6 @@
     "license": "CC BY-NC 4.0（署名 · 限非商业用途）",
     "image_path": "data/images/WENYANG-030.jpg",
     "phash": "ce4f99c1b252a639",
-    "clip_vec_index": null
+    "clip_vec_index": 29
   }
 ]

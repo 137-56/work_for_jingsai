@@ -8,6 +8,7 @@ ROOT = Path(__file__).resolve().parent.parent
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
+import numpy as np
 import torch
 from PIL import Image
 import cn_clip.clip as clip
@@ -45,6 +46,46 @@ def encode_image(image_path):
     feat = model.encode_image(batch)
     feat = feat / feat.norm(dim=-1, keepdim=True)     # ★ 必须归一化，缺了排序全乱
     return feat.float().cpu()
+
+@torch.no_grad()
+def encode_images(image_paths, batch_size=None):
+    """批量编码（建索引用）。返回 (mat, ok_paths, bad)：
+        mat      —— (N, 512) 的 float32 数组，行序与 ok_paths 一一对应
+        ok_paths —— 成功读入的图片路径（顺序与输入一致，坏图被跳过）
+        bad      —— 读不进来的坏图 [(路径, 原因)]
+
+    为什么要批量版而不是循环调 encode_image：
+        单张调用每次都要过一次 preprocess + 前向。30 张还能忍，300 张就很慢。
+        批量把多张堆成一个 tensor 一次前向，CPU 上快好几倍。
+
+    为什么要把坏图收集起来而不是直接抛异常：
+        样本图来自公开渠道，难免有损坏或非图片文件。
+        一张坏图不该让整批编码中断（指南坑表第 5 条）。
+    """
+    model, preprocess = get_clip_model()
+    bs = batch_size or CFG["clip"]["batch_size"]
+
+    vecs, ok_paths, bad = [], [], []
+    for i in range(0, len(image_paths), bs):
+        tensors, kept = [], []
+        for p in image_paths[i:i + bs]:
+            try:
+                img = Image.open(p).convert("RGB")
+                tensors.append(preprocess(img))
+                kept.append(p)
+            except Exception as e:                    # 坏图跳过，不拖垮整批
+                bad.append((str(p), f"{type(e).__name__}: {e}"))
+        if not tensors:
+            continue
+        batch = torch.stack(tensors).to(get_device())
+        feat = model.encode_image(batch)
+        feat = feat / feat.norm(dim=-1, keepdim=True)  # ★ 与单图版一致，必须归一化
+        vecs.append(feat.float().cpu().numpy())
+        ok_paths.extend(kept)
+
+    mat = np.vstack(vecs) if vecs else np.zeros((0, 512), dtype="float32")
+    return mat, ok_paths, bad
+
 
 
 @torch.no_grad()
