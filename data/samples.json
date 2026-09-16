@@ -507,8 +507,7 @@
     "elements": [
       "葫芦",
       "藤蔓",
-      "卷须",
-      "回纹"
+      "卷须"
     ],
     "source": "中国传统纹样图鉴 Wényàng",
     "source_url": "https://github.com/dososo/chinese-traditional-patterns",
@@ -595,7 +594,6 @@
       "祭祀"
     ],
     "elements": [
-      "龙",
       "祥云",
       "鳞片"
     ],
@@ -627,7 +625,6 @@
     ],
     "elements": [
       "夔龙"
-      ,"青铜"
     ],
     "source": "中国传统纹样图鉴 Wényàng",
     "source_url": "https://github.com/dososo/chinese-traditional-patterns",
@@ -718,9 +715,7 @@
       "祭祀"
     ],
     "elements": [
-      "夔凤",
-      "鸟",
-      "条纹"
+      "夔凤"
     ],
     "source": "中国传统纹样图鉴 Wényàng",
     "source_url": "https://github.com/dososo/chinese-traditional-patterns",

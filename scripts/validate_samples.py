@@ -90,6 +90,18 @@ def main() -> int:
                                  f"occasion 不在场合词表内：{o!r}"
                                  f"（多个值要拆成数组元素，不能用「、」拼接）"))
 
+        # ---- ⑦ elements 每项 2–6 字（契约 §1.2）----
+        for k in s.get("elements") or []:
+            if not isinstance(k, str) or not (2 <= len(k) <= 6):
+                problems.append(("⑦", sid, f"elements 项违反「2–6 字」：{k!r}"))
+
+        # ---- ⑧ name 2–8 字、meaning 20–60 字（契约 §1.2）----
+        if not (2 <= len(s.get("name", "")) <= 8):
+            problems.append(("⑧", sid, f"name 违反「2–8 字」：{s.get('name')!r}"))
+        if not (20 <= len(s.get("meaning", "")) <= 60):
+            problems.append(("⑧", sid, f"meaning 违反「20–60 字」（当前 {len(s.get('meaning',''))} 字）"))
+
+
 
     # ---- strict 追加检查 ----
     if args.strict:
@@ -100,10 +112,10 @@ def main() -> int:
                 problems.append(("S", s.get("id", "?"), "clip_vec_index 未回填（需先跑 build_index.py）"))
 
     # ---- 报告 ----
-    print(f"样本数 {len(samples)}｜规则：①id唯一 ②必填非空 ③数组类型 ④受控词表 ⑤图片存在 ⑥场合取值"
+    print(f"样本数 {len(samples)}｜规则：①id唯一 ②必填非空 ③数组类型 ④受控词表 ⑤图片存在 ⑥场合取值 ⑦ elements ⑧ name"
           + ("｜S 严格模式" if args.strict else ""))
     if not problems:
-        print("\n[PASS] 五项检查全部通过")
+        print("\n[PASS] 全部检查通过")     # 原为「五项检查全部通过」
         return 0
 
     print(f"\n[FAIL] 发现 {len(problems)} 处问题：\n")
