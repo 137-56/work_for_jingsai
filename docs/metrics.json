@@ -1,0 +1,13 @@
+{
+  "measured_at": "2026-09-17",
+  "sample_lib_size": 30,
+  "retrieval_top1_selfhit": 1.0,
+  "retrieval_top5_hit_rate": 1.0,
+  "ablation": {
+    "full_3tricks_top1": 1.0,
+    "no_rerank_top1": 0.77,
+    "no_category_prefix_top1": 1.0,
+    "bare_motif_name_only_top1": 0.87
+  },
+  "notes": "30 条规模的自检索结果，非最终指标；扩库后需重测"
+}

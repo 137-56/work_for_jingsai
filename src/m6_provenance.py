@@ -1,0 +1,86 @@
+# src/m6_provenance.py
+"""M6 溯源卡片：把检索结果组装成「元素 → 出处 → 寓意 → 授权」的结构化卡片。
+
+这是把"可溯源"从说法变成**看得见的产出物**的地方。
+关键点（详细实现指南 6.4）：
+  · 出处链接要完整可用，不截断
+  · 授权类型如实写（红线相关）
+  · 相似度保留两位小数
+  · 卡片里不能出现任何机构内部信息
+
+本模块只负责**组装数据**（输出 dict）。渲染 PNG 是后续步骤 —— 管线只需 JSON 就能跑通。
+"""
+import sys
+from datetime import datetime, timedelta, timezone
+from pathlib import Path
+
+ROOT = Path(__file__).resolve().parent.parent
+if str(ROOT) not in sys.path:
+    sys.path.insert(0, str(ROOT))
+
+# 配方里各位置的中文名，给用户看
+ROLE_CN = {"center_motif": "中心母题", "border": "边饰", "corner": "角花", "reference": "相关参考"}
+
+
+def _role_of(recipe, sample_name):
+    """判断命中的样本对应配方的哪个位置。"""
+    st = recipe.get("structure", {}) or {}
+    cm = (st.get("center_motif") or {}).get("name")
+    if sample_name == cm:
+        return "center_motif"
+    if sample_name == (st.get("border") or {}).get("pattern"):
+        return "border"
+    if sample_name == (st.get("corner") or {}).get("pattern"):
+        return "corner"
+    return "reference"
+
+
+def build_card(recipe, hits):
+    """hits 是 m2_retrieve.retrieve() 的返回值。返回溯源卡片 dict（指南 6.2 结构）。"""
+    elements = []
+    for h in hits:
+        s = h["sample"]
+        role = _role_of(recipe, s["name"])
+        elements.append({
+            "role": role,
+            "role_cn": ROLE_CN.get(role, role),
+            "element": s["name"],
+            "source_id": s["id"],
+            "source_name": s["name"],
+            "category": s.get("category"),
+            "carrier": s.get("carrier"),
+            "dynasty": s.get("dynasty"),
+            "meaning": s.get("meaning"),
+            "source": s.get("source"),
+            "source_url": s.get("source_url"),
+            "license": s.get("license"),
+            "similarity": round(float(h.get("score", 0)), 2),
+            "image_path": s.get("image_path"),
+        })
+
+    tz = timezone(timedelta(hours=8))
+    return {
+        "recipe_id": recipe.get("recipe_id", ""),
+        "generated_at": datetime.now(tz).isoformat(timespec="seconds"),
+        "user_request": recipe.get("user_request", ""),
+        "center_motif": ((recipe.get("structure") or {}).get("center_motif") or {}).get("name", ""),
+        "elements": elements,
+        "note": "每个元素均可回指到样本库中的真实样本；溯源关系在生成时确定，非事后推测。",
+    }
+
+
+def to_markdown(card):
+    """文字版卡片 —— 省事，且 PPT 截图 / 报告附录都能直接用。"""
+    L = [f"### 溯源卡片 · {card.get('recipe_id', '')}",
+         f"- 需求：{card.get('user_request', '')}",
+         f"- 生成时间：{card.get('generated_at', '')}",
+         f"- 中心母题：{card.get('center_motif', '')}", "",
+         "| 角色 | 元素 | 出处 | 载体 | 寓意 | 授权 | 相似度 |",
+         "|---|---|---|---|---|---|---|"]
+    for e in card.get("elements", []):
+        L.append("| {} | {} | {} | {} | {} | {} | {:.2f} |".format(
+            e.get("role_cn", ""), e.get("element", ""), e.get("source_name", ""),
+            "/".join(e.get("carrier") or []), (e.get("meaning") or "")[:40],
+            e.get("license", ""), e.get("similarity", 0)))
+    L += ["", f"> {card.get('note', '')}"]
+    return "\n".join(L)
