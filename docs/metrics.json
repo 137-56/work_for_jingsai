@@ -1,13 +1,20 @@
 {
-  "measured_at": "2026-09-17",
-  "sample_lib_size": 30,
-  "retrieval_top1_selfhit": 1.0,
+  "measured_at": "2026-09-18",
+  "sample_lib_size": 100,
+  "retrieval_top1_selfhit": 0.97,
   "retrieval_top5_hit_rate": 1.0,
   "ablation": {
-    "full_3tricks_top1": 1.0,
-    "no_rerank_top1": 0.77,
-    "no_category_prefix_top1": 1.0,
-    "bare_motif_name_only_top1": 0.87
+    "full_top1": 0.97,
+    "no_rerank_top1": 0.58,
+    "no_category_prefix_top1": 0.98,
+    "bare_motif_name_only_top1": 0.78,
+    "full_top5": 1.0,
+    "no_rerank_top5": 0.91
   },
-  "notes": "30 条规模的自检索结果，非最终指标；扩库后需重测"
+  "history": {
+    "sample_lib_size": 30,
+    "retrieval_top1_selfhit": 1.0,
+    "retrieval_top5_hit_rate": 1.0
+  },
+  "notes": "100 条规模的自检索结果。扩库前后对比：Top-1 100%(30条) -> 97%(100条)；纯 CLIP 从 77% -> 58%。5 条排不到第1的均为同族纹样混淆（菱格/方胜、连环/锁子、祥云/流云/卷云、如意云/如意、团寿/福寿），且全部在 Top-5 内。① 类别前缀在两种规模上都是 0 贡献（甚至略降），需如实报告。"
 }
