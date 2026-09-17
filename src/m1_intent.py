@@ -63,6 +63,9 @@ JSON 结构（字段一个都不能少）：
 5. palette 用十六进制色值。
 6. **选母题时，要看它的「适用场合」是否与用户需求匹配、「寓意」是否与用户诉求相符**
    —— 不要只按名字的字面联想。比如"祝寿"应该选场合含「寿诞」、寓意含「长寿」的母题。
+7. border.pattern 和 corner.pattern **也必须从上面的「可用母题」里选**；
+   如果找不到合适的，就留空字符串 ""，**不要自创**。
+
 """
 
 
@@ -144,6 +147,14 @@ def fix_motif(recipe, whitelist):
 
     cm["name"] = best
     cm["elements"] = list(whitelist[best]["elements"])
+    # border / corner 同样必须落在白名单内，否则清空 —— 编出来的名字检索不到，会让溯源链断掉
+    for slot in ("border", "corner"):
+        obj = st.get(slot) or {}
+        pat = str(obj.get("pattern") or "").strip()
+        if pat and pat not in whitelist:
+            obj["pattern"] = ""
+            recipe.setdefault("warnings", []).append(f"{slot}.pattern「{pat}」不在库中，已清空")
+            st[slot] = obj
     return recipe
 
 
