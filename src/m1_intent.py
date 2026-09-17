@@ -129,6 +129,16 @@ def fix_motif(recipe, whitelist):
     同时用库里的真实 elements 覆盖 LLM 写的（它可能写近义词，会让 M2 的二次筛选失效）。"""
     st = recipe.setdefault("structure", {})
     cm = st.setdefault("center_motif", {})
+
+    # ★ border / corner 必须在任何 return 之前校验：
+    #   母题命中白名单时下面会提前 return，若把这段放在函数末尾就永远跑不到。
+    for slot in ("border", "corner"):
+        obj = st.setdefault(slot, {})
+        pat = str(obj.get("pattern") or "").strip()
+        if pat and pat not in whitelist:
+            obj["pattern"] = ""
+            recipe.setdefault("warnings", []).append(f"{slot}.pattern「{pat}」不在库中，已清空")
+
     name = str(cm.get("name") or "").strip()
 
     if name in whitelist:
@@ -147,14 +157,6 @@ def fix_motif(recipe, whitelist):
 
     cm["name"] = best
     cm["elements"] = list(whitelist[best]["elements"])
-    # border / corner 同样必须落在白名单内，否则清空 —— 编出来的名字检索不到，会让溯源链断掉
-    for slot in ("border", "corner"):
-        obj = st.get(slot) or {}
-        pat = str(obj.get("pattern") or "").strip()
-        if pat and pat not in whitelist:
-            obj["pattern"] = ""
-            recipe.setdefault("warnings", []).append(f"{slot}.pattern「{pat}」不在库中，已清空")
-            st[slot] = obj
     return recipe
 
 

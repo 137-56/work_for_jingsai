@@ -21,6 +21,11 @@ if str(ROOT) not in sys.path:
 # 配方里各位置的中文名，给用户看
 ROLE_CN = {"center_motif": "中心母题", "border": "边饰", "corner": "角花", "reference": "相关参考"}
 
+# 卡片里元素的展示顺序。
+# 为什么不直接用检索结果的顺序：检索是按相似度排的，而槽位保底项（边饰/角花）
+# 分数天然偏低、会被排到很后面甚至挤掉。展示顺序应该按"角色重要性"而不是分数。
+ROLE_ORDER = {"center_motif": 0, "border": 1, "corner": 2, "reference": 3}
+
 
 def _role_of(recipe, sample_name):
     """判断命中的样本对应配方的哪个位置。"""
@@ -57,6 +62,9 @@ def build_card(recipe, hits):
             "similarity": round(float(h.get("score", 0)), 2),
             "image_path": s.get("image_path"),
         })
+
+    # 按角色排序展示：中心母题 → 边饰 → 角花 → 相关参考
+    elements.sort(key=lambda e: ROLE_ORDER.get(e["role"], 9))
 
     tz = timezone(timedelta(hours=8))
     return {

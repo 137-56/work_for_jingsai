@@ -122,4 +122,25 @@ def retrieve(recipe, top_k=None, debug=False):
         rows.append(row)
 
     rows.sort(key=lambda r: -r["score"])
-    return rows[:k]
+
+    # ---- ★ 槽位保底：border / corner 的命中必须出现在结果里 ----
+    # 为什么必须单独处理：边饰/角花的相似度天然低于中心母题相关项，
+    # 在"多查询融合后取总榜前 K"的机制下会被挤掉
+    # （实测：卷草纹对自己 0.4189，而当时总榜第 10 名是 0.4251 —— 就差 0.006）。
+    # 一旦被挤掉，溯源卡片里就永远缺边饰和角花，
+    # 而"配方的每个槽位都可溯源"正是本作品的核心卖点。
+    st = recipe.get("structure", {}) or {}
+    pinned = set()
+    for slot in ("border", "corner"):
+        pat = str((st.get(slot) or {}).get("pattern") or "").strip()
+        if not pat:
+            continue
+        for r in rows:
+            if r["sample"]["name"] == pat:
+                r["slot"] = slot                      # 打标记，调试时能看清它为什么在榜上
+                pinned.add(r["sample"]["id"])
+                break
+
+    head = [r for r in rows if r["sample"]["id"] in pinned]
+    tail = [r for r in rows if r["sample"]["id"] not in pinned]
+    return (head + tail)[:k]
