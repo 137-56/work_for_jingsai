@@ -27,8 +27,11 @@ CARRIERS = {"瓷器", "织锦", "刺绣", "家具", "屏风", "建筑装饰", "�
             # 兜底：源数据确实没给传统载体时用它，比留空诚实
             "不详"}
 
-REQUIRED = ["id", "name", "category", "dynasty", "carrier", "meaning",
+REQUIRED = ["id", "name", "category", "carrier", "meaning",
             "occasion", "elements", "source", "source_url", "license", "image_path"]
+# 注：`dynasty` 于 2026-09-18 由必备降为可选 —— 源数据 0/100 含朝代信息，
+#     且母题本身跨朝代（缠枝莲唐至清、回纹商周至清），填一个具体朝代反而是错的。
+#     全库统一保留「不详」作为诚实标记。详见 docs/schema.md §1.2 的说明。
 
 OCCASIONS = {"春节", "婚庆", "寿诞", "开业", "乔迁", "节庆通用", "日常陈设", "祭祀", "文人雅玩"}
 
@@ -105,6 +108,37 @@ def main() -> int:
         if not (20 <= len(s.get("meaning", "")) <= 60):
             problems.append(("⑧", sid, f"meaning 违反「20–60 字」（当前 {len(s.get('meaning',''))} 字）"))
 
+        # ---- ⑨ related_motifs：数组、每项 2–8 字、**不含自身** ----
+        #      自指会让检索"必然命中自己"，是虚高 Top-5 指标的经典来源（B1-3 踩过同类的坑）
+        if "related_motifs" in s:
+            rm = s.get("related_motifs")
+            if not isinstance(rm, list):
+                problems.append(("⑨", sid, f"related_motifs 必须是数组，当前是 {type(rm).__name__}"))
+            else:
+                for x in rm:
+                    if not isinstance(x, str) or not (2 <= len(x) <= 8):
+                        problems.append(("⑨", sid, f"related_motifs 项违反「2–8 字」：{x!r}"))
+                    elif x == s.get("name"):
+                        problems.append(("⑨", sid, f"related_motifs 含自身（自指）：{x!r}"))
+
+        # ---- ⑩ palette：每项必须是 {colors: 非空字符串数组, style: 字符串} ----
+        if "palette" in s:
+            pal = s.get("palette")
+            if not isinstance(pal, list):
+                problems.append(("⑩", sid, f"palette 必须是数组，当前是 {type(pal).__name__}"))
+            else:
+                for p in pal:
+                    if not isinstance(p, dict):
+                        problems.append(("⑩", sid, f"palette 项必须是对象：{p!r}"))
+                        continue
+                    cols = p.get("colors")
+                    if not isinstance(cols, list) or not cols:
+                        problems.append(("⑩", sid, f"palette 项缺 colors：{p!r}"))
+                    elif not all(isinstance(c, str) and c.strip() for c in cols):
+                        problems.append(("⑩", sid, f"palette.colors 含空值：{cols!r}"))
+                    if not isinstance(p.get("style", ""), str):
+                        problems.append(("⑩", sid, f"palette.style 必须是字符串：{p.get('style')!r}"))
+
 
 
     # ---- strict 追加检查 ----
@@ -116,7 +150,8 @@ def main() -> int:
                 problems.append(("S", s.get("id", "?"), "clip_vec_index 未回填（需先跑 build_index.py）"))
 
     # ---- 报告 ----
-    print(f"样本数 {len(samples)}｜规则：①id唯一 ②必填非空 ③数组类型 ④受控词表 ⑤图片存在 ⑥场合取值 ⑦ elements ⑧ name"
+    print(f"样本数 {len(samples)}｜规则：①id唯一 ②必填非空 ③数组类型 ④受控词表 ⑤图片存在 ⑥场合取值 "
+          f"⑦elements ⑧name/meaning ⑨关联纹样 ⑩色彩建议"
           + ("｜S 严格模式" if args.strict else ""))
     if not problems:
         print("\n[PASS] 全部检查通过")     # 原为「五项检查全部通过」

@@ -27,7 +27,44 @@
     "license": "CC BY-NC 4.0（署名 · 限非商业用途）",
     "image_path": "data/images/WENYANG-001.jpg",
     "phash": "ce4e91d9d2b241b5",
-    "clip_vec_index": 0
+    "clip_vec_index": 0,
+    "related_motifs": [
+      "宝相花纹",
+      "牡丹纹",
+      "菊花纹",
+      "莲瓣纹",
+      "卷草纹"
+    ],
+    "palette": [
+      {
+        "colors": [
+          "青绿",
+          "米白",
+          "浅金"
+        ],
+        "style": "清雅古典"
+      },
+      {
+        "colors": [
+          "朱砂",
+          "墨绿",
+          "金色"
+        ],
+        "style": "华丽富贵"
+      },
+      {
+        "colors": [
+          "淡粉",
+          "青灰",
+          "米色"
+        ],
+        "style": "柔和雅致"
+      }
+    ],
+    "applications": [
+      "包装设计",
+      "文创产品"
+    ]
   },
   {
     "id": "WENYANG-002",
@@ -57,7 +94,44 @@
     "license": "CC BY-NC 4.0（署名 · 限非商业用途）",
     "image_path": "data/images/WENYANG-002.jpg",
     "phash": "ce679948b2d9a652",
-    "clip_vec_index": 1
+    "clip_vec_index": 1,
+    "related_motifs": [
+      "缠枝莲纹",
+      "牡丹纹",
+      "菊花纹",
+      "莲瓣纹",
+      "卷草纹"
+    ],
+    "palette": [
+      {
+        "colors": [
+          "青绿",
+          "米白",
+          "浅金"
+        ],
+        "style": "清雅古典"
+      },
+      {
+        "colors": [
+          "朱砂",
+          "墨绿",
+          "金色"
+        ],
+        "style": "华丽富贵"
+      },
+      {
+        "colors": [
+          "淡粉",
+          "青灰",
+          "米色"
+        ],
+        "style": "柔和雅致"
+      }
+    ],
+    "applications": [
+      "包装设计",
+      "文创产品"
+    ]
   },
   {
     "id": "WENYANG-003",
@@ -86,7 +160,44 @@
     "license": "CC BY-NC 4.0（署名 · 限非商业用途）",
     "image_path": "data/images/WENYANG-003.jpg",
     "phash": "ee6799689119b25a",
-    "clip_vec_index": 2
+    "clip_vec_index": 2,
+    "related_motifs": [
+      "缠枝莲纹",
+      "宝相花纹",
+      "菊花纹",
+      "莲瓣纹",
+      "卷草纹"
+    ],
+    "palette": [
+      {
+        "colors": [
+          "青绿",
+          "米白",
+          "浅金"
+        ],
+        "style": "清雅古典"
+      },
+      {
+        "colors": [
+          "朱砂",
+          "墨绿",
+          "金色"
+        ],
+        "style": "华丽富贵"
+      },
+      {
+        "colors": [
+          "淡粉",
+          "青灰",
+          "米色"
+        ],
+        "style": "柔和雅致"
+      }
+    ],
+    "applications": [
+      "包装设计",
+      "文创产品"
+    ]
   },
   {
     "id": "WENYANG-004",
@@ -115,7 +226,44 @@
     "license": "CC BY-NC 4.0（署名 · 限非商业用途）",
     "image_path": "data/images/WENYANG-004.jpg",
     "phash": "ce67994cb1d2a25a",
-    "clip_vec_index": 3
+    "clip_vec_index": 3,
+    "related_motifs": [
+      "缠枝莲纹",
+      "宝相花纹",
+      "牡丹纹",
+      "莲瓣纹",
+      "卷草纹"
+    ],
+    "palette": [
+      {
+        "colors": [
+          "青绿",
+          "米白",
+          "浅金"
+        ],
+        "style": "清雅古典"
+      },
+      {
+        "colors": [
+          "朱砂",
+          "墨绿",
+          "金色"
+        ],
+        "style": "华丽富贵"
+      },
+      {
+        "colors": [
+          "淡粉",
+          "青灰",
+          "米色"
+        ],
+        "style": "柔和雅致"
+      }
+    ],
+    "applications": [
+      "包装设计",
+      "文创产品"
+    ]
   },
   {
     "id": "WENYANG-005",
@@ -144,7 +292,44 @@
     "license": "CC BY-NC 4.0（署名 · 限非商业用途）",
     "image_path": "data/images/WENYANG-005.jpg",
     "phash": "cf6798c0b1f0b21d",
-    "clip_vec_index": 4
+    "clip_vec_index": 4,
+    "related_motifs": [
+      "缠枝莲纹",
+      "宝相花纹",
+      "牡丹纹",
+      "菊花纹",
+      "卷草纹"
+    ],
+    "palette": [
+      {
+        "colors": [
+          "青绿",
+          "米白",
+          "浅金"
+        ],
+        "style": "清雅古典"
+      },
+      {
+        "colors": [
+          "朱砂",
+          "墨绿",
+          "金色"
+        ],
+        "style": "华丽富贵"
+      },
+      {
+        "colors": [
+          "淡粉",
+          "青灰",
+          "米色"
+        ],
+        "style": "柔和雅致"
+      }
+    ],
+    "applications": [
+      "包装设计",
+      "文创产品"
+    ]
   },
   {
     "id": "WENYANG-006",
@@ -172,7 +357,44 @@
     "license": "CC BY-NC 4.0（署名 · 限非商业用途）",
     "image_path": "data/images/WENYANG-006.jpg",
     "phash": "ce4f9948b253b45a",
-    "clip_vec_index": 5
+    "clip_vec_index": 5,
+    "related_motifs": [
+      "缠枝莲纹",
+      "宝相花纹",
+      "牡丹纹",
+      "菊花纹",
+      "莲瓣纹"
+    ],
+    "palette": [
+      {
+        "colors": [
+          "青绿",
+          "米白",
+          "浅金"
+        ],
+        "style": "清雅古典"
+      },
+      {
+        "colors": [
+          "朱砂",
+          "墨绿",
+          "金色"
+        ],
+        "style": "华丽富贵"
+      },
+      {
+        "colors": [
+          "淡粉",
+          "青灰",
+          "米色"
+        ],
+        "style": "柔和雅致"
+      }
+    ],
+    "applications": [
+      "包装设计",
+      "文创产品"
+    ]
   },
   {
     "id": "WENYANG-007",
@@ -200,7 +422,44 @@
     "license": "CC BY-NC 4.0（署名 · 限非商业用途）",
     "image_path": "data/images/WENYANG-007.jpg",
     "phash": "ce6f9948b15ba612",
-    "clip_vec_index": 6
+    "clip_vec_index": 6,
+    "related_motifs": [
+      "缠枝莲纹",
+      "宝相花纹",
+      "牡丹纹",
+      "菊花纹",
+      "莲瓣纹"
+    ],
+    "palette": [
+      {
+        "colors": [
+          "青绿",
+          "米白",
+          "浅金"
+        ],
+        "style": "清雅古典"
+      },
+      {
+        "colors": [
+          "朱砂",
+          "墨绿",
+          "金色"
+        ],
+        "style": "华丽富贵"
+      },
+      {
+        "colors": [
+          "淡粉",
+          "青灰",
+          "米色"
+        ],
+        "style": "柔和雅致"
+      }
+    ],
+    "applications": [
+      "包装设计",
+      "文创产品"
+    ]
   },
   {
     "id": "WENYANG-008",
@@ -228,7 +487,44 @@
     "license": "CC BY-NC 4.0（署名 · 限非商业用途）",
     "image_path": "data/images/WENYANG-008.jpg",
     "phash": "ce6f99489253a653",
-    "clip_vec_index": 7
+    "clip_vec_index": 7,
+    "related_motifs": [
+      "缠枝莲纹",
+      "宝相花纹",
+      "牡丹纹",
+      "菊花纹",
+      "莲瓣纹"
+    ],
+    "palette": [
+      {
+        "colors": [
+          "青绿",
+          "米白",
+          "浅金"
+        ],
+        "style": "清雅古典"
+      },
+      {
+        "colors": [
+          "朱砂",
+          "墨绿",
+          "金色"
+        ],
+        "style": "华丽富贵"
+      },
+      {
+        "colors": [
+          "淡粉",
+          "青灰",
+          "米色"
+        ],
+        "style": "柔和雅致"
+      }
+    ],
+    "applications": [
+      "包装设计",
+      "文创产品"
+    ]
   },
   {
     "id": "WENYANG-009",
@@ -257,7 +553,44 @@
     "license": "CC BY-NC 4.0（署名 · 限非商业用途）",
     "image_path": "data/images/WENYANG-009.jpg",
     "phash": "ce4f9948b25bb612",
-    "clip_vec_index": 8
+    "clip_vec_index": 8,
+    "related_motifs": [
+      "缠枝莲纹",
+      "宝相花纹",
+      "牡丹纹",
+      "菊花纹",
+      "莲瓣纹"
+    ],
+    "palette": [
+      {
+        "colors": [
+          "青绿",
+          "米白",
+          "浅金"
+        ],
+        "style": "清雅古典"
+      },
+      {
+        "colors": [
+          "朱砂",
+          "墨绿",
+          "金色"
+        ],
+        "style": "华丽富贵"
+      },
+      {
+        "colors": [
+          "淡粉",
+          "青灰",
+          "米色"
+        ],
+        "style": "柔和雅致"
+      }
+    ],
+    "applications": [
+      "包装设计",
+      "文创产品"
+    ]
   },
   {
     "id": "WENYANG-010",
@@ -286,7 +619,44 @@
     "license": "CC BY-NC 4.0（署名 · 限非商业用途）",
     "image_path": "data/images/WENYANG-010.jpg",
     "phash": "ce4e99d9b25ba412",
-    "clip_vec_index": 9
+    "clip_vec_index": 9,
+    "related_motifs": [
+      "缠枝莲纹",
+      "宝相花纹",
+      "牡丹纹",
+      "菊花纹",
+      "莲瓣纹"
+    ],
+    "palette": [
+      {
+        "colors": [
+          "青绿",
+          "米白",
+          "浅金"
+        ],
+        "style": "清雅古典"
+      },
+      {
+        "colors": [
+          "朱砂",
+          "墨绿",
+          "金色"
+        ],
+        "style": "华丽富贵"
+      },
+      {
+        "colors": [
+          "淡粉",
+          "青灰",
+          "米色"
+        ],
+        "style": "柔和雅致"
+      }
+    ],
+    "applications": [
+      "包装设计",
+      "文创产品"
+    ]
   },
   {
     "id": "WENYANG-011",
@@ -314,7 +684,44 @@
     "license": "CC BY-NC 4.0（署名 · 限非商业用途）",
     "image_path": "data/images/WENYANG-011.jpg",
     "phash": "ce6a9948b351b45b",
-    "clip_vec_index": 10
+    "clip_vec_index": 10,
+    "related_motifs": [
+      "缠枝莲纹",
+      "宝相花纹",
+      "牡丹纹",
+      "菊花纹",
+      "莲瓣纹"
+    ],
+    "palette": [
+      {
+        "colors": [
+          "青绿",
+          "米白",
+          "浅金"
+        ],
+        "style": "清雅古典"
+      },
+      {
+        "colors": [
+          "朱砂",
+          "墨绿",
+          "金色"
+        ],
+        "style": "华丽富贵"
+      },
+      {
+        "colors": [
+          "淡粉",
+          "青灰",
+          "米色"
+        ],
+        "style": "柔和雅致"
+      }
+    ],
+    "applications": [
+      "包装设计",
+      "文创产品"
+    ]
   },
   {
     "id": "WENYANG-012",
@@ -343,7 +750,44 @@
     "license": "CC BY-NC 4.0（署名 · 限非商业用途）",
     "image_path": "data/images/WENYANG-012.jpg",
     "phash": "ce6f9948b259a513",
-    "clip_vec_index": 11
+    "clip_vec_index": 11,
+    "related_motifs": [
+      "缠枝莲纹",
+      "宝相花纹",
+      "牡丹纹",
+      "菊花纹",
+      "莲瓣纹"
+    ],
+    "palette": [
+      {
+        "colors": [
+          "青绿",
+          "米白",
+          "浅金"
+        ],
+        "style": "清雅古典"
+      },
+      {
+        "colors": [
+          "朱砂",
+          "墨绿",
+          "金色"
+        ],
+        "style": "华丽富贵"
+      },
+      {
+        "colors": [
+          "淡粉",
+          "青灰",
+          "米色"
+        ],
+        "style": "柔和雅致"
+      }
+    ],
+    "applications": [
+      "包装设计",
+      "文创产品"
+    ]
   },
   {
     "id": "WENYANG-013",
@@ -372,7 +816,44 @@
     "license": "CC BY-NC 4.0（署名 · 限非商业用途）",
     "image_path": "data/images/WENYANG-013.jpg",
     "phash": "ce4e93d9a616a4b4",
-    "clip_vec_index": 12
+    "clip_vec_index": 12,
+    "related_motifs": [
+      "缠枝莲纹",
+      "宝相花纹",
+      "牡丹纹",
+      "菊花纹",
+      "莲瓣纹"
+    ],
+    "palette": [
+      {
+        "colors": [
+          "青绿",
+          "米白",
+          "浅金"
+        ],
+        "style": "清雅古典"
+      },
+      {
+        "colors": [
+          "朱砂",
+          "墨绿",
+          "金色"
+        ],
+        "style": "华丽富贵"
+      },
+      {
+        "colors": [
+          "淡粉",
+          "青灰",
+          "米色"
+        ],
+        "style": "柔和雅致"
+      }
+    ],
+    "applications": [
+      "包装设计",
+      "文创产品"
+    ]
   },
   {
     "id": "WENYANG-014",
@@ -400,7 +881,44 @@
     "license": "CC BY-NC 4.0（署名 · 限非商业用途）",
     "image_path": "data/images/WENYANG-014.jpg",
     "phash": "ce1e99e1b2d2b431",
-    "clip_vec_index": 13
+    "clip_vec_index": 13,
+    "related_motifs": [
+      "缠枝莲纹",
+      "宝相花纹",
+      "牡丹纹",
+      "菊花纹",
+      "莲瓣纹"
+    ],
+    "palette": [
+      {
+        "colors": [
+          "青绿",
+          "米白",
+          "浅金"
+        ],
+        "style": "清雅古典"
+      },
+      {
+        "colors": [
+          "朱砂",
+          "墨绿",
+          "金色"
+        ],
+        "style": "华丽富贵"
+      },
+      {
+        "colors": [
+          "淡粉",
+          "青灰",
+          "米色"
+        ],
+        "style": "柔和雅致"
+      }
+    ],
+    "applications": [
+      "包装设计",
+      "文创产品"
+    ]
   },
   {
     "id": "WENYANG-015",
@@ -429,7 +947,44 @@
     "license": "CC BY-NC 4.0（署名 · 限非商业用途）",
     "image_path": "data/images/WENYANG-015.jpg",
     "phash": "ce4e99d0b353a4b4",
-    "clip_vec_index": 14
+    "clip_vec_index": 14,
+    "related_motifs": [
+      "缠枝莲纹",
+      "宝相花纹",
+      "牡丹纹",
+      "菊花纹",
+      "莲瓣纹"
+    ],
+    "palette": [
+      {
+        "colors": [
+          "青绿",
+          "米白",
+          "浅金"
+        ],
+        "style": "清雅古典"
+      },
+      {
+        "colors": [
+          "朱砂",
+          "墨绿",
+          "金色"
+        ],
+        "style": "华丽富贵"
+      },
+      {
+        "colors": [
+          "淡粉",
+          "青灰",
+          "米色"
+        ],
+        "style": "柔和雅致"
+      }
+    ],
+    "applications": [
+      "包装设计",
+      "文创产品"
+    ]
   },
   {
     "id": "WENYANG-016",
@@ -457,7 +1012,44 @@
     "license": "CC BY-NC 4.0（署名 · 限非商业用途）",
     "image_path": "data/images/WENYANG-016.jpg",
     "phash": "ce1e93c1a4caa5d3",
-    "clip_vec_index": 15
+    "clip_vec_index": 15,
+    "related_motifs": [
+      "缠枝莲纹",
+      "宝相花纹",
+      "牡丹纹",
+      "菊花纹",
+      "莲瓣纹"
+    ],
+    "palette": [
+      {
+        "colors": [
+          "青绿",
+          "米白",
+          "浅金"
+        ],
+        "style": "清雅古典"
+      },
+      {
+        "colors": [
+          "朱砂",
+          "墨绿",
+          "金色"
+        ],
+        "style": "华丽富贵"
+      },
+      {
+        "colors": [
+          "淡粉",
+          "青灰",
+          "米色"
+        ],
+        "style": "柔和雅致"
+      }
+    ],
+    "applications": [
+      "包装设计",
+      "文创产品"
+    ]
   },
   {
     "id": "WENYANG-017",
@@ -486,7 +1078,44 @@
     "license": "CC BY-NC 4.0（署名 · 限非商业用途）",
     "image_path": "data/images/WENYANG-017.jpg",
     "phash": "ce4e99c9b333a494",
-    "clip_vec_index": 16
+    "clip_vec_index": 16,
+    "related_motifs": [
+      "缠枝莲纹",
+      "宝相花纹",
+      "牡丹纹",
+      "菊花纹",
+      "莲瓣纹"
+    ],
+    "palette": [
+      {
+        "colors": [
+          "青绿",
+          "米白",
+          "浅金"
+        ],
+        "style": "清雅古典"
+      },
+      {
+        "colors": [
+          "朱砂",
+          "墨绿",
+          "金色"
+        ],
+        "style": "华丽富贵"
+      },
+      {
+        "colors": [
+          "淡粉",
+          "青灰",
+          "米色"
+        ],
+        "style": "柔和雅致"
+      }
+    ],
+    "applications": [
+      "包装设计",
+      "文创产品"
+    ]
   },
   {
     "id": "WENYANG-018",
@@ -515,7 +1144,44 @@
     "license": "CC BY-NC 4.0（署名 · 限非商业用途）",
     "image_path": "data/images/WENYANG-018.jpg",
     "phash": "cc5e93c1b612a5c7",
-    "clip_vec_index": 17
+    "clip_vec_index": 17,
+    "related_motifs": [
+      "缠枝莲纹",
+      "宝相花纹",
+      "牡丹纹",
+      "菊花纹",
+      "莲瓣纹"
+    ],
+    "palette": [
+      {
+        "colors": [
+          "青绿",
+          "米白",
+          "浅金"
+        ],
+        "style": "清雅古典"
+      },
+      {
+        "colors": [
+          "朱砂",
+          "墨绿",
+          "金色"
+        ],
+        "style": "华丽富贵"
+      },
+      {
+        "colors": [
+          "淡粉",
+          "青灰",
+          "米色"
+        ],
+        "style": "柔和雅致"
+      }
+    ],
+    "applications": [
+      "包装设计",
+      "文创产品"
+    ]
   },
   {
     "id": "WENYANG-019",
@@ -544,7 +1210,44 @@
     "license": "CC BY-NC 4.0（署名 · 限非商业用途）",
     "image_path": "data/images/WENYANG-019.jpg",
     "phash": "ce1e91c1b3b5b452",
-    "clip_vec_index": 18
+    "clip_vec_index": 18,
+    "related_motifs": [
+      "缠枝莲纹",
+      "宝相花纹",
+      "牡丹纹",
+      "菊花纹",
+      "莲瓣纹"
+    ],
+    "palette": [
+      {
+        "colors": [
+          "青绿",
+          "米白",
+          "浅金"
+        ],
+        "style": "清雅古典"
+      },
+      {
+        "colors": [
+          "朱砂",
+          "墨绿",
+          "金色"
+        ],
+        "style": "华丽富贵"
+      },
+      {
+        "colors": [
+          "淡粉",
+          "青灰",
+          "米色"
+        ],
+        "style": "柔和雅致"
+      }
+    ],
+    "applications": [
+      "包装设计",
+      "文创产品"
+    ]
   },
   {
     "id": "WENYANG-020",
@@ -573,7 +1276,44 @@
     "license": "CC BY-NC 4.0（署名 · 限非商业用途）",
     "image_path": "data/images/WENYANG-020.jpg",
     "phash": "ce0e91d1a6bea4b1",
-    "clip_vec_index": 19
+    "clip_vec_index": 19,
+    "related_motifs": [
+      "缠枝莲纹",
+      "宝相花纹",
+      "牡丹纹",
+      "菊花纹",
+      "莲瓣纹"
+    ],
+    "palette": [
+      {
+        "colors": [
+          "青绿",
+          "米白",
+          "浅金"
+        ],
+        "style": "清雅古典"
+      },
+      {
+        "colors": [
+          "朱砂",
+          "墨绿",
+          "金色"
+        ],
+        "style": "华丽富贵"
+      },
+      {
+        "colors": [
+          "淡粉",
+          "青灰",
+          "米色"
+        ],
+        "style": "柔和雅致"
+      }
+    ],
+    "applications": [
+      "包装设计",
+      "文创产品"
+    ]
   },
   {
     "id": "WENYANG-021",
@@ -603,7 +1343,43 @@
     "license": "CC BY-NC 4.0（署名 · 限非商业用途）",
     "image_path": "data/images/WENYANG-021.jpg",
     "phash": "ce479948b35ba692",
-    "clip_vec_index": 20
+    "clip_vec_index": 20,
+    "related_motifs": [
+      "夔龙纹",
+      "螭龙纹",
+      "凤鸟纹",
+      "夔凤纹",
+      "麒麟纹"
+    ],
+    "palette": [
+      {
+        "colors": [
+          "靛蓝",
+          "金色",
+          "墨黑"
+        ],
+        "style": "威严庄重"
+      },
+      {
+        "colors": [
+          "朱砂",
+          "青绿",
+          "浅金"
+        ],
+        "style": "祥瑞华丽"
+      },
+      {
+        "colors": [
+          "青铜绿",
+          "古金",
+          "暗红"
+        ],
+        "style": "古雅厚重"
+      }
+    ],
+    "applications": [
+      "文创产品"
+    ]
   },
   {
     "id": "WENYANG-022",
@@ -632,7 +1408,43 @@
     "license": "CC BY-NC 4.0（署名 · 限非商业用途）",
     "image_path": "data/images/WENYANG-022.jpg",
     "phash": "ce479948b359b652",
-    "clip_vec_index": 21
+    "clip_vec_index": 21,
+    "related_motifs": [
+      "龙纹",
+      "螭龙纹",
+      "凤鸟纹",
+      "夔凤纹",
+      "麒麟纹"
+    ],
+    "palette": [
+      {
+        "colors": [
+          "靛蓝",
+          "金色",
+          "墨黑"
+        ],
+        "style": "威严庄重"
+      },
+      {
+        "colors": [
+          "朱砂",
+          "青绿",
+          "浅金"
+        ],
+        "style": "祥瑞华丽"
+      },
+      {
+        "colors": [
+          "青铜绿",
+          "古金",
+          "暗红"
+        ],
+        "style": "古雅厚重"
+      }
+    ],
+    "applications": [
+      "文创产品"
+    ]
   },
   {
     "id": "WENYANG-023",
@@ -662,7 +1474,43 @@
     "license": "CC BY-NC 4.0（署名 · 限非商业用途）",
     "image_path": "data/images/WENYANG-023.jpg",
     "phash": "ce4e99c9b353a4d0",
-    "clip_vec_index": 22
+    "clip_vec_index": 22,
+    "related_motifs": [
+      "龙纹",
+      "夔龙纹",
+      "凤鸟纹",
+      "夔凤纹",
+      "麒麟纹"
+    ],
+    "palette": [
+      {
+        "colors": [
+          "靛蓝",
+          "金色",
+          "墨黑"
+        ],
+        "style": "威严庄重"
+      },
+      {
+        "colors": [
+          "朱砂",
+          "青绿",
+          "浅金"
+        ],
+        "style": "祥瑞华丽"
+      },
+      {
+        "colors": [
+          "青铜绿",
+          "古金",
+          "暗红"
+        ],
+        "style": "古雅厚重"
+      }
+    ],
+    "applications": [
+      "文创产品"
+    ]
   },
   {
     "id": "WENYANG-024",
@@ -694,7 +1542,43 @@
     "license": "CC BY-NC 4.0（署名 · 限非商业用途）",
     "image_path": "data/images/WENYANG-024.jpg",
     "phash": "cec79948b219b65a",
-    "clip_vec_index": 23
+    "clip_vec_index": 23,
+    "related_motifs": [
+      "龙纹",
+      "夔龙纹",
+      "螭龙纹",
+      "夔凤纹",
+      "麒麟纹"
+    ],
+    "palette": [
+      {
+        "colors": [
+          "靛蓝",
+          "金色",
+          "墨黑"
+        ],
+        "style": "威严庄重"
+      },
+      {
+        "colors": [
+          "朱砂",
+          "青绿",
+          "浅金"
+        ],
+        "style": "祥瑞华丽"
+      },
+      {
+        "colors": [
+          "青铜绿",
+          "古金",
+          "暗红"
+        ],
+        "style": "古雅厚重"
+      }
+    ],
+    "applications": [
+      "文创产品"
+    ]
   },
   {
     "id": "WENYANG-025",
@@ -723,7 +1607,43 @@
     "license": "CC BY-NC 4.0（署名 · 限非商业用途）",
     "image_path": "data/images/WENYANG-025.jpg",
     "phash": "ce4f9948b359a61a",
-    "clip_vec_index": 24
+    "clip_vec_index": 24,
+    "related_motifs": [
+      "龙纹",
+      "夔龙纹",
+      "螭龙纹",
+      "凤鸟纹",
+      "麒麟纹"
+    ],
+    "palette": [
+      {
+        "colors": [
+          "靛蓝",
+          "金色",
+          "墨黑"
+        ],
+        "style": "威严庄重"
+      },
+      {
+        "colors": [
+          "朱砂",
+          "青绿",
+          "浅金"
+        ],
+        "style": "祥瑞华丽"
+      },
+      {
+        "colors": [
+          "青铜绿",
+          "古金",
+          "暗红"
+        ],
+        "style": "古雅厚重"
+      }
+    ],
+    "applications": [
+      "文创产品"
+    ]
   },
   {
     "id": "WENYANG-026",
@@ -754,7 +1674,43 @@
     "license": "CC BY-NC 4.0（署名 · 限非商业用途）",
     "image_path": "data/images/WENYANG-026.jpg",
     "phash": "ce479948b35ba692",
-    "clip_vec_index": 25
+    "clip_vec_index": 25,
+    "related_motifs": [
+      "龙纹",
+      "夔龙纹",
+      "螭龙纹",
+      "凤鸟纹",
+      "夔凤纹"
+    ],
+    "palette": [
+      {
+        "colors": [
+          "靛蓝",
+          "金色",
+          "墨黑"
+        ],
+        "style": "威严庄重"
+      },
+      {
+        "colors": [
+          "朱砂",
+          "青绿",
+          "浅金"
+        ],
+        "style": "祥瑞华丽"
+      },
+      {
+        "colors": [
+          "青铜绿",
+          "古金",
+          "暗红"
+        ],
+        "style": "古雅厚重"
+      }
+    ],
+    "applications": [
+      "文创产品"
+    ]
   },
   {
     "id": "WENYANG-027",
@@ -785,7 +1741,43 @@
     "license": "CC BY-NC 4.0（署名 · 限非商业用途）",
     "image_path": "data/images/WENYANG-027.jpg",
     "phash": "ce4e9948b35ba613",
-    "clip_vec_index": 26
+    "clip_vec_index": 26,
+    "related_motifs": [
+      "龙纹",
+      "夔龙纹",
+      "螭龙纹",
+      "凤鸟纹",
+      "夔凤纹"
+    ],
+    "palette": [
+      {
+        "colors": [
+          "靛蓝",
+          "金色",
+          "墨黑"
+        ],
+        "style": "威严庄重"
+      },
+      {
+        "colors": [
+          "朱砂",
+          "青绿",
+          "浅金"
+        ],
+        "style": "祥瑞华丽"
+      },
+      {
+        "colors": [
+          "青铜绿",
+          "古金",
+          "暗红"
+        ],
+        "style": "古雅厚重"
+      }
+    ],
+    "applications": [
+      "文创产品"
+    ]
   },
   {
     "id": "WENYANG-028",
@@ -816,7 +1808,43 @@
     "license": "CC BY-NC 4.0（署名 · 限非商业用途）",
     "image_path": "data/images/WENYANG-028.jpg",
     "phash": "ce4f99489359b652",
-    "clip_vec_index": 27
+    "clip_vec_index": 27,
+    "related_motifs": [
+      "龙纹",
+      "夔龙纹",
+      "螭龙纹",
+      "凤鸟纹",
+      "夔凤纹"
+    ],
+    "palette": [
+      {
+        "colors": [
+          "靛蓝",
+          "金色",
+          "墨黑"
+        ],
+        "style": "威严庄重"
+      },
+      {
+        "colors": [
+          "朱砂",
+          "青绿",
+          "浅金"
+        ],
+        "style": "祥瑞华丽"
+      },
+      {
+        "colors": [
+          "青铜绿",
+          "古金",
+          "暗红"
+        ],
+        "style": "古雅厚重"
+      }
+    ],
+    "applications": [
+      "文创产品"
+    ]
   },
   {
     "id": "WENYANG-029",
@@ -846,7 +1874,43 @@
     "license": "CC BY-NC 4.0（署名 · 限非商业用途）",
     "image_path": "data/images/WENYANG-029.jpg",
     "phash": "ce479940b359b61b",
-    "clip_vec_index": 28
+    "clip_vec_index": 28,
+    "related_motifs": [
+      "龙纹",
+      "夔龙纹",
+      "螭龙纹",
+      "凤鸟纹",
+      "夔凤纹"
+    ],
+    "palette": [
+      {
+        "colors": [
+          "靛蓝",
+          "金色",
+          "墨黑"
+        ],
+        "style": "威严庄重"
+      },
+      {
+        "colors": [
+          "朱砂",
+          "青绿",
+          "浅金"
+        ],
+        "style": "祥瑞华丽"
+      },
+      {
+        "colors": [
+          "青铜绿",
+          "古金",
+          "暗红"
+        ],
+        "style": "古雅厚重"
+      }
+    ],
+    "applications": [
+      "文创产品"
+    ]
   },
   {
     "id": "WENYANG-030",
@@ -878,7 +1942,43 @@
     "license": "CC BY-NC 4.0（署名 · 限非商业用途）",
     "image_path": "data/images/WENYANG-030.jpg",
     "phash": "ce4f99c1b252a639",
-    "clip_vec_index": 29
+    "clip_vec_index": 29,
+    "related_motifs": [
+      "龙纹",
+      "夔龙纹",
+      "螭龙纹",
+      "凤鸟纹",
+      "夔凤纹"
+    ],
+    "palette": [
+      {
+        "colors": [
+          "靛蓝",
+          "金色",
+          "墨黑"
+        ],
+        "style": "威严庄重"
+      },
+      {
+        "colors": [
+          "朱砂",
+          "青绿",
+          "浅金"
+        ],
+        "style": "祥瑞华丽"
+      },
+      {
+        "colors": [
+          "青铜绿",
+          "古金",
+          "暗红"
+        ],
+        "style": "古雅厚重"
+      }
+    ],
+    "applications": [
+      "文创产品"
+    ]
   },
   {
     "id": "WENYANG-031",
@@ -912,6 +2012,36 @@
     "clip_vec_index": 30,
     "applications": [
       "寿礼器物"
+    ],
+    "related_motifs": [
+      "鹿纹",
+      "松针纹",
+      "祥云纹",
+      "鹿鹤同春纹",
+      "灵芝纹"
+    ],
+    "palette": [
+      {
+        "colors": [
+          "米白",
+          "墨黑"
+        ],
+        "style": "表现清雅"
+      },
+      {
+        "colors": [
+          "青绿",
+          "浅金"
+        ],
+        "style": "适合古典图录风"
+      },
+      {
+        "colors": [
+          "靛蓝",
+          "金线"
+        ],
+        "style": "适合华丽装饰"
+      }
     ]
   },
   {
@@ -947,6 +2077,35 @@
     "applications": [
       "寿礼图案",
       "文创包装"
+    ],
+    "related_motifs": [
+      "鹤纹",
+      "鹿鹤同春纹",
+      "松针纹",
+      "灵芝纹",
+      "祥云纹"
+    ],
+    "palette": [
+      {
+        "colors": [
+          "墨绿",
+          "浅金"
+        ],
+        "style": "沉稳古雅"
+      },
+      {
+        "colors": [
+          "青绿"
+        ],
+        "style": "鹿棕配自然温润"
+      },
+      {
+        "colors": [
+          "米白",
+          "朱砂"
+        ],
+        "style": "适合礼品视觉"
+      }
     ]
   },
   {
@@ -982,6 +2141,36 @@
     "applications": [
       "民俗礼品",
       "包装设计"
+    ],
+    "related_motifs": [
+      "鲤鱼纹",
+      "双鱼莲花纹",
+      "水波纹",
+      "莲花纹",
+      "荷叶纹"
+    ],
+    "palette": [
+      {
+        "colors": [
+          "靛蓝",
+          "浅金"
+        ],
+        "style": "有水纹感"
+      },
+      {
+        "colors": [
+          "朱红",
+          "青绿"
+        ],
+        "style": "更喜庆"
+      },
+      {
+        "colors": [
+          "米白",
+          "墨线"
+        ],
+        "style": "适合线稿展示"
+      }
     ]
   },
   {
@@ -1016,6 +2205,36 @@
     "applications": [
       "节庆包装",
       "礼品图案"
+    ],
+    "related_motifs": [
+      "鱼纹",
+      "双鱼莲花纹",
+      "水波纹",
+      "浪花纹",
+      "莲花纹"
+    ],
+    "palette": [
+      {
+        "colors": [
+          "朱红",
+          "金线"
+        ],
+        "style": "适合吉庆"
+      },
+      {
+        "colors": [
+          "靛蓝",
+          "青绿"
+        ],
+        "style": "适合水波氛围"
+      },
+      {
+        "colors": [
+          "米白",
+          "墨线"
+        ],
+        "style": "适合线稿版"
+      }
     ]
   },
   {
@@ -1048,6 +2267,34 @@
       "婚庆织绣",
       "礼品包装",
       "床品纹样"
+    ],
+    "related_motifs": [
+      "双鱼莲花纹",
+      "莲花纹",
+      "荷叶纹",
+      "水波纹",
+      "喜字纹"
+    ],
+    "palette": [
+      {
+        "colors": [
+          "青绿"
+        ],
+        "style": "粉白清雅温柔"
+      },
+      {
+        "colors": [
+          "朱砂",
+          "金色"
+        ],
+        "style": "适合婚庆"
+      },
+      {
+        "colors": [
+          "靛蓝"
+        ],
+        "style": "荷叶绿适合古典水景"
+      }
     ]
   },
   {
@@ -1082,6 +2329,40 @@
     "clip_vec_index": 35,
     "applications": [
       "文创产品"
+    ],
+    "related_motifs": [
+      "梅花纹",
+      "喜上眉梢纹",
+      "花鸟纹",
+      "折枝花纹",
+      "祥云纹",
+      "牡丹纹"
+    ],
+    "palette": [
+      {
+        "colors": [
+          "黑白",
+          "梅红",
+          "青绿"
+        ],
+        "style": ""
+      },
+      {
+        "colors": [
+          "靛蓝",
+          "米白",
+          "浅金"
+        ],
+        "style": ""
+      },
+      {
+        "colors": [
+          "淡粉",
+          "墨黑",
+          "青灰"
+        ],
+        "style": ""
+      }
     ]
   },
   {
@@ -1115,6 +2396,40 @@
     "clip_vec_index": 36,
     "applications": [
       "文创产品"
+    ],
+    "related_motifs": [
+      "龙纹",
+      "祥云纹",
+      "火焰纹",
+      "山水纹",
+      "鹿纹",
+      "瑞兽纹"
+    ],
+    "palette": [
+      {
+        "colors": [
+          "朱砂",
+          "金色",
+          "墨绿"
+        ],
+        "style": ""
+      },
+      {
+        "colors": [
+          "靛蓝",
+          "浅金",
+          "米白"
+        ],
+        "style": ""
+      },
+      {
+        "colors": [
+          "赭红",
+          "古金",
+          "青绿"
+        ],
+        "style": ""
+      }
     ]
   },
   {
@@ -1148,6 +2463,40 @@
     "clip_vec_index": 37,
     "applications": [
       "文创产品"
+    ],
+    "related_motifs": [
+      "龟背纹",
+      "水波纹",
+      "祥云纹",
+      "寿字纹",
+      "鹿鹤同春纹",
+      "灵芝纹"
+    ],
+    "palette": [
+      {
+        "colors": [
+          "青绿",
+          "金色",
+          "靛蓝"
+        ],
+        "style": ""
+      },
+      {
+        "colors": [
+          "墨绿",
+          "米白",
+          "浅金"
+        ],
+        "style": ""
+      },
+      {
+        "colors": [
+          "水蓝",
+          "青灰",
+          "金线"
+        ],
+        "style": ""
+      }
     ]
   },
   {
@@ -1182,6 +2531,40 @@
     "clip_vec_index": 38,
     "applications": [
       "文创产品"
+    ],
+    "related_motifs": [
+      "牡丹纹",
+      "桃花纹",
+      "折枝花纹",
+      "花鸟纹",
+      "喜鹊纹",
+      "团花纹"
+    ],
+    "palette": [
+      {
+        "colors": [
+          "粉橙",
+          "青绿",
+          "米白"
+        ],
+        "style": ""
+      },
+      {
+        "colors": [
+          "靛蓝",
+          "彩蝶色",
+          "浅金"
+        ],
+        "style": ""
+      },
+      {
+        "colors": [
+          "淡粉",
+          "墨绿",
+          "白色"
+        ],
+        "style": ""
+      }
     ]
   },
   {
@@ -1217,6 +2600,40 @@
       "包装设计",
       "家居装饰",
       "文创产品"
+    ],
+    "related_motifs": [
+      "铜钱纹",
+      "双钱纹",
+      "福字纹",
+      "如意纹",
+      "蝙蝠纹",
+      "宝瓶纹"
+    ],
+    "palette": [
+      {
+        "colors": [
+          "金色",
+          "朱砂",
+          "墨黑"
+        ],
+        "style": ""
+      },
+      {
+        "colors": [
+          "古金",
+          "靛蓝",
+          "米白"
+        ],
+        "style": ""
+      },
+      {
+        "colors": [
+          "铜色",
+          "红色",
+          "青绿"
+        ],
+        "style": ""
+      }
     ]
   },
   {
@@ -1247,6 +2664,35 @@
     "applications": [
       "门窗边框",
       "包装边饰"
+    ],
+    "related_motifs": [
+      "雷纹",
+      "云雷纹",
+      "万字锦纹",
+      "锁子纹"
+    ],
+    "palette": [
+      {
+        "colors": [
+          "墨绿",
+          "古金"
+        ],
+        "style": "古典稳重"
+      },
+      {
+        "colors": [
+          "玄黑",
+          "米白"
+        ],
+        "style": "简洁克制"
+      },
+      {
+        "colors": [
+          "朱砂",
+          "浅金"
+        ],
+        "style": "节庆华丽"
+      }
     ]
   },
   {
@@ -1275,6 +2721,35 @@
       "陶瓷",
       "礼器纹带",
       "文博衍生设计"
+    ],
+    "related_motifs": [
+      "回纹",
+      "云雷纹",
+      "夔龙纹",
+      "兽面纹"
+    ],
+    "palette": [
+      {
+        "colors": [
+          "青铜绿",
+          "古金"
+        ],
+        "style": "器物感强"
+      },
+      {
+        "colors": [
+          "深褐",
+          "暗金"
+        ],
+        "style": "复古厚重"
+      },
+      {
+        "colors": [
+          "墨黑",
+          "铜色"
+        ],
+        "style": "现代文博感"
+      }
     ]
   },
   {
@@ -1305,6 +2780,35 @@
       "壁饰",
       "海报底纹",
       "文创包装"
+    ],
+    "related_motifs": [
+      "雷纹",
+      "祥云纹",
+      "回纹",
+      "夔龙纹"
+    ],
+    "palette": [
+      {
+        "colors": [
+          "深青",
+          "古金"
+        ],
+        "style": "古典庄重"
+      },
+      {
+        "colors": [
+          "青灰",
+          "米白"
+        ],
+        "style": "雅致轻盈"
+      },
+      {
+        "colors": [
+          "深蓝",
+          "浅金"
+        ],
+        "style": "文博视觉"
+      }
     ]
   },
   {
@@ -1336,6 +2840,35 @@
     "applications": [
       "窗格",
       "地砖图案"
+    ],
+    "related_motifs": [
+      "菱格纹",
+      "连珠纹",
+      "寿字纹",
+      "花卉填充纹"
+    ],
+    "palette": [
+      {
+        "colors": [
+          "墨绿",
+          "古金"
+        ],
+        "style": "典雅稳重"
+      },
+      {
+        "colors": [
+          "青灰",
+          "米白"
+        ],
+        "style": "空间纹理感"
+      },
+      {
+        "colors": [
+          "朱砂",
+          "金色"
+        ],
+        "style": "吉庆主题"
+      }
     ]
   },
   {
@@ -1366,6 +2899,35 @@
       "地毯",
       "墙面纹理",
       "包装底纹"
+    ],
+    "related_motifs": [
+      "方胜纹",
+      "龟背纹",
+      "连珠纹",
+      "宝相花纹"
+    ],
+    "palette": [
+      {
+        "colors": [
+          "深绿",
+          "金线"
+        ],
+        "style": "典雅织锦感"
+      },
+      {
+        "colors": [
+          "靛蓝",
+          "米白"
+        ],
+        "style": "清爽规整"
+      },
+      {
+        "colors": [
+          "暖红",
+          "古金"
+        ],
+        "style": "华丽传统"
+      }
     ]
   },
   {
@@ -1395,6 +2957,35 @@
       "壁画边框",
       "器物口沿",
       "包装边线"
+    ],
+    "related_motifs": [
+      "菱格纹",
+      "锁子纹",
+      "方胜纹",
+      "连钱纹"
+    ],
+    "palette": [
+      {
+        "colors": [
+          "青绿",
+          "金珠"
+        ],
+        "style": "雅致清润"
+      },
+      {
+        "colors": [
+          "米白",
+          "墨线"
+        ],
+        "style": "简洁耐看"
+      },
+      {
+        "colors": [
+          "朱红",
+          "金珠"
+        ],
+        "style": "节庆华丽"
+      }
     ]
   },
   {
@@ -1425,6 +3016,34 @@
     "applications": [
       "服饰纹样",
       "年节装饰"
+    ],
+    "related_motifs": [
+      "菱格纹",
+      "盘长纹",
+      "连珠纹",
+      "喜字纹"
+    ],
+    "palette": [
+      {
+        "colors": [
+          "红绿"
+        ],
+        "style": "传统织锦感"
+      },
+      {
+        "colors": [
+          "墨绿",
+          "古金"
+        ],
+        "style": "雅致稳重"
+      },
+      {
+        "colors": [
+          "青蓝",
+          "银灰"
+        ],
+        "style": "现代化演绎"
+      }
     ]
   },
   {
@@ -1456,6 +3075,34 @@
       "吉祥挂饰",
       "海报主题图形",
       "节庆礼品"
+    ],
+    "related_motifs": [
+      "方胜纹",
+      "如意纹",
+      "连珠纹",
+      "莲花纹"
+    ],
+    "palette": [
+      {
+        "colors": [
+          "朱红"
+        ],
+        "style": "喜庆吉祥"
+      },
+      {
+        "colors": [
+          "藏蓝",
+          "古金"
+        ],
+        "style": "稳重典雅"
+      },
+      {
+        "colors": [
+          "米白",
+          "墨线"
+        ],
+        "style": "简洁应用"
+      }
     ]
   },
   {
@@ -1486,6 +3133,35 @@
       "壁饰",
       "包装底纹",
       "文博衍生设计"
+    ],
+    "related_motifs": [
+      "回纹",
+      "盘长纹",
+      "寿字纹",
+      "连珠纹"
+    ],
+    "palette": [
+      {
+        "colors": [
+          "青蓝",
+          "古金"
+        ],
+        "style": "典雅锦纹感"
+      },
+      {
+        "colors": [
+          "墨绿",
+          "金色"
+        ],
+        "style": "华丽稳重"
+      },
+      {
+        "colors": [
+          "绛红",
+          "米金"
+        ],
+        "style": "礼品包装感"
+      }
     ]
   },
   {
@@ -1516,6 +3192,35 @@
       "金工饰件",
       "地毯",
       "网页装饰带"
+    ],
+    "related_motifs": [
+      "连珠纹",
+      "回纹",
+      "盘长纹",
+      "方胜纹"
+    ],
+    "palette": [
+      {
+        "colors": [
+          "墨绿",
+          "金环"
+        ],
+        "style": "古雅耐看"
+      },
+      {
+        "colors": [
+          "黑灰",
+          "银色"
+        ],
+        "style": "现代冷感"
+      },
+      {
+        "colors": [
+          "赤金",
+          "深红"
+        ],
+        "style": "华丽吉祥"
+      }
     ]
   },
   {
@@ -1546,6 +3251,38 @@
       "墙面装饰",
       "包装底纹",
       "文创产品"
+    ],
+    "related_motifs": [
+      "水波纹",
+      "波折纹",
+      "锦地纹",
+      "格锦纹"
+    ],
+    "palette": [
+      {
+        "colors": [
+          "冰蓝"
+        ],
+        "style": ""
+      },
+      {
+        "colors": [
+          "米白"
+        ],
+        "style": ""
+      },
+      {
+        "colors": [
+          "灰青"
+        ],
+        "style": ""
+      },
+      {
+        "colors": [
+          "墨线"
+        ],
+        "style": ""
+      }
     ]
   },
   {
@@ -1576,6 +3313,38 @@
     "applications": [
       "壁纸",
       "包装底纹"
+    ],
+    "related_motifs": [
+      "格锦纹",
+      "菱花锦纹",
+      "万字锦纹",
+      "宝相花纹"
+    ],
+    "palette": [
+      {
+        "colors": [
+          "青绿"
+        ],
+        "style": ""
+      },
+      {
+        "colors": [
+          "古金"
+        ],
+        "style": ""
+      },
+      {
+        "colors": [
+          "米白"
+        ],
+        "style": ""
+      },
+      {
+        "colors": [
+          "靛蓝"
+        ],
+        "style": ""
+      }
     ]
   },
   {
@@ -1607,6 +3376,38 @@
       "窗格",
       "包装图案",
       "壁饰"
+    ],
+    "related_motifs": [
+      "六角花纹",
+      "菱花锦纹",
+      "格锦纹",
+      "团花纹"
+    ],
+    "palette": [
+      {
+        "colors": [
+          "墨绿"
+        ],
+        "style": ""
+      },
+      {
+        "colors": [
+          "米白"
+        ],
+        "style": ""
+      },
+      {
+        "colors": [
+          "古金"
+        ],
+        "style": ""
+      },
+      {
+        "colors": [
+          "朱砂"
+        ],
+        "style": ""
+      }
     ]
   },
   {
@@ -1638,6 +3439,38 @@
       "地砖",
       "墙纸",
       "包装底纹"
+    ],
+    "related_motifs": [
+      "龟背纹",
+      "菱格纹",
+      "格锦纹",
+      "十字花纹"
+    ],
+    "palette": [
+      {
+        "colors": [
+          "青绿"
+        ],
+        "style": ""
+      },
+      {
+        "colors": [
+          "米白"
+        ],
+        "style": ""
+      },
+      {
+        "colors": [
+          "浅金"
+        ],
+        "style": ""
+      },
+      {
+        "colors": [
+          "墨绿"
+        ],
+        "style": ""
+      }
     ]
   },
   {
@@ -1668,6 +3501,38 @@
       "器物",
       "墙面图案",
       "包装视觉"
+    ],
+    "related_motifs": [
+      "六角花纹",
+      "十字花纹",
+      "团花纹",
+      "菱花锦纹"
+    ],
+    "palette": [
+      {
+        "colors": [
+          "靛蓝"
+        ],
+        "style": ""
+      },
+      {
+        "colors": [
+          "米白"
+        ],
+        "style": ""
+      },
+      {
+        "colors": [
+          "浅金"
+        ],
+        "style": ""
+      },
+      {
+        "colors": [
+          "青绿"
+        ],
+        "style": ""
+      }
     ]
   },
   {
@@ -1699,6 +3564,38 @@
     "applications": [
       "海报底纹",
       "包装分隔线"
+    ],
+    "related_motifs": [
+      "水波纹",
+      "浪花纹",
+      "海水江崖纹",
+      "冰裂纹"
+    ],
+    "palette": [
+      {
+        "colors": [
+          "靛蓝"
+        ],
+        "style": ""
+      },
+      {
+        "colors": [
+          "米白"
+        ],
+        "style": ""
+      },
+      {
+        "colors": [
+          "青灰"
+        ],
+        "style": ""
+      },
+      {
+        "colors": [
+          "浅金"
+        ],
+        "style": ""
+      }
     ]
   },
   {
@@ -1729,6 +3626,38 @@
       "家具纹带",
       "织物边框",
       "网页分隔"
+    ],
+    "related_motifs": [
+      "回纹",
+      "雷纹",
+      "万字锦纹",
+      "波折纹"
+    ],
+    "palette": [
+      {
+        "colors": [
+          "墨绿"
+        ],
+        "style": ""
+      },
+      {
+        "colors": [
+          "古金"
+        ],
+        "style": ""
+      },
+      {
+        "colors": [
+          "米白"
+        ],
+        "style": ""
+      },
+      {
+        "colors": [
+          "青灰"
+        ],
+        "style": ""
+      }
     ]
   },
   {
@@ -1760,6 +3689,38 @@
       "地毯",
       "包装底纹",
       "器物装饰"
+    ],
+    "related_motifs": [
+      "锦地纹",
+      "菱格纹",
+      "菱花锦纹",
+      "连珠纹"
+    ],
+    "palette": [
+      {
+        "colors": [
+          "青绿"
+        ],
+        "style": ""
+      },
+      {
+        "colors": [
+          "米白"
+        ],
+        "style": ""
+      },
+      {
+        "colors": [
+          "浅金"
+        ],
+        "style": ""
+      },
+      {
+        "colors": [
+          "棕金"
+        ],
+        "style": ""
+      }
     ]
   },
   {
@@ -1791,6 +3752,38 @@
       "地毯",
       "礼盒包装",
       "墙面纹样"
+    ],
+    "related_motifs": [
+      "菱格纹",
+      "格锦纹",
+      "宝相花纹",
+      "牡丹纹"
+    ],
+    "palette": [
+      {
+        "colors": [
+          "墨绿"
+        ],
+        "style": ""
+      },
+      {
+        "colors": [
+          "朱砂"
+        ],
+        "style": ""
+      },
+      {
+        "colors": [
+          "古金"
+        ],
+        "style": ""
+      },
+      {
+        "colors": [
+          "米白"
+        ],
+        "style": ""
+      }
     ]
   },
   {
@@ -1822,6 +3815,38 @@
       "地毯",
       "包装底纹",
       "网页装饰"
+    ],
+    "related_motifs": [
+      "锁子纹",
+      "连珠纹",
+      "盘长纹",
+      "方胜纹"
+    ],
+    "palette": [
+      {
+        "colors": [
+          "靛蓝"
+        ],
+        "style": ""
+      },
+      {
+        "colors": [
+          "米白"
+        ],
+        "style": ""
+      },
+      {
+        "colors": [
+          "古金"
+        ],
+        "style": ""
+      },
+      {
+        "colors": [
+          "青绿"
+        ],
+        "style": ""
+      }
     ]
   },
   {
@@ -1855,6 +3880,51 @@
       "包装设计",
       "文创产品",
       "新中式视觉设计"
+    ],
+    "related_motifs": [
+      "如意云纹",
+      "卷云纹",
+      "海水江崖纹",
+      "水波纹",
+      "浪花纹",
+      "山纹",
+      "山水纹",
+      "太湖石纹",
+      "火焰纹"
+    ],
+    "palette": [
+      {
+        "colors": [
+          "青蓝",
+          "米白",
+          "浅金"
+        ],
+        "style": "清雅古典，适合网站卡片和图录风"
+      },
+      {
+        "colors": [
+          "墨绿",
+          "古金",
+          "暗青"
+        ],
+        "style": "沉稳厚重，适合文博和空间视觉"
+      },
+      {
+        "colors": [
+          "靛蓝",
+          "白色",
+          "金线"
+        ],
+        "style": "适合水纹、云纹和山水类纹样"
+      },
+      {
+        "colors": [
+          "朱砂",
+          "金色",
+          "暗红"
+        ],
+        "style": "适合火焰、节庆和强视觉主题"
+      }
     ]
   },
   {
@@ -1889,6 +3959,51 @@
       "包装设计",
       "文创产品",
       "新中式视觉设计"
+    ],
+    "related_motifs": [
+      "祥云纹",
+      "卷云纹",
+      "海水江崖纹",
+      "水波纹",
+      "浪花纹",
+      "山纹",
+      "山水纹",
+      "太湖石纹",
+      "火焰纹"
+    ],
+    "palette": [
+      {
+        "colors": [
+          "青蓝",
+          "米白",
+          "浅金"
+        ],
+        "style": "清雅古典，适合网站卡片和图录风"
+      },
+      {
+        "colors": [
+          "墨绿",
+          "古金",
+          "暗青"
+        ],
+        "style": "沉稳厚重，适合文博和空间视觉"
+      },
+      {
+        "colors": [
+          "靛蓝",
+          "白色",
+          "金线"
+        ],
+        "style": "适合水纹、云纹和山水类纹样"
+      },
+      {
+        "colors": [
+          "朱砂",
+          "金色",
+          "暗红"
+        ],
+        "style": "适合火焰、节庆和强视觉主题"
+      }
     ]
   },
   {
@@ -1921,6 +4036,51 @@
       "包装设计",
       "文创产品",
       "新中式视觉设计"
+    ],
+    "related_motifs": [
+      "祥云纹",
+      "如意云纹",
+      "海水江崖纹",
+      "水波纹",
+      "浪花纹",
+      "山纹",
+      "山水纹",
+      "太湖石纹",
+      "火焰纹"
+    ],
+    "palette": [
+      {
+        "colors": [
+          "青蓝",
+          "米白",
+          "浅金"
+        ],
+        "style": "清雅古典，适合网站卡片和图录风"
+      },
+      {
+        "colors": [
+          "墨绿",
+          "古金",
+          "暗青"
+        ],
+        "style": "沉稳厚重，适合文博和空间视觉"
+      },
+      {
+        "colors": [
+          "靛蓝",
+          "白色",
+          "金线"
+        ],
+        "style": "适合水纹、云纹和山水类纹样"
+      },
+      {
+        "colors": [
+          "朱砂",
+          "金色",
+          "暗红"
+        ],
+        "style": "适合火焰、节庆和强视觉主题"
+      }
     ]
   },
   {
@@ -1953,6 +4113,51 @@
       "空间软装",
       "文创产品",
       "网页视觉与节庆图案"
+    ],
+    "related_motifs": [
+      "祥云纹",
+      "如意云纹",
+      "卷云纹",
+      "水波纹",
+      "浪花纹",
+      "山纹",
+      "山水纹",
+      "太湖石纹",
+      "火焰纹"
+    ],
+    "palette": [
+      {
+        "colors": [
+          "青蓝",
+          "米白",
+          "浅金"
+        ],
+        "style": "清雅古典，适合网站卡片和图录风"
+      },
+      {
+        "colors": [
+          "墨绿",
+          "古金",
+          "暗青"
+        ],
+        "style": "沉稳厚重，适合文博和空间视觉"
+      },
+      {
+        "colors": [
+          "靛蓝",
+          "白色",
+          "金线"
+        ],
+        "style": "适合水纹、云纹和山水类纹样"
+      },
+      {
+        "colors": [
+          "朱砂",
+          "金色",
+          "暗红"
+        ],
+        "style": "适合火焰、节庆和强视觉主题"
+      }
     ]
   },
   {
@@ -1984,6 +4189,51 @@
       "空间软装",
       "文创产品",
       "网页视觉与节庆图案"
+    ],
+    "related_motifs": [
+      "祥云纹",
+      "如意云纹",
+      "卷云纹",
+      "海水江崖纹",
+      "浪花纹",
+      "山纹",
+      "山水纹",
+      "太湖石纹",
+      "火焰纹"
+    ],
+    "palette": [
+      {
+        "colors": [
+          "青蓝",
+          "米白",
+          "浅金"
+        ],
+        "style": "清雅古典，适合网站卡片和图录风"
+      },
+      {
+        "colors": [
+          "墨绿",
+          "古金",
+          "暗青"
+        ],
+        "style": "沉稳厚重，适合文博和空间视觉"
+      },
+      {
+        "colors": [
+          "靛蓝",
+          "白色",
+          "金线"
+        ],
+        "style": "适合水纹、云纹和山水类纹样"
+      },
+      {
+        "colors": [
+          "朱砂",
+          "金色",
+          "暗红"
+        ],
+        "style": "适合火焰、节庆和强视觉主题"
+      }
     ]
   },
   {
@@ -2014,6 +4264,51 @@
       "空间软装",
       "文创产品",
       "网页视觉与节庆图案"
+    ],
+    "related_motifs": [
+      "祥云纹",
+      "如意云纹",
+      "卷云纹",
+      "海水江崖纹",
+      "水波纹",
+      "山纹",
+      "山水纹",
+      "太湖石纹",
+      "火焰纹"
+    ],
+    "palette": [
+      {
+        "colors": [
+          "青蓝",
+          "米白",
+          "浅金"
+        ],
+        "style": "清雅古典，适合网站卡片和图录风"
+      },
+      {
+        "colors": [
+          "墨绿",
+          "古金",
+          "暗青"
+        ],
+        "style": "沉稳厚重，适合文博和空间视觉"
+      },
+      {
+        "colors": [
+          "靛蓝",
+          "白色",
+          "金线"
+        ],
+        "style": "适合水纹、云纹和山水类纹样"
+      },
+      {
+        "colors": [
+          "朱砂",
+          "金色",
+          "暗红"
+        ],
+        "style": "适合火焰、节庆和强视觉主题"
+      }
     ]
   },
   {
@@ -2044,6 +4339,51 @@
       "书籍封面",
       "茶空间视觉",
       "东方美学海报与文化展陈"
+    ],
+    "related_motifs": [
+      "祥云纹",
+      "如意云纹",
+      "卷云纹",
+      "海水江崖纹",
+      "水波纹",
+      "浪花纹",
+      "山水纹",
+      "太湖石纹",
+      "火焰纹"
+    ],
+    "palette": [
+      {
+        "colors": [
+          "青蓝",
+          "米白",
+          "浅金"
+        ],
+        "style": "清雅古典，适合网站卡片和图录风"
+      },
+      {
+        "colors": [
+          "墨绿",
+          "古金",
+          "暗青"
+        ],
+        "style": "沉稳厚重，适合文博和空间视觉"
+      },
+      {
+        "colors": [
+          "靛蓝",
+          "白色",
+          "金线"
+        ],
+        "style": "适合水纹、云纹和山水类纹样"
+      },
+      {
+        "colors": [
+          "朱砂",
+          "金色",
+          "暗红"
+        ],
+        "style": "适合火焰、节庆和强视觉主题"
+      }
     ]
   },
   {
@@ -2076,6 +4416,51 @@
       "书籍封面",
       "茶空间视觉",
       "东方美学海报与文化展陈"
+    ],
+    "related_motifs": [
+      "祥云纹",
+      "如意云纹",
+      "卷云纹",
+      "海水江崖纹",
+      "水波纹",
+      "浪花纹",
+      "山纹",
+      "太湖石纹",
+      "火焰纹"
+    ],
+    "palette": [
+      {
+        "colors": [
+          "青蓝",
+          "米白",
+          "浅金"
+        ],
+        "style": "清雅古典，适合网站卡片和图录风"
+      },
+      {
+        "colors": [
+          "墨绿",
+          "古金",
+          "暗青"
+        ],
+        "style": "沉稳厚重，适合文博和空间视觉"
+      },
+      {
+        "colors": [
+          "靛蓝",
+          "白色",
+          "金线"
+        ],
+        "style": "适合水纹、云纹和山水类纹样"
+      },
+      {
+        "colors": [
+          "朱砂",
+          "金色",
+          "暗红"
+        ],
+        "style": "适合火焰、节庆和强视觉主题"
+      }
     ]
   },
   {
@@ -2107,6 +4492,51 @@
       "书籍封面",
       "茶空间视觉",
       "东方美学海报与文化展陈"
+    ],
+    "related_motifs": [
+      "祥云纹",
+      "如意云纹",
+      "卷云纹",
+      "海水江崖纹",
+      "水波纹",
+      "浪花纹",
+      "山纹",
+      "山水纹",
+      "火焰纹"
+    ],
+    "palette": [
+      {
+        "colors": [
+          "青蓝",
+          "米白",
+          "浅金"
+        ],
+        "style": "清雅古典，适合网站卡片和图录风"
+      },
+      {
+        "colors": [
+          "墨绿",
+          "古金",
+          "暗青"
+        ],
+        "style": "沉稳厚重，适合文博和空间视觉"
+      },
+      {
+        "colors": [
+          "靛蓝",
+          "白色",
+          "金线"
+        ],
+        "style": "适合水纹、云纹和山水类纹样"
+      },
+      {
+        "colors": [
+          "朱砂",
+          "金色",
+          "暗红"
+        ],
+        "style": "适合火焰、节庆和强视觉主题"
+      }
     ]
   },
   {
@@ -2136,6 +4566,51 @@
       "品牌主视觉",
       "游戏美术",
       "包装设计和文博衍生品"
+    ],
+    "related_motifs": [
+      "祥云纹",
+      "如意云纹",
+      "卷云纹",
+      "海水江崖纹",
+      "水波纹",
+      "浪花纹",
+      "山纹",
+      "山水纹",
+      "太湖石纹"
+    ],
+    "palette": [
+      {
+        "colors": [
+          "青蓝",
+          "米白",
+          "浅金"
+        ],
+        "style": "清雅古典，适合网站卡片和图录风"
+      },
+      {
+        "colors": [
+          "墨绿",
+          "古金",
+          "暗青"
+        ],
+        "style": "沉稳厚重，适合文博和空间视觉"
+      },
+      {
+        "colors": [
+          "靛蓝",
+          "白色",
+          "金线"
+        ],
+        "style": "适合水纹、云纹和山水类纹样"
+      },
+      {
+        "colors": [
+          "朱砂",
+          "金色",
+          "暗红"
+        ],
+        "style": "适合火焰、节庆和强视觉主题"
+      }
     ]
   },
   {
@@ -2166,6 +4641,39 @@
     "clip_vec_index": 70,
     "applications": [
       "包装设计"
+    ],
+    "related_motifs": [
+      "祥云纹",
+      "如意云纹",
+      "卷云纹",
+      "云气纹",
+      "水波纹"
+    ],
+    "palette": [
+      {
+        "colors": [
+          "青蓝",
+          "米白",
+          "浅金"
+        ],
+        "style": ""
+      },
+      {
+        "colors": [
+          "靛蓝",
+          "云白",
+          "青灰"
+        ],
+        "style": ""
+      },
+      {
+        "colors": [
+          "淡青",
+          "暖白",
+          "金线"
+        ],
+        "style": ""
+      }
     ]
   },
   {
@@ -2196,6 +4704,39 @@
     "clip_vec_index": 71,
     "applications": [
       "海报背景"
+    ],
+    "related_motifs": [
+      "流云纹",
+      "祥云纹",
+      "卷云纹",
+      "如意云纹",
+      "涡纹"
+    ],
+    "palette": [
+      {
+        "colors": [
+          "浅青",
+          "米白",
+          "金线"
+        ],
+        "style": ""
+      },
+      {
+        "colors": [
+          "青灰",
+          "暖白",
+          "淡蓝"
+        ],
+        "style": ""
+      },
+      {
+        "colors": [
+          "墨蓝",
+          "云白",
+          "浅金"
+        ],
+        "style": ""
+      }
     ]
   },
   {
@@ -2226,6 +4767,39 @@
     "clip_vec_index": 72,
     "applications": [
       "现代图形设计"
+    ],
+    "related_motifs": [
+      "水波纹",
+      "云气纹",
+      "流云纹",
+      "雷纹",
+      "回纹"
+    ],
+    "palette": [
+      {
+        "colors": [
+          "靛蓝",
+          "青绿",
+          "浅金"
+        ],
+        "style": ""
+      },
+      {
+        "colors": [
+          "墨黑",
+          "米白",
+          "古金"
+        ],
+        "style": ""
+      },
+      {
+        "colors": [
+          "青灰",
+          "暖白",
+          "淡蓝"
+        ],
+        "style": ""
+      }
     ]
   },
   {
@@ -2256,6 +4830,38 @@
       "包装底纹",
       "插画背景",
       "空间软装"
+    ],
+    "related_motifs": [
+      "水波纹",
+      "浪花纹",
+      "流云纹",
+      "云气纹"
+    ],
+    "palette": [
+      {
+        "colors": [
+          "浅蓝",
+          "米白",
+          "青灰"
+        ],
+        "style": ""
+      },
+      {
+        "colors": [
+          "水青",
+          "暖白",
+          "淡金"
+        ],
+        "style": ""
+      },
+      {
+        "colors": [
+          "靛蓝",
+          "云白",
+          "银灰"
+        ],
+        "style": ""
+      }
     ]
   },
   {
@@ -2287,6 +4893,38 @@
       "天文主题文创",
       "海报视觉",
       "包装设计"
+    ],
+    "related_motifs": [
+      "云气纹",
+      "流云纹",
+      "涡纹",
+      "山水纹"
+    ],
+    "palette": [
+      {
+        "colors": [
+          "深蓝",
+          "金色",
+          "米白"
+        ],
+        "style": ""
+      },
+      {
+        "colors": [
+          "靛蓝",
+          "星金",
+          "青灰"
+        ],
+        "style": ""
+      },
+      {
+        "colors": [
+          "墨黑",
+          "银白",
+          "古金"
+        ],
+        "style": ""
+      }
     ]
   },
   {
@@ -2319,6 +4957,39 @@
     "clip_vec_index": 75,
     "applications": [
       "包装设计"
+    ],
+    "related_motifs": [
+      "如意云纹",
+      "祥云纹",
+      "卷草纹",
+      "盘长纹",
+      "宝瓶纹"
+    ],
+    "palette": [
+      {
+        "colors": [
+          "青绿",
+          "米白",
+          "浅金"
+        ],
+        "style": ""
+      },
+      {
+        "colors": [
+          "朱砂",
+          "金色",
+          "墨绿"
+        ],
+        "style": ""
+      },
+      {
+        "colors": [
+          "淡青",
+          "暖白",
+          "古金"
+        ],
+        "style": ""
+      }
     ]
   },
   {
@@ -2352,6 +5023,39 @@
     "applications": [
       "包装设计",
       "文创产品"
+    ],
+    "related_motifs": [
+      "如意纹",
+      "八宝纹",
+      "花篮纹",
+      "祥云纹",
+      "宝相花纹"
+    ],
+    "palette": [
+      {
+        "colors": [
+          "青绿",
+          "浅金",
+          "米白"
+        ],
+        "style": ""
+      },
+      {
+        "colors": [
+          "宝蓝",
+          "古金",
+          "珊瑚红"
+        ],
+        "style": ""
+      },
+      {
+        "colors": [
+          "朱砂",
+          "金色",
+          "墨绿"
+        ],
+        "style": ""
+      }
     ]
   },
   {
@@ -2383,6 +5087,39 @@
       "年节装饰",
       "包装图案",
       "文创配饰"
+    ],
+    "related_motifs": [
+      "铜钱纹",
+      "连珠纹",
+      "盘长纹",
+      "福字纹",
+      "花篮纹"
+    ],
+    "palette": [
+      {
+        "colors": [
+          "古金",
+          "墨绿",
+          "米白"
+        ],
+        "style": ""
+      },
+      {
+        "colors": [
+          "朱砂",
+          "金色",
+          "暗青"
+        ],
+        "style": ""
+      },
+      {
+        "colors": [
+          "青铜色",
+          "暖白",
+          "深绿"
+        ],
+        "style": ""
+      }
     ]
   },
   {
@@ -2413,6 +5150,39 @@
     "applications": [
       "包装设计",
       "年节文创"
+    ],
+    "related_motifs": [
+      "双钱纹",
+      "连珠纹",
+      "福字纹",
+      "万字锦纹",
+      "盘长纹"
+    ],
+    "palette": [
+      {
+        "colors": [
+          "古铜",
+          "墨绿",
+          "米白"
+        ],
+        "style": ""
+      },
+      {
+        "colors": [
+          "金色",
+          "深青",
+          "暖白"
+        ],
+        "style": ""
+      },
+      {
+        "colors": [
+          "朱砂",
+          "古金",
+          "黑色"
+        ],
+        "style": ""
+      }
     ]
   },
   {
@@ -2446,6 +5216,39 @@
     "applications": [
       "包装设计",
       "文创产品"
+    ],
+    "related_motifs": [
+      "宝瓶纹",
+      "牡丹纹",
+      "石榴纹",
+      "花果纹",
+      "八宝纹"
+    ],
+    "palette": [
+      {
+        "colors": [
+          "珊瑚红",
+          "青绿",
+          "米白"
+        ],
+        "style": ""
+      },
+      {
+        "colors": [
+          "朱砂",
+          "浅金",
+          "墨绿"
+        ],
+        "style": ""
+      },
+      {
+        "colors": [
+          "淡粉",
+          "金色",
+          "暖白"
+        ],
+        "style": ""
+      }
     ]
   },
   {
@@ -2484,6 +5287,39 @@
       "文创包装",
       "礼品图案",
       "网站视觉资料库"
+    ],
+    "related_motifs": [
+      "暗八仙纹",
+      "宝瓶纹",
+      "盘长纹",
+      "双鱼莲花纹",
+      "花篮纹"
+    ],
+    "palette": [
+      {
+        "colors": [
+          "朱砂红",
+          "古金",
+          "青绿"
+        ],
+        "style": ""
+      },
+      {
+        "colors": [
+          "靛蓝",
+          "浅金",
+          "米白"
+        ],
+        "style": ""
+      },
+      {
+        "colors": [
+          "墨绿",
+          "金色",
+          "暖红"
+        ],
+        "style": ""
+      }
     ]
   },
   {
@@ -2520,6 +5356,39 @@
       "文创包装",
       "礼品图案",
       "网站视觉资料库"
+    ],
+    "related_motifs": [
+      "八宝纹",
+      "葫芦藤纹",
+      "花篮纹",
+      "寿字纹",
+      "灵芝纹"
+    ],
+    "palette": [
+      {
+        "colors": [
+          "墨绿",
+          "古金",
+          "朱砂"
+        ],
+        "style": ""
+      },
+      {
+        "colors": [
+          "米白",
+          "靛蓝",
+          "浅金"
+        ],
+        "style": ""
+      },
+      {
+        "colors": [
+          "青绿",
+          "暖红",
+          "金色"
+        ],
+        "style": ""
+      }
     ]
   },
   {
@@ -2556,6 +5425,39 @@
       "文创包装",
       "礼品图案",
       "网站视觉资料库"
+    ],
+    "related_motifs": [
+      "祥云纹",
+      "如意纹",
+      "鹿纹",
+      "葫芦藤纹",
+      "寿字纹"
+    ],
+    "palette": [
+      {
+        "colors": [
+          "赤红",
+          "金色",
+          "墨绿"
+        ],
+        "style": ""
+      },
+      {
+        "colors": [
+          "青绿",
+          "米白",
+          "浅金"
+        ],
+        "style": ""
+      },
+      {
+        "colors": [
+          "赭红",
+          "暗绿",
+          "古金"
+        ],
+        "style": ""
+      }
     ]
   },
   {
@@ -2591,6 +5493,39 @@
       "文创包装",
       "礼品图案",
       "网站视觉资料库"
+    ],
+    "related_motifs": [
+      "八宝纹",
+      "宝瓶纹",
+      "海水纹",
+      "珊瑚宝物纹",
+      "花篮纹"
+    ],
+    "palette": [
+      {
+        "colors": [
+          "朱砂红",
+          "古金",
+          "墨绿"
+        ],
+        "style": ""
+      },
+      {
+        "colors": [
+          "珊瑚红",
+          "米白",
+          "青绿"
+        ],
+        "style": ""
+      },
+      {
+        "colors": [
+          "深蓝",
+          "金色",
+          "赤红"
+        ],
+        "style": ""
+      }
     ]
   },
   {
@@ -2626,6 +5561,39 @@
       "文创包装",
       "礼品图案",
       "网站视觉资料库"
+    ],
+    "related_motifs": [
+      "扇面纹",
+      "香炉纹",
+      "编磬纹",
+      "兰草纹",
+      "山水纹"
+    ],
+    "palette": [
+      {
+        "colors": [
+          "米白",
+          "靛蓝",
+          "浅金"
+        ],
+        "style": ""
+      },
+      {
+        "colors": [
+          "青灰",
+          "墨色",
+          "暖白"
+        ],
+        "style": ""
+      },
+      {
+        "colors": [
+          "墨绿",
+          "古金",
+          "书卷米"
+        ],
+        "style": ""
+      }
     ]
   },
   {
@@ -2661,6 +5629,39 @@
       "文创包装",
       "礼品图案",
       "网站视觉资料库"
+    ],
+    "related_motifs": [
+      "喜字纹",
+      "花篮纹",
+      "如意纹",
+      "福字纹",
+      "盘长纹"
+    ],
+    "palette": [
+      {
+        "colors": [
+          "朱砂红",
+          "古金",
+          "墨绿"
+        ],
+        "style": ""
+      },
+      {
+        "colors": [
+          "暖红",
+          "米白",
+          "浅金"
+        ],
+        "style": ""
+      },
+      {
+        "colors": [
+          "深红",
+          "金色",
+          "青绿"
+        ],
+        "style": ""
+      }
     ]
   },
   {
@@ -2695,6 +5696,39 @@
       "文创包装",
       "礼品图案",
       "网站视觉资料库"
+    ],
+    "related_motifs": [
+      "书卷纹",
+      "玉璧纹",
+      "如意纹",
+      "祥云纹",
+      "编磬纹"
+    ],
+    "palette": [
+      {
+        "colors": [
+          "青铜绿",
+          "古金",
+          "深蓝"
+        ],
+        "style": ""
+      },
+      {
+        "colors": [
+          "墨绿",
+          "米白",
+          "浅金"
+        ],
+        "style": ""
+      },
+      {
+        "colors": [
+          "青灰",
+          "暗铜",
+          "云白"
+        ],
+        "style": ""
+      }
     ]
   },
   {
@@ -2729,6 +5763,39 @@
       "文创包装",
       "礼品图案",
       "网站视觉资料库"
+    ],
+    "related_motifs": [
+      "回纹",
+      "如意纹",
+      "祥云纹",
+      "玉器纹样",
+      "盘长纹"
+    ],
+    "palette": [
+      {
+        "colors": [
+          "玉青",
+          "米白",
+          "浅金"
+        ],
+        "style": ""
+      },
+      {
+        "colors": [
+          "青灰",
+          "墨绿",
+          "古金"
+        ],
+        "style": ""
+      },
+      {
+        "colors": [
+          "浅绿",
+          "暖白",
+          "银灰"
+        ],
+        "style": ""
+      }
     ]
   },
   {
@@ -2764,6 +5831,39 @@
       "文创包装",
       "礼品图案",
       "网站视觉资料库"
+    ],
+    "related_motifs": [
+      "书卷纹",
+      "兰草纹",
+      "梅花纹",
+      "花鸟纹",
+      "山水纹"
+    ],
+    "palette": [
+      {
+        "colors": [
+          "米白",
+          "靛蓝",
+          "青绿"
+        ],
+        "style": ""
+      },
+      {
+        "colors": [
+          "墨绿",
+          "古金",
+          "暖白"
+        ],
+        "style": ""
+      },
+      {
+        "colors": [
+          "淡青",
+          "朱砂印",
+          "米色"
+        ],
+        "style": ""
+      }
     ]
   },
   {
@@ -2797,6 +5897,39 @@
       "文创包装",
       "礼品图案",
       "网站视觉资料库"
+    ],
+    "related_motifs": [
+      "香炉纹",
+      "书卷纹",
+      "玉璧纹",
+      "青铜纹样",
+      "回纹"
+    ],
+    "palette": [
+      {
+        "colors": [
+          "青铜绿",
+          "古金",
+          "墨黑"
+        ],
+        "style": ""
+      },
+      {
+        "colors": [
+          "深绿",
+          "铜色",
+          "米白"
+        ],
+        "style": ""
+      },
+      {
+        "colors": [
+          "青灰",
+          "暗金",
+          "云白"
+        ],
+        "style": ""
+      }
     ]
   },
   {
@@ -2828,6 +5961,39 @@
     "applications": [
       "寿礼包装",
       "民俗器物"
+    ],
+    "related_motifs": [
+      "团寿纹",
+      "福寿纹",
+      "五福捧寿纹",
+      "福字纹",
+      "如意纹",
+      "祥云纹"
+    ],
+    "palette": [
+      {
+        "colors": [
+          "朱砂",
+          "金色",
+          "墨绿"
+        ],
+        "style": "喜庆庄重"
+      },
+      {
+        "colors": [
+          "米白",
+          "墨黑",
+          "浅金"
+        ],
+        "style": "雅致古典"
+      },
+      {
+        "colors": [
+          "深红",
+          "暗金"
+        ],
+        "style": "适合寿礼与节庆主题"
+      }
     ]
   },
   {
@@ -2860,6 +6026,38 @@
     "clip_vec_index": 91,
     "applications": [
       "礼品包装"
+    ],
+    "related_motifs": [
+      "寿字纹",
+      "五福捧寿纹",
+      "福寿纹",
+      "团花纹",
+      "祥云纹"
+    ],
+    "palette": [
+      {
+        "colors": [
+          "朱砂",
+          "金色"
+        ],
+        "style": "最具寿庆气氛"
+      },
+      {
+        "colors": [
+          "青绿",
+          "米白",
+          "浅金"
+        ],
+        "style": "雅致古典"
+      },
+      {
+        "colors": [
+          "深红",
+          "墨绿",
+          "古金"
+        ],
+        "style": "宫廷感强"
+      }
     ]
   },
   {
@@ -2891,6 +6089,36 @@
     "applications": [
       "包装",
       "家居装饰"
+    ],
+    "related_motifs": [
+      "蝙蝠纹",
+      "福寿纹",
+      "寿字纹",
+      "五福捧寿纹",
+      "铜钱纹"
+    ],
+    "palette": [
+      {
+        "colors": [
+          "朱砂",
+          "金色"
+        ],
+        "style": "年节感强"
+      },
+      {
+        "colors": [
+          "墨绿",
+          "金色"
+        ],
+        "style": "古雅厚重"
+      },
+      {
+        "colors": [
+          "米白",
+          "暗红"
+        ],
+        "style": "适合文创包装"
+      }
     ]
   },
   {
@@ -2923,6 +6151,36 @@
       "喜帖",
       "礼盒",
       "家居陈设"
+    ],
+    "related_motifs": [
+      "牡丹纹",
+      "鸳鸯纹",
+      "方胜纹",
+      "团花纹",
+      "福字纹"
+    ],
+    "palette": [
+      {
+        "colors": [
+          "大红",
+          "金色"
+        ],
+        "style": "婚庆主色"
+      },
+      {
+        "colors": [
+          "朱砂",
+          "墨绿"
+        ],
+        "style": "传统华丽"
+      },
+      {
+        "colors": [
+          "米白",
+          "暗红"
+        ],
+        "style": "雅致新中式"
+      }
     ]
   },
   {
@@ -2957,6 +6215,28 @@
     "applications": [
       "寿礼",
       "礼盒"
+    ],
+    "related_motifs": [
+      "寿字纹",
+      "福字纹",
+      "五福捧寿纹",
+      "蝙蝠纹",
+      "寿桃纹"
+    ],
+    "palette": [
+      {
+        "colors": [
+          "青绿",
+          "米白"
+        ],
+        "style": "更雅致"
+      },
+      {
+        "colors": [
+          "浅金"
+        ],
+        "style": "桃粉配适合柔和寿礼视觉"
+      }
     ]
   },
   {
@@ -2989,6 +6269,37 @@
     "clip_vec_index": 95,
     "applications": [
       "礼品包装"
+    ],
+    "related_motifs": [
+      "蝙蝠纹",
+      "寿字纹",
+      "团寿纹",
+      "福寿纹",
+      "祥云纹"
+    ],
+    "palette": [
+      {
+        "colors": [
+          "朱砂红",
+          "金色"
+        ],
+        "style": "最传统"
+      },
+      {
+        "colors": [
+          "深蓝",
+          "金色"
+        ],
+        "style": "更庄重"
+      },
+      {
+        "colors": [
+          "米白",
+          "墨绿",
+          "暗红"
+        ],
+        "style": "适合新中式"
+      }
     ]
   },
   {
@@ -3023,6 +6334,35 @@
       "包装",
       "壁饰",
       "文创产品"
+    ],
+    "related_motifs": [
+      "鱼纹",
+      "鲤鱼纹",
+      "莲花纹",
+      "荷叶纹",
+      "水波纹"
+    ],
+    "palette": [
+      {
+        "colors": [
+          "靛蓝",
+          "金色"
+        ],
+        "style": "水域感强"
+      },
+      {
+        "colors": [
+          "青绿",
+          "米白"
+        ],
+        "style": "清雅自然"
+      },
+      {
+        "colors": [
+          "深蓝"
+        ],
+        "style": "粉白莲花配背景适合华丽展示"
+      }
     ]
   },
   {
@@ -3056,6 +6396,28 @@
     "clip_vec_index": 97,
     "applications": [
       "寿礼包装"
+    ],
+    "related_motifs": [
+      "鹿纹",
+      "鹤纹",
+      "松针纹",
+      "梅花纹",
+      "岁寒三友纹"
+    ],
+    "palette": [
+      {
+        "colors": [
+          "青绿",
+          "米白"
+        ],
+        "style": "清雅自然"
+      },
+      {
+        "colors": [
+          "浅金"
+        ],
+        "style": "点缀增强吉祥感"
+      }
     ]
   },
   {
@@ -3088,6 +6450,34 @@
     "applications": [
       "包装",
       "空间装饰"
+    ],
+    "related_motifs": [
+      "松针纹",
+      "竹叶纹",
+      "梅花纹",
+      "兰草纹",
+      "文房器物纹"
+    ],
+    "palette": [
+      {
+        "colors": [
+          "墨绿",
+          "米白"
+        ],
+        "style": "文人清雅"
+      },
+      {
+        "colors": [
+          "朱砂"
+        ],
+        "style": "梅花点缀可提升视觉层次"
+      },
+      {
+        "colors": [
+          "淡金"
+        ],
+        "style": "线适合高级文创"
+      }
     ]
   },
   {
@@ -3118,6 +6508,36 @@
       "品牌视觉",
       "包装",
       "网页背景"
+    ],
+    "related_motifs": [
+      "回纹",
+      "盘长纹",
+      "团花纹",
+      "玉璧纹",
+      "方胜纹"
+    ],
+    "palette": [
+      {
+        "colors": [
+          "青绿",
+          "浅金"
+        ],
+        "style": "现代古典"
+      },
+      {
+        "colors": [
+          "墨黑",
+          "米白"
+        ],
+        "style": "极简清晰"
+      },
+      {
+        "colors": [
+          "深蓝",
+          "金色"
+        ],
+        "style": "庄重高级"
+      }
     ]
   }
 ]
