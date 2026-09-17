@@ -879,5 +879,2055 @@
     "image_path": "data/images/WENYANG-030.jpg",
     "phash": "ce4f99c1b252a639",
     "clip_vec_index": 29
+  },
+  {
+    "id": "WENYANG-031",
+    "name": "鹤纹",
+    "category": "动物瑞兽纹",
+    "dynasty": "不详",
+    "carrier": [
+      "服饰",
+      "瓷器",
+      "屏风",
+      "刺绣",
+      "织锦",
+      "建筑彩画"
+    ],
+    "meaning": "鹤纹多用于服饰、瓷器、屏风和吉祥图案。寓意长寿、高洁、仙意。",
+    "occasion": [],
+    "elements": [
+      "仙鹤",
+      "云气",
+      "松枝",
+      "水面"
+    ],
+    "source": "中国传统纹样图鉴 Wényàng",
+    "source_url": "https://github.com/dososo/chinese-traditional-patterns",
+    "license": "CC BY-NC 4.0（署名 · 限非商业用途）",
+    "image_path": "data/images/WENYANG-031.jpg",
+    "phash": "ce469948b35b9636",
+    "clip_vec_index": null,
+    "applications": [
+      "寿礼器物"
+    ]
+  },
+  {
+    "id": "WENYANG-032",
+    "name": "鹿纹",
+    "category": "动物瑞兽纹",
+    "dynasty": "不详",
+    "carrier": [
+      "瓷器",
+      "织锦",
+      "屏风",
+      "年画",
+      "建筑装饰"
+    ],
+    "meaning": "鹿与“禄”谐音，常与松、鹤、灵芝等元素组合。寓意俸禄、祥瑞、长寿。",
+    "occasion": [],
+    "elements": [
+      "梅花鹿",
+      "灵芝",
+      "松树",
+      "山石"
+    ],
+    "source": "中国传统纹样图鉴 Wényàng",
+    "source_url": "https://github.com/dososo/chinese-traditional-patterns",
+    "license": "CC BY-NC 4.0（署名 · 限非商业用途）",
+    "image_path": "data/images/WENYANG-032.jpg",
+    "phash": "ce4f995893d0b25a",
+    "clip_vec_index": null,
+    "applications": [
+      "寿礼图案",
+      "文创包装"
+    ]
+  },
+  {
+    "id": "WENYANG-033",
+    "name": "鱼纹",
+    "category": "动物瑞兽纹",
+    "dynasty": "不详",
+    "carrier": [
+      "瓷器",
+      "年画",
+      "织锦",
+      "剪纸",
+      "刺绣"
+    ],
+    "meaning": "鱼纹常见于瓷器、民俗年画和织物装饰。寓意年年有余、丰足、繁盛。",
+    "occasion": [],
+    "elements": [
+      "双鱼",
+      "水波",
+      "莲花",
+      "圆形"
+    ],
+    "source": "中国传统纹样图鉴 Wényàng",
+    "source_url": "https://github.com/dososo/chinese-traditional-patterns",
+    "license": "CC BY-NC 4.0（署名 · 限非商业用途）",
+    "image_path": "data/images/WENYANG-033.jpg",
+    "phash": "ce4e998cb15ab493",
+    "clip_vec_index": null,
+    "applications": [
+      "民俗礼品",
+      "包装设计"
+    ]
+  },
+  {
+    "id": "WENYANG-034",
+    "name": "鲤鱼纹",
+    "category": "动物瑞兽纹",
+    "dynasty": "不详",
+    "carrier": [
+      "瓷器",
+      "年画",
+      "织锦",
+      "屏风",
+      "民俗装饰"
+    ],
+    "meaning": "鲤鱼纹常与跃水、龙门意象相关，具有进取意味。寓意奋进、顺达、富足。",
+    "occasion": [],
+    "elements": [
+      "鲤鱼跃浪",
+      "水花",
+      "云纹"
+    ],
+    "source": "中国传统纹样图鉴 Wényàng",
+    "source_url": "https://github.com/dososo/chinese-traditional-patterns",
+    "license": "CC BY-NC 4.0（署名 · 限非商业用途）",
+    "image_path": "data/images/WENYANG-034.jpg",
+    "phash": "ce4b99e0b3c9b152",
+    "clip_vec_index": null,
+    "applications": [
+      "节庆包装",
+      "礼品图案"
+    ]
+  },
+  {
+    "id": "WENYANG-035",
+    "name": "鸳鸯纹",
+    "category": "动物瑞兽纹",
+    "dynasty": "不详",
+    "carrier": [
+      "服饰",
+      "瓷器",
+      "屏风",
+      "民俗装饰"
+    ],
+    "meaning": "鸳鸯纹常用于婚庆、织绣与爱情主题装饰。寓意夫妻和美、成双成对。",
+    "occasion": [],
+    "elements": [
+      "一对鸳鸯",
+      "莲叶",
+      "水纹"
+    ],
+    "source": "中国传统纹样图鉴 Wényàng",
+    "source_url": "https://github.com/dososo/chinese-traditional-patterns",
+    "license": "CC BY-NC 4.0（署名 · 限非商业用途）",
+    "image_path": "data/images/WENYANG-035.jpg",
+    "phash": "ce469969934ba65a",
+    "clip_vec_index": null,
+    "applications": [
+      "婚庆织绣",
+      "礼品包装",
+      "床品纹样"
+    ]
+  },
+  {
+    "id": "WENYANG-036",
+    "name": "喜鹊纹",
+    "category": "动物瑞兽纹",
+    "dynasty": "不详",
+    "carrier": [
+      "瓷器",
+      "织锦",
+      "刺绣",
+      "屏风",
+      "家具",
+      "建筑装饰",
+      "年画"
+    ],
+    "meaning": "喜鹊纹常与梅花组合，形成喜上眉梢的吉祥意象。寓意喜事临门、吉庆。",
+    "occasion": [],
+    "elements": [
+      "喜鹊",
+      "梅枝",
+      "花苞"
+    ],
+    "source": "中国传统纹样图鉴 Wényàng",
+    "source_url": "https://github.com/dososo/chinese-traditional-patterns",
+    "license": "CC BY-NC 4.0（署名 · 限非商业用途）",
+    "image_path": "data/images/WENYANG-036.jpg",
+    "phash": "ee6e9959815bc512",
+    "clip_vec_index": null,
+    "applications": [
+      "文创产品"
+    ]
+  },
+  {
+    "id": "WENYANG-037",
+    "name": "马纹",
+    "category": "动物瑞兽纹",
+    "dynasty": "不详",
+    "carrier": [
+      "壁画",
+      "陶器",
+      "瓷器",
+      "织锦",
+      "刺绣",
+      "年画",
+      "家具"
+    ],
+    "meaning": "马纹表现速度、力量与进取精神，常见于壁画、器物与民俗装饰。寓意奔腾、力量、进取。",
+    "occasion": [],
+    "elements": [
+      "奔马",
+      "飘带",
+      "云气"
+    ],
+    "source": "中国传统纹样图鉴 Wényàng",
+    "source_url": "https://github.com/dososo/chinese-traditional-patterns",
+    "license": "CC BY-NC 4.0（署名 · 限非商业用途）",
+    "image_path": "data/images/WENYANG-037.jpg",
+    "phash": "c767994da591aa52",
+    "clip_vec_index": null,
+    "applications": [
+      "文创产品"
+    ]
+  },
+  {
+    "id": "WENYANG-038",
+    "name": "龟纹",
+    "category": "动物瑞兽纹",
+    "dynasty": "不详",
+    "carrier": [
+      "瓷器",
+      "玉器",
+      "石雕",
+      "织锦",
+      "刺绣",
+      "建筑装饰",
+      "年画"
+    ],
+    "meaning": "龟在传统文化中常与长寿、稳固相关。寓意长寿、稳固、安宁。",
+    "occasion": [],
+    "elements": [
+      "龟形",
+      "龟甲",
+      "几何纹"
+    ],
+    "source": "中国传统纹样图鉴 Wényàng",
+    "source_url": "https://github.com/dososo/chinese-traditional-patterns",
+    "license": "CC BY-NC 4.0（署名 · 限非商业用途）",
+    "image_path": "data/images/WENYANG-038.jpg",
+    "phash": "ce6e9949a15bc952",
+    "clip_vec_index": null,
+    "applications": [
+      "文创产品"
+    ]
+  },
+  {
+    "id": "WENYANG-039",
+    "name": "蝴蝶纹",
+    "category": "动物瑞兽纹",
+    "dynasty": "不详",
+    "carrier": [
+      "织锦",
+      "刺绣",
+      "瓷器",
+      "屏风",
+      "家具",
+      "服饰",
+      "首饰"
+    ],
+    "meaning": "蝴蝶纹轻盈灵动，常与花卉组合。寓意美好、长寿、自由。",
+    "occasion": [],
+    "elements": [
+      "双蝶",
+      "花枝"
+    ],
+    "source": "中国传统纹样图鉴 Wényàng",
+    "source_url": "https://github.com/dososo/chinese-traditional-patterns",
+    "license": "CC BY-NC 4.0（署名 · 限非商业用途）",
+    "image_path": "data/images/WENYANG-039.jpg",
+    "phash": "cf6e994991d9e013",
+    "clip_vec_index": null,
+    "applications": [
+      "文创产品"
+    ]
+  },
+  {
+    "id": "WENYANG-040",
+    "name": "金蟾纹",
+    "category": "动物瑞兽纹",
+    "dynasty": "不详",
+    "carrier": [
+      "年画",
+      "瓷器",
+      "织锦",
+      "剪纸"
+    ],
+    "meaning": "金蟾纹带有招财、纳福意味，适合民俗吉祥类纹样展示。寓意招财、纳福、富足。",
+    "occasion": [],
+    "elements": [
+      "三足金蟾",
+      "铜钱",
+      "云纹"
+    ],
+    "source": "中国传统纹样图鉴 Wényàng",
+    "source_url": "https://github.com/dososo/chinese-traditional-patterns",
+    "license": "CC BY-NC 4.0（署名 · 限非商业用途）",
+    "image_path": "data/images/WENYANG-040.jpg",
+    "phash": "ea669d4cb199e093",
+    "clip_vec_index": null,
+    "applications": [
+      "摆件",
+      "包装设计",
+      "家居装饰",
+      "文创产品"
+    ]
+  },
+  {
+    "id": "WENYANG-041",
+    "name": "回纹",
+    "category": "几何锦纹",
+    "dynasty": "不详",
+    "carrier": [
+      "青铜器",
+      "瓷器",
+      "织锦",
+      "砖雕",
+      "木雕"
+    ],
+    "meaning": "回纹由连续折线构成，结构规整，适合边框和底纹。寓意循环往复、生生不息。",
+    "occasion": [],
+    "elements": [
+      "方形折线",
+      "连续边框"
+    ],
+    "source": "中国传统纹样图鉴 Wényàng",
+    "source_url": "https://github.com/dososo/chinese-traditional-patterns",
+    "license": "CC BY-NC 4.0（署名 · 限非商业用途）",
+    "image_path": "data/images/WENYANG-041.jpg",
+    "phash": "ce4e93c3a6d2a436",
+    "clip_vec_index": null,
+    "applications": [
+      "门窗边框",
+      "包装边饰"
+    ]
+  },
+  {
+    "id": "WENYANG-042",
+    "name": "雷纹",
+    "category": "几何锦纹",
+    "dynasty": "不详",
+    "carrier": [
+      "青铜器",
+      "玉器"
+    ],
+    "meaning": "雷纹形似旋转折线，常见于青铜器和陶瓷装饰。寓意力量、威仪、古朴。",
+    "occasion": [],
+    "elements": [
+      "方折旋纹"
+    ],
+    "source": "中国传统纹样图鉴 Wényàng",
+    "source_url": "https://github.com/dososo/chinese-traditional-patterns",
+    "license": "CC BY-NC 4.0（署名 · 限非商业用途）",
+    "image_path": "data/images/WENYANG-042.jpg",
+    "phash": "ce4e99c1b3d3a416",
+    "clip_vec_index": null,
+    "applications": [
+      "陶瓷",
+      "礼器纹带",
+      "文博衍生设计"
+    ]
+  },
+  {
+    "id": "WENYANG-043",
+    "name": "云雷纹",
+    "category": "几何锦纹",
+    "dynasty": "不详",
+    "carrier": [
+      "青铜器",
+      "建筑彩画",
+      "织锦"
+    ],
+    "meaning": "云雷纹融合云气与雷纹结构，常作为青铜器底纹。寓意神秘、礼制、祥瑞。",
+    "occasion": [],
+    "elements": [
+      "云形卷曲",
+      "雷纹底"
+    ],
+    "source": "中国传统纹样图鉴 Wényàng",
+    "source_url": "https://github.com/dososo/chinese-traditional-patterns",
+    "license": "CC BY-NC 4.0（署名 · 限非商业用途）",
+    "image_path": "data/images/WENYANG-043.jpg",
+    "phash": "ce4e91d1b31ba436",
+    "clip_vec_index": null,
+    "applications": [
+      "壁饰",
+      "海报底纹",
+      "文创包装"
+    ]
+  },
+  {
+    "id": "WENYANG-044",
+    "name": "龟背纹",
+    "category": "几何锦纹",
+    "dynasty": "不详",
+    "carrier": [
+      "织锦",
+      "瓷器",
+      "砖雕",
+      "木雕"
+    ],
+    "meaning": "龟背纹由六边形或龟甲形连续组成，结构稳定有序。寓意长寿、坚固、秩序。",
+    "occasion": [],
+    "elements": [
+      "六边形网格",
+      "花心点缀"
+    ],
+    "source": "中国传统纹样图鉴 Wényàng",
+    "source_url": "https://github.com/dososo/chinese-traditional-patterns",
+    "license": "CC BY-NC 4.0（署名 · 限非商业用途）",
+    "image_path": "data/images/WENYANG-044.jpg",
+    "phash": "ce4e99c1b692a4b6",
+    "clip_vec_index": null,
+    "applications": [
+      "窗格",
+      "地砖图案"
+    ]
+  },
+  {
+    "id": "WENYANG-045",
+    "name": "菱格纹",
+    "category": "几何锦纹",
+    "dynasty": "不详",
+    "carrier": [
+      "织锦",
+      "砖雕"
+    ],
+    "meaning": "菱格纹结构简洁明快，常用于织锦、陶瓷和建筑装饰。寓意秩序、连绵、稳定。",
+    "occasion": [],
+    "elements": [
+      "菱形网格",
+      "连续重复",
+      "淡绿"
+    ],
+    "source": "中国传统纹样图鉴 Wényàng",
+    "source_url": "https://github.com/dososo/chinese-traditional-patterns",
+    "license": "CC BY-NC 4.0（署名 · 限非商业用途）",
+    "image_path": "data/images/WENYANG-045.jpg",
+    "phash": "ce4e99d1b2d2a436",
+    "clip_vec_index": null,
+    "applications": [
+      "窗棂",
+      "地毯",
+      "墙面纹理",
+      "包装底纹"
+    ]
+  },
+  {
+    "id": "WENYANG-046",
+    "name": "连珠纹",
+    "category": "几何锦纹",
+    "dynasty": "不详",
+    "carrier": [
+      "织锦"
+    ],
+    "meaning": "连珠纹由连续圆点组成，常用于边饰和器物分隔线。寓意华丽、秩序、连贯。",
+    "occasion": [],
+    "elements": [
+      "连续圆珠",
+      "边框",
+      "金色点线"
+    ],
+    "source": "中国传统纹样图鉴 Wényàng",
+    "source_url": "https://github.com/dososo/chinese-traditional-patterns",
+    "license": "CC BY-NC 4.0（署名 · 限非商业用途）",
+    "image_path": "data/images/WENYANG-046.jpg",
+    "phash": "ce4e91d1b6d2a496",
+    "clip_vec_index": null,
+    "applications": [
+      "首饰纹样",
+      "壁画边框",
+      "器物口沿",
+      "包装边线"
+    ]
+  },
+  {
+    "id": "WENYANG-047",
+    "name": "方胜纹",
+    "category": "几何锦纹",
+    "dynasty": "不详",
+    "carrier": [
+      "织锦",
+      "刺绣",
+      "瓷器"
+    ],
+    "meaning": "方胜纹由相连菱形构成，常有同心、相合与吉祥意味。寓意同心、相合、吉祥。",
+    "occasion": [],
+    "elements": [
+      "双菱形",
+      "交叠结构"
+    ],
+    "source": "中国传统纹样图鉴 Wényàng",
+    "source_url": "https://github.com/dososo/chinese-traditional-patterns",
+    "license": "CC BY-NC 4.0（署名 · 限非商业用途）",
+    "image_path": "data/images/WENYANG-047.jpg",
+    "phash": "ce4e9151b6d3a616",
+    "clip_vec_index": null,
+    "applications": [
+      "服饰纹样",
+      "年节装饰"
+    ]
+  },
+  {
+    "id": "WENYANG-048",
+    "name": "盘长纹",
+    "category": "几何锦纹",
+    "dynasty": "不详",
+    "carrier": [
+      "织锦",
+      "刺绣",
+      "建筑彩画"
+    ],
+    "meaning": "盘长纹线条回环不断，是常见吉祥装饰纹样。寓意绵延、长久、圆满。",
+    "occasion": [],
+    "elements": [
+      "无限结"
+    ],
+    "source": "中国传统纹样图鉴 Wényàng",
+    "source_url": "https://github.com/dososo/chinese-traditional-patterns",
+    "license": "CC BY-NC 4.0（署名 · 限非商业用途）",
+    "image_path": "data/images/WENYANG-048.jpg",
+    "phash": "ce4e99c9b793a414",
+    "clip_vec_index": null,
+    "applications": [
+      "吉祥挂饰",
+      "海报主题图形",
+      "节庆礼品"
+    ]
+  },
+  {
+    "id": "WENYANG-049",
+    "name": "万字锦纹",
+    "category": "几何锦纹",
+    "dynasty": "不详",
+    "carrier": [
+      "织锦",
+      "服饰"
+    ],
+    "meaning": "万字锦纹由传统吉祥符号连续组合，适合作为锦地背景。寓意万福、绵长、繁盛。",
+    "occasion": [],
+    "elements": [
+      "几何连续纹",
+      "传统吉祥",
+      "锦地"
+    ],
+    "source": "中国传统纹样图鉴 Wényàng",
+    "source_url": "https://github.com/dososo/chinese-traditional-patterns",
+    "license": "CC BY-NC 4.0（署名 · 限非商业用途）",
+    "image_path": "data/images/WENYANG-049.jpg",
+    "phash": "ce6e91d1b613a496",
+    "clip_vec_index": null,
+    "applications": [
+      "地毯",
+      "壁饰",
+      "包装底纹",
+      "文博衍生设计"
+    ]
+  },
+  {
+    "id": "WENYANG-050",
+    "name": "锁子纹",
+    "category": "几何锦纹",
+    "dynasty": "不详",
+    "carrier": [
+      "织锦",
+      "屏风"
+    ],
+    "meaning": "锁子纹由环状结构连续相扣，装饰感强。寓意连接、坚固、连续。",
+    "occasion": [],
+    "elements": [
+      "环环相扣"
+    ],
+    "source": "中国传统纹样图鉴 Wényàng",
+    "source_url": "https://github.com/dososo/chinese-traditional-patterns",
+    "license": "CC BY-NC 4.0（署名 · 限非商业用途）",
+    "image_path": "data/images/WENYANG-050.jpg",
+    "phash": "ce4e99d1b6d2a4b0",
+    "clip_vec_index": null,
+    "applications": [
+      "器物纹带",
+      "金工饰件",
+      "地毯",
+      "网页装饰带"
+    ]
+  },
+  {
+    "id": "WENYANG-051",
+    "name": "冰裂纹",
+    "category": "几何锦纹",
+    "dynasty": "不详",
+    "carrier": [
+      "瓷器",
+      "漆器"
+    ],
+    "meaning": "冰裂纹形似自然冰面裂纹，常见于瓷器和窗格。寓意雅致、清冷、自然变化。",
+    "occasion": [],
+    "elements": [
+      "不规则裂线"
+    ],
+    "source": "中国传统纹样图鉴 Wényàng",
+    "source_url": "https://github.com/dososo/chinese-traditional-patterns",
+    "license": "CC BY-NC 4.0（署名 · 限非商业用途）",
+    "image_path": "data/images/WENYANG-051.jpg",
+    "phash": "de1f9141e0d3b6b0",
+    "clip_vec_index": null,
+    "applications": [
+      "窗格",
+      "墙面装饰",
+      "包装底纹",
+      "文创产品"
+    ]
+  },
+  {
+    "id": "WENYANG-052",
+    "name": "锦地纹",
+    "category": "几何锦纹",
+    "dynasty": "不详",
+    "carrier": [
+      "织锦",
+      "服饰",
+      "瓷器",
+      "屏风"
+    ],
+    "meaning": "锦地纹常作为复杂纹样底纹，细密华丽。寓意繁复、华美、秩序。",
+    "occasion": [],
+    "elements": [
+      "细密几何底纹",
+      "低对比"
+    ],
+    "source": "中国传统纹样图鉴 Wényàng",
+    "source_url": "https://github.com/dososo/chinese-traditional-patterns",
+    "license": "CC BY-NC 4.0（署名 · 限非商业用途）",
+    "image_path": "data/images/WENYANG-052.jpg",
+    "phash": "ce4e9959b2d2a4b2",
+    "clip_vec_index": null,
+    "applications": [
+      "壁纸",
+      "包装底纹"
+    ]
+  },
+  {
+    "id": "WENYANG-053",
+    "name": "十字花纹",
+    "category": "几何锦纹",
+    "dynasty": "不详",
+    "carrier": [
+      "织锦",
+      "瓷器"
+    ],
+    "meaning": "十字花纹由中心花形与四向结构构成，常见于织物装饰。寓意四方、平衡、雅致。",
+    "occasion": [],
+    "elements": [
+      "小花"
+    ],
+    "source": "中国传统纹样图鉴 Wényàng",
+    "source_url": "https://github.com/dososo/chinese-traditional-patterns",
+    "license": "CC BY-NC 4.0（署名 · 限非商业用途）",
+    "image_path": "data/images/WENYANG-053.jpg",
+    "phash": "ce4e9159b2d2a4b6",
+    "clip_vec_index": null,
+    "applications": [
+      "地砖",
+      "窗格",
+      "包装图案",
+      "壁饰"
+    ]
+  },
+  {
+    "id": "WENYANG-054",
+    "name": "六角花纹",
+    "category": "几何锦纹",
+    "dynasty": "不详",
+    "carrier": [
+      "织锦",
+      "瓷器"
+    ],
+    "meaning": "六角花纹兼具几何秩序与花卉柔美。寓意稳定、繁盛、秩序。",
+    "occasion": [],
+    "elements": [
+      "六角格",
+      "花心"
+    ],
+    "source": "中国传统纹样图鉴 Wényàng",
+    "source_url": "https://github.com/dososo/chinese-traditional-patterns",
+    "license": "CC BY-NC 4.0（署名 · 限非商业用途）",
+    "image_path": "data/images/WENYANG-054.jpg",
+    "phash": "ce4e9151b2d3a4b6",
+    "clip_vec_index": null,
+    "applications": [
+      "窗格",
+      "地砖",
+      "墙纸",
+      "包装底纹"
+    ]
+  },
+  {
+    "id": "WENYANG-055",
+    "name": "八角星纹",
+    "category": "几何锦纹",
+    "dynasty": "不详",
+    "carrier": [
+      "建筑装饰",
+      "织锦"
+    ],
+    "meaning": "八角星纹具有放射状结构，视觉稳定醒目。寓意光明、秩序、中心感。",
+    "occasion": [],
+    "elements": [
+      "八角星",
+      "中心放射"
+    ],
+    "source": "中国传统纹样图鉴 Wényàng",
+    "source_url": "https://github.com/dososo/chinese-traditional-patterns",
+    "license": "CC BY-NC 4.0（署名 · 限非商业用途）",
+    "image_path": "data/images/WENYANG-055.jpg",
+    "phash": "ce4e9159b2d2a4b6",
+    "clip_vec_index": null,
+    "applications": [
+      "地砖",
+      "器物",
+      "墙面图案",
+      "包装视觉"
+    ]
+  },
+  {
+    "id": "WENYANG-056",
+    "name": "波折纹",
+    "category": "几何锦纹",
+    "dynasty": "不详",
+    "carrier": [
+      "瓷器",
+      "织锦",
+      "服饰",
+      "建筑装饰"
+    ],
+    "meaning": "波折纹由连续折线构成，可表现水势、边界和节奏。寓意流动、变化、节奏。",
+    "occasion": [],
+    "elements": [
+      "锯齿折线",
+      "边饰"
+    ],
+    "source": "中国传统纹样图鉴 Wényàng",
+    "source_url": "https://github.com/dososo/chinese-traditional-patterns",
+    "license": "CC BY-NC 4.0（署名 · 限非商业用途）",
+    "image_path": "data/images/WENYANG-056.jpg",
+    "phash": "ce4e9959b2d2a435",
+    "clip_vec_index": null,
+    "applications": [
+      "海报底纹",
+      "包装分隔线"
+    ]
+  },
+  {
+    "id": "WENYANG-057",
+    "name": "曲尺纹",
+    "category": "几何锦纹",
+    "dynasty": "不详",
+    "carrier": [
+      "瓷器"
+    ],
+    "meaning": "曲尺纹以直角转折形成连续路径，风格理性规整。寓意规矩、秩序、延续。",
+    "occasion": [],
+    "elements": [
+      "直角转折",
+      "边框",
+      "墨黑"
+    ],
+    "source": "中国传统纹样图鉴 Wényàng",
+    "source_url": "https://github.com/dososo/chinese-traditional-patterns",
+    "license": "CC BY-NC 4.0（署名 · 限非商业用途）",
+    "image_path": "data/images/WENYANG-057.jpg",
+    "phash": "ce4f9959b2d2a4b0",
+    "clip_vec_index": null,
+    "applications": [
+      "建筑线脚",
+      "家具纹带",
+      "织物边框",
+      "网页分隔"
+    ]
+  },
+  {
+    "id": "WENYANG-058",
+    "name": "格锦纹",
+    "category": "几何锦纹",
+    "dynasty": "不详",
+    "carrier": [
+      "织锦",
+      "服饰"
+    ],
+    "meaning": "格锦纹由网格与小型花纹组合而成，适合作为织锦底纹。寓意华美、秩序、丰富。",
+    "occasion": [],
+    "elements": [
+      "网格",
+      "小花",
+      "织锦肌理"
+    ],
+    "source": "中国传统纹样图鉴 Wényàng",
+    "source_url": "https://github.com/dososo/chinese-traditional-patterns",
+    "license": "CC BY-NC 4.0（署名 · 限非商业用途）",
+    "image_path": "data/images/WENYANG-058.jpg",
+    "phash": "ce4e99d1b1d3a434",
+    "clip_vec_index": null,
+    "applications": [
+      "壁纸",
+      "地毯",
+      "包装底纹",
+      "器物装饰"
+    ]
+  },
+  {
+    "id": "WENYANG-059",
+    "name": "菱花锦纹",
+    "category": "几何锦纹",
+    "dynasty": "不详",
+    "carrier": [
+      "织锦",
+      "服饰",
+      "屏风"
+    ],
+    "meaning": "菱花锦纹以菱形框架包裹花卉，兼具秩序和装饰性。寓意和美、规整、繁盛。",
+    "occasion": [],
+    "elements": [
+      "菱形内花",
+      "重复单元"
+    ],
+    "source": "中国传统纹样图鉴 Wényàng",
+    "source_url": "https://github.com/dososo/chinese-traditional-patterns",
+    "license": "CC BY-NC 4.0（署名 · 限非商业用途）",
+    "image_path": "data/images/WENYANG-059.jpg",
+    "phash": "ce4f9158b6d2a4b2",
+    "clip_vec_index": null,
+    "applications": [
+      "地毯",
+      "礼盒包装",
+      "墙面纹样"
+    ]
+  },
+  {
+    "id": "WENYANG-060",
+    "name": "连环纹",
+    "category": "几何锦纹",
+    "dynasty": "不详",
+    "carrier": [
+      "织锦",
+      "瓷器"
+    ],
+    "meaning": "连环纹由圆环连续相扣，适合作为边饰或背景纹样。寓意连接、圆满、延续。",
+    "occasion": [],
+    "elements": [
+      "圆环相扣",
+      "金线"
+    ],
+    "source": "中国传统纹样图鉴 Wényàng",
+    "source_url": "https://github.com/dososo/chinese-traditional-patterns",
+    "license": "CC BY-NC 4.0（署名 · 限非商业用途）",
+    "image_path": "data/images/WENYANG-060.jpg",
+    "phash": "ce4e9959b2d2a4b4",
+    "clip_vec_index": null,
+    "applications": [
+      "金工饰件",
+      "地毯",
+      "包装底纹",
+      "网页装饰"
+    ]
+  },
+  {
+    "id": "WENYANG-061",
+    "name": "祥云纹",
+    "category": "云水山石纹",
+    "dynasty": "不详",
+    "carrier": [
+      "瓷器",
+      "织锦",
+      "刺绣",
+      "建筑彩画",
+      "屏风"
+    ],
+    "meaning": "祥云纹是传统装饰中常见的吉祥纹样，线条圆润流动。寓意祥瑞、升腾、美好征兆。",
+    "occasion": [],
+    "elements": [
+      "卷曲云朵",
+      "青蓝"
+    ],
+    "source": "中国传统纹样图鉴 Wényàng",
+    "source_url": "https://github.com/dososo/chinese-traditional-patterns",
+    "license": "CC BY-NC 4.0（署名 · 限非商业用途）",
+    "image_path": "data/images/WENYANG-061.jpg",
+    "phash": "cf5799a4b26aa491",
+    "clip_vec_index": null,
+    "applications": [
+      "包装设计",
+      "文创产品",
+      "新中式视觉设计"
+    ]
+  },
+  {
+    "id": "WENYANG-062",
+    "name": "如意云纹",
+    "category": "云水山石纹",
+    "dynasty": "不详",
+    "carrier": [
+      "瓷器",
+      "织锦",
+      "刺绣",
+      "建筑彩画",
+      "屏风"
+    ],
+    "meaning": "如意云纹结合云形与如意头造型，常用于器物和织物装饰。寓意称心如意、吉祥圆满。",
+    "occasion": [],
+    "elements": [
+      "如意头",
+      "云气卷曲"
+    ],
+    "source": "中国传统纹样图鉴 Wényàng",
+    "source_url": "https://github.com/dososo/chinese-traditional-patterns",
+    "license": "CC BY-NC 4.0（署名 · 限非商业用途）",
+    "image_path": "data/images/WENYANG-062.jpg",
+    "phash": "ceaf9948b752a0d8",
+    "clip_vec_index": null,
+    "applications": [
+      "包装设计",
+      "文创产品",
+      "新中式视觉设计"
+    ]
+  },
+  {
+    "id": "WENYANG-063",
+    "name": "卷云纹",
+    "category": "云水山石纹",
+    "dynasty": "不详",
+    "carrier": [
+      "瓷器",
+      "织锦",
+      "刺绣",
+      "建筑彩画",
+      "屏风"
+    ],
+    "meaning": "卷云纹线条盘旋流动，常见于器物、服饰和壁画装饰。寓意灵动、仙意、升腾。",
+    "occasion": [],
+    "elements": [
+      "大小卷云",
+      "流动节奏"
+    ],
+    "source": "中国传统纹样图鉴 Wényàng",
+    "source_url": "https://github.com/dososo/chinese-traditional-patterns",
+    "license": "CC BY-NC 4.0（署名 · 限非商业用途）",
+    "image_path": "data/images/WENYANG-063.jpg",
+    "phash": "ee6e9948a5539392",
+    "clip_vec_index": null,
+    "applications": [
+      "包装设计",
+      "文创产品",
+      "新中式视觉设计"
+    ]
+  },
+  {
+    "id": "WENYANG-064",
+    "name": "海水江崖纹",
+    "category": "云水山石纹",
+    "dynasty": "不详",
+    "carrier": [
+      "服饰",
+      "瓷器"
+    ],
+    "meaning": "海水江崖纹常见于服饰下摆，表现浪涛与山石。寓意江山永固、福泽绵长。",
+    "occasion": [],
+    "elements": [
+      "海浪",
+      "山崖"
+    ],
+    "source": "中国传统纹样图鉴 Wényàng",
+    "source_url": "https://github.com/dososo/chinese-traditional-patterns",
+    "license": "CC BY-NC 4.0（署名 · 限非商业用途）",
+    "image_path": "data/images/WENYANG-064.jpg",
+    "phash": "c74b995c925ab4d2",
+    "clip_vec_index": null,
+    "applications": [
+      "海报背景",
+      "包装设计",
+      "空间软装",
+      "文创产品",
+      "网页视觉与节庆图案"
+    ]
+  },
+  {
+    "id": "WENYANG-065",
+    "name": "水波纹",
+    "category": "云水山石纹",
+    "dynasty": "不详",
+    "carrier": [
+      "服饰",
+      "瓷器"
+    ],
+    "meaning": "水波纹以连续弧线表现水面流动，是常见辅助纹样。寓意润泽、流转、生命力。",
+    "occasion": [],
+    "elements": [
+      "层层波浪",
+      "靛蓝",
+      "白线"
+    ],
+    "source": "中国传统纹样图鉴 Wényàng",
+    "source_url": "https://github.com/dososo/chinese-traditional-patterns",
+    "license": "CC BY-NC 4.0（署名 · 限非商业用途）",
+    "image_path": "data/images/WENYANG-065.jpg",
+    "phash": "ce4f99c8b492a4b6",
+    "clip_vec_index": null,
+    "applications": [
+      "海报背景",
+      "包装设计",
+      "空间软装",
+      "文创产品",
+      "网页视觉与节庆图案"
+    ]
+  },
+  {
+    "id": "WENYANG-066",
+    "name": "浪花纹",
+    "category": "云水山石纹",
+    "dynasty": "不详",
+    "carrier": [
+      "服饰",
+      "瓷器"
+    ],
+    "meaning": "浪花纹比水波纹更具动感，适合海涛、江河和龙鱼主题。寓意活力、流动、奋进。",
+    "occasion": [],
+    "elements": [
+      "飞溅浪花",
+      "曲线",
+      "蓝白"
+    ],
+    "source": "中国传统纹样图鉴 Wényàng",
+    "source_url": "https://github.com/dososo/chinese-traditional-patterns",
+    "license": "CC BY-NC 4.0（署名 · 限非商业用途）",
+    "image_path": "data/images/WENYANG-066.jpg",
+    "phash": "cf4f984cb059d196",
+    "clip_vec_index": null,
+    "applications": [
+      "海报背景",
+      "包装设计",
+      "空间软装",
+      "文创产品",
+      "网页视觉与节庆图案"
+    ]
+  },
+  {
+    "id": "WENYANG-067",
+    "name": "山纹",
+    "category": "云水山石纹",
+    "dynasty": "不详",
+    "carrier": [
+      "屏风",
+      "建筑装饰"
+    ],
+    "meaning": "山纹以层叠山形构成，视觉稳重，适合底纹或主视觉。寓意稳固、崇高、自然秩序。",
+    "occasion": [],
+    "elements": [
+      "层叠山峰",
+      "墨青"
+    ],
+    "source": "中国传统纹样图鉴 Wényàng",
+    "source_url": "https://github.com/dososo/chinese-traditional-patterns",
+    "license": "CC BY-NC 4.0（署名 · 限非商业用途）",
+    "image_path": "data/images/WENYANG-067.jpg",
+    "phash": "ce6f91dab0e1e016",
+    "clip_vec_index": null,
+    "applications": [
+      "园林文创",
+      "书籍封面",
+      "茶空间视觉",
+      "东方美学海报与文化展陈"
+    ]
+  },
+  {
+    "id": "WENYANG-068",
+    "name": "山水纹",
+    "category": "云水山石纹",
+    "dynasty": "不详",
+    "carrier": [
+      "屏风",
+      "建筑装饰"
+    ],
+    "meaning": "山水纹将山、云、水组合成装饰图案，具有东方空间感。寓意清雅、自然、文人意境。",
+    "occasion": [],
+    "elements": [
+      "远山",
+      "流水",
+      "云雾"
+    ],
+    "source": "中国传统纹样图鉴 Wényàng",
+    "source_url": "https://github.com/dososo/chinese-traditional-patterns",
+    "license": "CC BY-NC 4.0（署名 · 限非商业用途）",
+    "image_path": "data/images/WENYANG-068.jpg",
+    "phash": "cf2f99e0b2d2a624",
+    "clip_vec_index": null,
+    "applications": [
+      "园林文创",
+      "书籍封面",
+      "茶空间视觉",
+      "东方美学海报与文化展陈"
+    ]
+  },
+  {
+    "id": "WENYANG-069",
+    "name": "太湖石纹",
+    "category": "云水山石纹",
+    "dynasty": "不详",
+    "carrier": [
+      "屏风",
+      "建筑装饰"
+    ],
+    "meaning": "太湖石纹以奇石轮廓和孔洞造型为特征，常见于园林审美。寓意雅趣、文人气、自然奇巧。",
+    "occasion": [],
+    "elements": [
+      "奇石",
+      "孔洞",
+      "墨线"
+    ],
+    "source": "中国传统纹样图鉴 Wényàng",
+    "source_url": "https://github.com/dososo/chinese-traditional-patterns",
+    "license": "CC BY-NC 4.0（署名 · 限非商业用途）",
+    "image_path": "data/images/WENYANG-069.jpg",
+    "phash": "cf279949b253a4d2",
+    "clip_vec_index": null,
+    "applications": [
+      "园林文创",
+      "书籍封面",
+      "茶空间视觉",
+      "东方美学海报与文化展陈"
+    ]
+  },
+  {
+    "id": "WENYANG-070",
+    "name": "火焰纹",
+    "category": "云水山石纹",
+    "dynasty": "不详",
+    "carrier": [
+      "宗教法器"
+    ],
+    "meaning": "火焰纹常用于佛教、瑞兽和法器装饰，线条上扬有力量感。寓意神圣、能量、护佑。",
+    "occasion": [],
+    "elements": [
+      "火焰尖卷"
+    ],
+    "source": "中国传统纹样图鉴 Wényàng",
+    "source_url": "https://github.com/dososo/chinese-traditional-patterns",
+    "license": "CC BY-NC 4.0（署名 · 限非商业用途）",
+    "image_path": "data/images/WENYANG-070.jpg",
+    "phash": "ce4e9949b3d2a692",
+    "clip_vec_index": null,
+    "applications": [
+      "瑞兽装饰",
+      "节庆海报",
+      "品牌主视觉",
+      "游戏美术",
+      "包装设计和文博衍生品"
+    ]
+  },
+  {
+    "id": "WENYANG-071",
+    "name": "流云纹",
+    "category": "云水山石纹",
+    "dynasty": "不详",
+    "carrier": [
+      "瓷器",
+      "织锦",
+      "建筑彩画",
+      "服饰",
+      "壁画"
+    ],
+    "meaning": "流云纹强调长线条的飘动感，适合表现轻盈和仙气。寓意飘逸、自由、祥和。",
+    "occasion": [],
+    "elements": [
+      "横向流动云带",
+      "柔线"
+    ],
+    "source": "中国传统纹样图鉴 Wényàng",
+    "source_url": "https://github.com/dososo/chinese-traditional-patterns",
+    "license": "CC BY-NC 4.0（署名 · 限非商业用途）",
+    "image_path": "data/images/WENYANG-071.jpg",
+    "phash": "ce1e93c1a6d6b461",
+    "clip_vec_index": null,
+    "applications": [
+      "包装设计"
+    ]
+  },
+  {
+    "id": "WENYANG-072",
+    "name": "云气纹",
+    "category": "云水山石纹",
+    "dynasty": "不详",
+    "carrier": [
+      "青铜器",
+      "壁画",
+      "织锦",
+      "建筑彩画",
+      "瓷器"
+    ],
+    "meaning": "云气纹更抽象，常以卷曲气流构成，适合作为辅助底纹。寓意升腾、灵动、气韵。",
+    "occasion": [],
+    "elements": [
+      "抽象气流",
+      "淡墨",
+      "低密度"
+    ],
+    "source": "中国传统纹样图鉴 Wényàng",
+    "source_url": "https://github.com/dososo/chinese-traditional-patterns",
+    "license": "CC BY-NC 4.0（署名 · 限非商业用途）",
+    "image_path": "data/images/WENYANG-072.jpg",
+    "phash": "ce9c93c1a5f4a4b1",
+    "clip_vec_index": null,
+    "applications": [
+      "海报背景"
+    ]
+  },
+  {
+    "id": "WENYANG-073",
+    "name": "涡纹",
+    "category": "云水山石纹",
+    "dynasty": "不详",
+    "carrier": [
+      "陶器",
+      "青铜器",
+      "织锦",
+      "壁画",
+      "瓷器"
+    ],
+    "meaning": "涡纹由旋转线条构成，可表现水流、云气或古代器物气息。寓意旋转、流转、神秘。",
+    "occasion": [],
+    "elements": [
+      "螺旋",
+      "重复",
+      "古朴"
+    ],
+    "source": "中国传统纹样图鉴 Wényàng",
+    "source_url": "https://github.com/dososo/chinese-traditional-patterns",
+    "license": "CC BY-NC 4.0（署名 · 限非商业用途）",
+    "image_path": "data/images/WENYANG-073.jpg",
+    "phash": "ce1c93c3b6e5a41a",
+    "clip_vec_index": null,
+    "applications": [
+      "现代图形设计"
+    ]
+  },
+  {
+    "id": "WENYANG-074",
+    "name": "雨点纹",
+    "category": "云水山石纹",
+    "dynasty": "不详",
+    "carrier": [
+      "织锦",
+      "瓷器"
+    ],
+    "meaning": "雨点纹以点状或泪滴状连续分布，视觉轻巧。寓意润泽、自然、清新。",
+    "occasion": [],
+    "elements": [
+      "小雨滴",
+      "淡蓝"
+    ],
+    "source": "中国传统纹样图鉴 Wényàng",
+    "source_url": "https://github.com/dososo/chinese-traditional-patterns",
+    "license": "CC BY-NC 4.0（署名 · 限非商业用途）",
+    "image_path": "data/images/WENYANG-074.jpg",
+    "phash": "9c1cc1e3e3c761e1",
+    "clip_vec_index": null,
+    "applications": [
+      "壁纸",
+      "包装底纹",
+      "插画背景",
+      "空间软装"
+    ]
+  },
+  {
+    "id": "WENYANG-075",
+    "name": "星宿纹",
+    "category": "云水山石纹",
+    "dynasty": "不详",
+    "carrier": [
+      "壁画",
+      "织锦",
+      "瓷器"
+    ],
+    "meaning": "星宿纹源于天象想象，以星点、圆形和线条表现宇宙秩序。寓意天象、秩序、宏远。",
+    "occasion": [],
+    "elements": [
+      "星点",
+      "圆轨",
+      "深蓝金色"
+    ],
+    "source": "中国传统纹样图鉴 Wényàng",
+    "source_url": "https://github.com/dososo/chinese-traditional-patterns",
+    "license": "CC BY-NC 4.0（署名 · 限非商业用途）",
+    "image_path": "data/images/WENYANG-075.jpg",
+    "phash": "ce0e93e1b6d4a531",
+    "clip_vec_index": null,
+    "applications": [
+      "天文主题文创",
+      "海报视觉",
+      "包装设计"
+    ]
+  },
+  {
+    "id": "WENYANG-076",
+    "name": "如意纹",
+    "category": "吉祥器物纹",
+    "dynasty": "不详",
+    "carrier": [
+      "瓷器",
+      "织锦",
+      "建筑彩画",
+      "家具",
+      "服饰"
+    ],
+    "meaning": "如意纹由如意头造型发展而来，常见于边饰与器物装饰。寓意顺遂、称心、吉祥。",
+    "occasion": [],
+    "elements": [
+      "如意头",
+      "卷草"
+    ],
+    "source": "中国传统纹样图鉴 Wényàng",
+    "source_url": "https://github.com/dososo/chinese-traditional-patterns",
+    "license": "CC BY-NC 4.0（署名 · 限非商业用途）",
+    "image_path": "data/images/WENYANG-076.jpg",
+    "phash": "ce1e91e1b2dba468",
+    "clip_vec_index": null,
+    "applications": [
+      "包装设计"
+    ]
+  },
+  {
+    "id": "WENYANG-077",
+    "name": "宝瓶纹",
+    "category": "吉祥器物纹",
+    "dynasty": "不详",
+    "carrier": [
+      "瓷器",
+      "织锦",
+      "壁画",
+      "宗教法器"
+    ],
+    "meaning": "宝瓶纹常作为吉祥器物出现，可与花枝、祥云组合。寓意平安、富足、聚福。",
+    "occasion": [],
+    "elements": [
+      "宝瓶",
+      "花枝",
+      "祥云"
+    ],
+    "source": "中国传统纹样图鉴 Wényàng",
+    "source_url": "https://github.com/dososo/chinese-traditional-patterns",
+    "license": "CC BY-NC 4.0（署名 · 限非商业用途）",
+    "image_path": "data/images/WENYANG-077.jpg",
+    "phash": "cc1e93e1b2d96c15",
+    "clip_vec_index": null,
+    "applications": [
+      "包装设计",
+      "文创产品"
+    ]
+  },
+  {
+    "id": "WENYANG-078",
+    "name": "双钱纹",
+    "category": "吉祥器物纹",
+    "dynasty": "不详",
+    "carrier": [
+      "织锦",
+      "瓷器",
+      "家具"
+    ],
+    "meaning": "双钱纹由钱币形态组合而成，结构简洁，寓意明确。寓意财运、圆满、连通。",
+    "occasion": [],
+    "elements": [
+      "两枚古钱",
+      "方孔",
+      "金线"
+    ],
+    "source": "中国传统纹样图鉴 Wényàng",
+    "source_url": "https://github.com/dososo/chinese-traditional-patterns",
+    "license": "CC BY-NC 4.0（署名 · 限非商业用途）",
+    "image_path": "data/images/WENYANG-078.jpg",
+    "phash": "ce1e93c1a637a4b1",
+    "clip_vec_index": null,
+    "applications": [
+      "年节装饰",
+      "包装图案",
+      "文创配饰"
+    ]
+  },
+  {
+    "id": "WENYANG-079",
+    "name": "铜钱纹",
+    "category": "吉祥器物纹",
+    "dynasty": "不详",
+    "carrier": [
+      "瓷器",
+      "织锦",
+      "家具",
+      "建筑装饰"
+    ],
+    "meaning": "铜钱纹以外圆内方为基本形，适合连续纹和底纹设计。寓意财富、秩序、福运。",
+    "occasion": [],
+    "elements": [
+      "方孔钱",
+      "古铜色"
+    ],
+    "source": "中国传统纹样图鉴 Wényàng",
+    "source_url": "https://github.com/dososo/chinese-traditional-patterns",
+    "license": "CC BY-NC 4.0（署名 · 限非商业用途）",
+    "image_path": "data/images/WENYANG-079.jpg",
+    "phash": "ce1e93c1b6d2a4f0",
+    "clip_vec_index": null,
+    "applications": [
+      "包装设计",
+      "年节文创"
+    ]
+  },
+  {
+    "id": "WENYANG-080",
+    "name": "花篮纹",
+    "category": "吉祥器物纹",
+    "dynasty": "不详",
+    "carrier": [
+      "瓷器",
+      "织锦",
+      "刺绣",
+      "年画"
+    ],
+    "meaning": "花篮纹常盛放花卉果实，富有生活美学气息。寓意富足、祝福、生活美满。",
+    "occasion": [],
+    "elements": [
+      "花篮",
+      "牡丹",
+      "石榴",
+      "彩色"
+    ],
+    "source": "中国传统纹样图鉴 Wényàng",
+    "source_url": "https://github.com/dososo/chinese-traditional-patterns",
+    "license": "CC BY-NC 4.0（署名 · 限非商业用途）",
+    "image_path": "data/images/WENYANG-080.jpg",
+    "phash": "ce1e91e1a56a9693",
+    "clip_vec_index": null,
+    "applications": [
+      "包装设计",
+      "文创产品"
+    ]
+  },
+  {
+    "id": "WENYANG-081",
+    "name": "八宝纹",
+    "category": "吉祥器物纹",
+    "dynasty": "不详",
+    "carrier": [
+      "瓷器",
+      "织锦",
+      "刺绣",
+      "木雕",
+      "金银器",
+      "建筑装饰"
+    ],
+    "meaning": "八宝纹由多种吉祥器物组合而成，常见于瓷器和织物。寓意吉祥、护佑、圆满。",
+    "occasion": [],
+    "elements": [
+      "八件宝物"
+    ],
+    "source": "中国传统纹样图鉴 Wényàng",
+    "source_url": "https://github.com/dososo/chinese-traditional-patterns",
+    "license": "CC BY-NC 4.0（署名 · 限非商业用途）",
+    "image_path": "data/images/WENYANG-081.jpg",
+    "phash": "ee4e9940b199b61b",
+    "clip_vec_index": null,
+    "applications": [
+      "文创包装",
+      "礼品图案",
+      "网站视觉资料库"
+    ]
+  },
+  {
+    "id": "WENYANG-082",
+    "name": "暗八仙纹",
+    "category": "吉祥器物纹",
+    "dynasty": "不详",
+    "carrier": [
+      "瓷器",
+      "织锦",
+      "刺绣",
+      "木雕",
+      "金银器",
+      "建筑装饰"
+    ],
+    "meaning": "暗八仙纹以八仙所持器物代指人物，常用于祝寿与吉祥装饰。寓意祝寿、祥瑞、仙意。",
+    "occasion": [],
+    "elements": [
+      "扇",
+      "剑",
+      "葫芦",
+      "花篮等器物"
+    ],
+    "source": "中国传统纹样图鉴 Wényàng",
+    "source_url": "https://github.com/dososo/chinese-traditional-patterns",
+    "license": "CC BY-NC 4.0（署名 · 限非商业用途）",
+    "image_path": "data/images/WENYANG-082.jpg",
+    "phash": "ce4e91c1b67aa4d2",
+    "clip_vec_index": null,
+    "applications": [
+      "文创包装",
+      "礼品图案",
+      "网站视觉资料库"
+    ]
+  },
+  {
+    "id": "WENYANG-083",
+    "name": "灵芝纹",
+    "category": "吉祥器物纹",
+    "dynasty": "不详",
+    "carrier": [
+      "瓷器",
+      "织锦",
+      "刺绣",
+      "木雕",
+      "金银器",
+      "建筑装饰"
+    ],
+    "meaning": "灵芝纹形态柔曲，常与云纹组合成祥瑞图案。寓意长寿、祥瑞、仙草意象。",
+    "occasion": [],
+    "elements": [
+      "灵芝",
+      "祥云",
+      "卷曲菌盖"
+    ],
+    "source": "中国传统纹样图鉴 Wényàng",
+    "source_url": "https://github.com/dososo/chinese-traditional-patterns",
+    "license": "CC BY-NC 4.0（署名 · 限非商业用途）",
+    "image_path": "data/images/WENYANG-083.jpg",
+    "phash": "ce4e99c9b3b2a492",
+    "clip_vec_index": null,
+    "applications": [
+      "文创包装",
+      "礼品图案",
+      "网站视觉资料库"
+    ]
+  },
+  {
+    "id": "WENYANG-084",
+    "name": "珊瑚纹",
+    "category": "吉祥器物纹",
+    "dynasty": "不详",
+    "carrier": [
+      "瓷器",
+      "织锦",
+      "刺绣",
+      "木雕",
+      "金银器",
+      "建筑装饰"
+    ],
+    "meaning": "珊瑚纹多见于珍宝组合图案，色彩鲜明。寓意富贵、珍稀、祥瑞。",
+    "occasion": [],
+    "elements": [
+      "红珊瑚枝",
+      "宝石",
+      "海波"
+    ],
+    "source": "中国传统纹样图鉴 Wényàng",
+    "source_url": "https://github.com/dososo/chinese-traditional-patterns",
+    "license": "CC BY-NC 4.0（署名 · 限非商业用途）",
+    "image_path": "data/images/WENYANG-084.jpg",
+    "phash": "ce4e99d9a593a0b2",
+    "clip_vec_index": null,
+    "applications": [
+      "文创包装",
+      "礼品图案",
+      "网站视觉资料库"
+    ]
+  },
+  {
+    "id": "WENYANG-085",
+    "name": "书卷纹",
+    "category": "吉祥器物纹",
+    "dynasty": "不详",
+    "carrier": [
+      "瓷器",
+      "织锦",
+      "刺绣",
+      "木雕",
+      "金银器",
+      "建筑装饰"
+    ],
+    "meaning": "书卷纹常与文运、学识、雅趣相关，适合文房主题。寓意学识、文运、雅趣。",
+    "occasion": [],
+    "elements": [
+      "卷轴",
+      "书册",
+      "云纹"
+    ],
+    "source": "中国传统纹样图鉴 Wényàng",
+    "source_url": "https://github.com/dososo/chinese-traditional-patterns",
+    "license": "CC BY-NC 4.0（署名 · 限非商业用途）",
+    "image_path": "data/images/WENYANG-085.jpg",
+    "phash": "cebe9142b2f1a45a",
+    "clip_vec_index": null,
+    "applications": [
+      "文创包装",
+      "礼品图案",
+      "网站视觉资料库"
+    ]
+  },
+  {
+    "id": "WENYANG-086",
+    "name": "灯笼纹",
+    "category": "吉祥器物纹",
+    "dynasty": "不详",
+    "carrier": [
+      "瓷器",
+      "织锦",
+      "刺绣",
+      "木雕",
+      "金银器",
+      "建筑装饰"
+    ],
+    "meaning": "灯笼纹富有节庆气息，常用于喜庆主题装饰。寓意团圆、光明、喜庆。",
+    "occasion": [],
+    "elements": [
+      "宫灯",
+      "流苏"
+    ],
+    "source": "中国传统纹样图鉴 Wényàng",
+    "source_url": "https://github.com/dososo/chinese-traditional-patterns",
+    "license": "CC BY-NC 4.0（署名 · 限非商业用途）",
+    "image_path": "data/images/WENYANG-086.jpg",
+    "phash": "ee4e984ca199b693",
+    "clip_vec_index": null,
+    "applications": [
+      "文创包装",
+      "礼品图案",
+      "网站视觉资料库"
+    ]
+  },
+  {
+    "id": "WENYANG-087",
+    "name": "香炉纹",
+    "category": "吉祥器物纹",
+    "dynasty": "不详",
+    "carrier": [
+      "瓷器",
+      "织锦",
+      "刺绣",
+      "木雕",
+      "金银器",
+      "建筑装饰"
+    ],
+    "meaning": "香炉纹具有礼仪、清供与文人空间气质。寓意清雅、礼仪、安定。",
+    "occasion": [],
+    "elements": [
+      "香炉",
+      "烟云"
+    ],
+    "source": "中国传统纹样图鉴 Wényàng",
+    "source_url": "https://github.com/dososo/chinese-traditional-patterns",
+    "license": "CC BY-NC 4.0（署名 · 限非商业用途）",
+    "image_path": "data/images/WENYANG-087.jpg",
+    "phash": "ce4699cbb252a596",
+    "clip_vec_index": null,
+    "applications": [
+      "文创包装",
+      "礼品图案",
+      "网站视觉资料库"
+    ]
+  },
+  {
+    "id": "WENYANG-088",
+    "name": "玉璧纹",
+    "category": "吉祥器物纹",
+    "dynasty": "不详",
+    "carrier": [
+      "瓷器",
+      "织锦",
+      "刺绣",
+      "木雕",
+      "金银器",
+      "建筑装饰"
+    ],
+    "meaning": "玉璧纹以圆形玉器为灵感，适合简洁庄重的图案设计。寓意圆满、礼仪、天圆意象。",
+    "occasion": [],
+    "elements": [
+      "圆璧",
+      "玉质纹理",
+      "中心孔"
+    ],
+    "source": "中国传统纹样图鉴 Wényàng",
+    "source_url": "https://github.com/dososo/chinese-traditional-patterns",
+    "license": "CC BY-NC 4.0（署名 · 限非商业用途）",
+    "image_path": "data/images/WENYANG-088.jpg",
+    "phash": "ce4f9151a2f3a436",
+    "clip_vec_index": null,
+    "applications": [
+      "文创包装",
+      "礼品图案",
+      "网站视觉资料库"
+    ]
+  },
+  {
+    "id": "WENYANG-089",
+    "name": "扇面纹",
+    "category": "吉祥器物纹",
+    "dynasty": "不详",
+    "carrier": [
+      "瓷器",
+      "织锦",
+      "刺绣",
+      "木雕",
+      "金银器",
+      "建筑装饰"
+    ],
+    "meaning": "扇面纹结合折扇形态与花鸟装饰，具有文雅气质。寓意清雅、生活美学、风雅。",
+    "occasion": [],
+    "elements": [
+      "折扇",
+      "花鸟",
+      "扇骨"
+    ],
+    "source": "中国传统纹样图鉴 Wényàng",
+    "source_url": "https://github.com/dososo/chinese-traditional-patterns",
+    "license": "CC BY-NC 4.0（署名 · 限非商业用途）",
+    "image_path": "data/images/WENYANG-089.jpg",
+    "phash": "ee4e99d1b3b06c48",
+    "clip_vec_index": null,
+    "applications": [
+      "文创包装",
+      "礼品图案",
+      "网站视觉资料库"
+    ]
+  },
+  {
+    "id": "WENYANG-090",
+    "name": "编磬纹",
+    "category": "吉祥器物纹",
+    "dynasty": "不详",
+    "carrier": [
+      "瓷器",
+      "织锦",
+      "刺绣",
+      "木雕",
+      "金银器",
+      "建筑装饰"
+    ],
+    "meaning": "编磬纹取自古代礼乐器形，适合表现礼乐文明。寓意礼乐、典雅、秩序。",
+    "occasion": [],
+    "elements": [
+      "磬形",
+      "悬挂"
+    ],
+    "source": "中国传统纹样图鉴 Wényàng",
+    "source_url": "https://github.com/dososo/chinese-traditional-patterns",
+    "license": "CC BY-NC 4.0（署名 · 限非商业用途）",
+    "image_path": "data/images/WENYANG-090.jpg",
+    "phash": "ce4e99c1b2f3a492",
+    "clip_vec_index": null,
+    "applications": [
+      "文创包装",
+      "礼品图案",
+      "网站视觉资料库"
+    ]
+  },
+  {
+    "id": "WENYANG-091",
+    "name": "寿字纹",
+    "category": "文字福寿与组合纹",
+    "dynasty": "不详",
+    "carrier": [
+      "织锦",
+      "瓷器",
+      "家具",
+      "屏风",
+      "建筑装饰"
+    ],
+    "meaning": "寿字纹以“寿”字变体构成装饰，常见于祝寿器物与织绣。寓意长寿安康、福泽绵长。",
+    "occasion": [],
+    "elements": [
+      "篆体寿字",
+      "圆形团寿",
+      "边饰"
+    ],
+    "source": "中国传统纹样图鉴 Wényàng",
+    "source_url": "https://github.com/dososo/chinese-traditional-patterns",
+    "license": "CC BY-NC 4.0（署名 · 限非商业用途）",
+    "image_path": "data/images/WENYANG-091.jpg",
+    "phash": "cf679c58b1998193",
+    "clip_vec_index": null,
+    "applications": [
+      "寿礼包装",
+      "民俗器物"
+    ]
+  },
+  {
+    "id": "WENYANG-092",
+    "name": "团寿纹",
+    "category": "文字福寿与组合纹",
+    "dynasty": "不详",
+    "carrier": [
+      "瓷器",
+      "织锦",
+      "刺绣",
+      "家具",
+      "屏风",
+      "建筑彩画"
+    ],
+    "meaning": "团寿纹将寿字置于圆形构图中，结构完整。寓意圆满长寿、安康。",
+    "occasion": [],
+    "elements": [
+      "圆形寿字",
+      "云纹环绕"
+    ],
+    "source": "中国传统纹样图鉴 Wényàng",
+    "source_url": "https://github.com/dososo/chinese-traditional-patterns",
+    "license": "CC BY-NC 4.0（署名 · 限非商业用途）",
+    "image_path": "data/images/WENYANG-092.jpg",
+    "phash": "cf479cd8e0b149b2",
+    "clip_vec_index": null,
+    "applications": [
+      "礼品包装"
+    ]
+  },
+  {
+    "id": "WENYANG-093",
+    "name": "福字纹",
+    "category": "文字福寿与组合纹",
+    "dynasty": "不详",
+    "carrier": [
+      "年画",
+      "瓷器",
+      "织锦",
+      "剪纸"
+    ],
+    "meaning": "福字纹以“福”字装饰化展开，常用于年节与家宅装饰。寓意幸福、福气、家宅安宁。",
+    "occasion": [],
+    "elements": [
+      "篆体福字",
+      "祥云"
+    ],
+    "source": "中国传统纹样图鉴 Wényàng",
+    "source_url": "https://github.com/dososo/chinese-traditional-patterns",
+    "license": "CC BY-NC 4.0（署名 · 限非商业用途）",
+    "image_path": "data/images/WENYANG-093.jpg",
+    "phash": "cf4e9848b255aa9b",
+    "clip_vec_index": null,
+    "applications": [
+      "包装",
+      "家居装饰"
+    ]
+  },
+  {
+    "id": "WENYANG-094",
+    "name": "喜字纹",
+    "category": "文字福寿与组合纹",
+    "dynasty": "不详",
+    "carrier": [
+      "剪纸",
+      "织锦",
+      "瓷器"
+    ],
+    "meaning": "喜字纹常用于婚庆和喜事场景，视觉识别度高。寓意成双成对、喜庆圆满。",
+    "occasion": [],
+    "elements": [
+      "双喜字",
+      "花卉"
+    ],
+    "source": "中国传统纹样图鉴 Wényàng",
+    "source_url": "https://github.com/dososo/chinese-traditional-patterns",
+    "license": "CC BY-NC 4.0（署名 · 限非商业用途）",
+    "image_path": "data/images/WENYANG-094.jpg",
+    "phash": "c74f9944b3d1a25a",
+    "clip_vec_index": null,
+    "applications": [
+      "婚礼装饰",
+      "喜帖",
+      "礼盒",
+      "家居陈设"
+    ]
+  },
+  {
+    "id": "WENYANG-095",
+    "name": "福寿纹",
+    "category": "文字福寿与组合纹",
+    "dynasty": "不详",
+    "carrier": [
+      "瓷器",
+      "织锦",
+      "年画",
+      "家具",
+      "屏风"
+    ],
+    "meaning": "福寿纹将福、寿或蝙蝠、寿桃等元素组合。寓意福寿双全、圆满安康。",
+    "occasion": [],
+    "elements": [
+      "蝙蝠",
+      "寿桃",
+      "寿字",
+      "云纹"
+    ],
+    "source": "中国传统纹样图鉴 Wényàng",
+    "source_url": "https://github.com/dososo/chinese-traditional-patterns",
+    "license": "CC BY-NC 4.0（署名 · 限非商业用途）",
+    "image_path": "data/images/WENYANG-095.jpg",
+    "phash": "cf4e99d1b2938836",
+    "clip_vec_index": null,
+    "applications": [
+      "寿礼",
+      "礼盒"
+    ]
+  },
+  {
+    "id": "WENYANG-096",
+    "name": "五福捧寿纹",
+    "category": "文字福寿与组合纹",
+    "dynasty": "不详",
+    "carrier": [
+      "瓷器",
+      "织锦",
+      "家具",
+      "屏风",
+      "年画"
+    ],
+    "meaning": "五只蝙蝠围绕寿字，是经典吉祥组合纹。寓意五福临门、长寿圆满。",
+    "occasion": [],
+    "elements": [
+      "五蝠",
+      "团寿"
+    ],
+    "source": "中国传统纹样图鉴 Wényàng",
+    "source_url": "https://github.com/dososo/chinese-traditional-patterns",
+    "license": "CC BY-NC 4.0（署名 · 限非商业用途）",
+    "image_path": "data/images/WENYANG-096.jpg",
+    "phash": "cf4f9950b293a692",
+    "clip_vec_index": null,
+    "applications": [
+      "礼品包装"
+    ]
+  },
+  {
+    "id": "WENYANG-097",
+    "name": "双鱼莲花纹",
+    "category": "文字福寿与组合纹",
+    "dynasty": "不详",
+    "carrier": [
+      "瓷器",
+      "织锦",
+      "年画"
+    ],
+    "meaning": "双鱼与莲花组合，常见于民俗和器物装饰。寓意富足、和美、清净。",
+    "occasion": [],
+    "elements": [
+      "双鱼",
+      "莲花",
+      "水波",
+      "圆形"
+    ],
+    "source": "中国传统纹样图鉴 Wényàng",
+    "source_url": "https://github.com/dososo/chinese-traditional-patterns",
+    "license": "CC BY-NC 4.0（署名 · 限非商业用途）",
+    "image_path": "data/images/WENYANG-097.jpg",
+    "phash": "c7479848b393ae72",
+    "clip_vec_index": null,
+    "applications": [
+      "包装",
+      "壁饰",
+      "文创产品"
+    ]
+  },
+  {
+    "id": "WENYANG-098",
+    "name": "鹿鹤同春纹",
+    "category": "文字福寿与组合纹",
+    "dynasty": "不详",
+    "carrier": [
+      "屏风",
+      "年画",
+      "织锦",
+      "瓷器",
+      "家具"
+    ],
+    "meaning": "鹿、鹤、松树组合，常用于祝寿和祥瑞主题。寓意长寿、祥瑞、春和景明。",
+    "occasion": [],
+    "elements": [
+      "鹿",
+      "鹤",
+      "松树",
+      "祥云"
+    ],
+    "source": "中国传统纹样图鉴 Wényàng",
+    "source_url": "https://github.com/dososo/chinese-traditional-patterns",
+    "license": "CC BY-NC 4.0（署名 · 限非商业用途）",
+    "image_path": "data/images/WENYANG-098.jpg",
+    "phash": "d747884cb1d9da92",
+    "clip_vec_index": null,
+    "applications": [
+      "寿礼包装"
+    ]
+  },
+  {
+    "id": "WENYANG-099",
+    "name": "岁寒三友纹",
+    "category": "文字福寿与组合纹",
+    "dynasty": "不详",
+    "carrier": [
+      "书画",
+      "瓷器",
+      "织锦",
+      "屏风",
+      "文房器物"
+    ],
+    "meaning": "松、竹、梅并称岁寒三友，极具文人审美。寓意坚贞、高洁、君子品格。",
+    "occasion": [],
+    "elements": [
+      "松竹梅组合",
+      "文人画风"
+    ],
+    "source": "中国传统纹样图鉴 Wényàng",
+    "source_url": "https://github.com/dososo/chinese-traditional-patterns",
+    "license": "CC BY-NC 4.0（署名 · 限非商业用途）",
+    "image_path": "data/images/WENYANG-099.jpg",
+    "phash": "ee469949b19bb0b2",
+    "clip_vec_index": null,
+    "applications": [
+      "包装",
+      "空间装饰"
+    ]
+  },
+  {
+    "id": "WENYANG-100",
+    "name": "方圆合璧纹",
+    "category": "文字福寿与组合纹",
+    "dynasty": "不详",
+    "carrier": [
+      "建筑装饰"
+    ],
+    "meaning": "方与圆组合体现秩序、圆融与和谐，适合现代新中式抽象纹样。寓意和谐、平衡、圆融。",
+    "occasion": [],
+    "elements": [
+      "外圆内方",
+      "几何平衡"
+    ],
+    "source": "中国传统纹样图鉴 Wényàng",
+    "source_url": "https://github.com/dososo/chinese-traditional-patterns",
+    "license": "CC BY-NC 4.0（署名 · 限非商业用途）",
+    "image_path": "data/images/WENYANG-100.jpg",
+    "phash": "ce6e99d9a29351a4",
+    "clip_vec_index": null,
+    "applications": [
+      "现代新中式装饰",
+      "品牌视觉",
+      "包装",
+      "网页背景"
+    ]
   }
 ]
