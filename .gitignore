@@ -16,3 +16,8 @@ dist/
 
 # 索引脚本的自动备份
 *.bak
+
+# 文物佐证图（CC0，体积大）与临时产物 —— 索引 index.json 要提交，图片不提交
+data/artifacts/images/
+data/artifacts/candidates.json
+data/artifacts/*.tmp
