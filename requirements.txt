@@ -1,0 +1,30 @@
+# 纹有其源 · 运行依赖
+# 版本对应当前已验证可跑通的组合（Python 3.13 / Windows）。
+#
+# torch 装的是 CPU 版 —— 本作品无需 GPU。若 pip 从默认源装不到 +cpu 版本，用：
+#   pip install torch --index-url https://download.pytorch.org/whl/cpu
+
+# 检索与特征
+cn-clip==1.6.0
+torch==2.14.0+cpu
+torchvision==0.29.0
+faiss-cpu==1.15.0
+numpy==2.5.3
+pillow==12.3.0
+
+# 模型下载与 LLM 调用
+modelscope==1.40.0
+dashscope==1.27.5
+requests==2.34.2
+
+# 感知哈希（版权预警）
+ImageHash==4.3.2
+
+# 配置与数据
+PyYAML==6.0.3
+python-dotenv==1.2.3
+pandas==3.0.5
+lmdb==2.3.0
+
+# 界面
+streamlit==1.63.0

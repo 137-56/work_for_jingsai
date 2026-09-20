@@ -21,6 +21,21 @@ if str(ROOT) not in sys.path:
 # 配方里各位置的中文名，给用户看
 ROLE_CN = {"center_motif": "中心母题", "border": "边饰", "corner": "角花", "reference": "相关参考"}
 
+# ─────────────────────────────────────────────────────────────────────────────
+# ★ 数据来源署名 —— CC BY-NC 4.0 的「署名（BY）」是**强制法律义务**，不得删除或改写。
+#   依据：Wényàng 的 LICENSE-CONTENT.md；格式见 文档/数据来源署名规范.md
+#   卡片版面小，用压缩版 —— 但「作者名 + 作品名 + 协议名」三样一个都不能省。
+# ─────────────────────────────────────────────────────────────────────────────
+ATTRIBUTION_SHORT = ("数据来源：BLCaptain（爆裂队长NEXT）《中国传统纹样图鉴 Wényàng》"
+                     "· CC BY-NC 4.0（署名 · 非商业）")
+
+ATTRIBUTION_FULL = (
+    "纹样图像与文字资料：BLCaptain（爆裂队长NEXT），《中国传统纹样图鉴 Wényàng》，"
+    "https://github.com/dososo/chinese-traditional-patterns ，授权协议 CC BY-NC 4.0"
+    "（署名 · 非商业性使用）。本项目仅对原始字段做规范化处理，并补充标注「使用场合」"
+    "与「构成元素」两项派生字段；纹样图像本身未作修改。"
+)
+
 # 卡片里元素的展示顺序。
 # 为什么不直接用检索结果的顺序：检索是按相似度排的，而槽位保底项（边饰/角花）
 # 分数天然偏低、会被排到很后面甚至挤掉。展示顺序应该按"角色重要性"而不是分数。
@@ -74,6 +89,7 @@ def build_card(recipe, hits):
         "center_motif": ((recipe.get("structure") or {}).get("center_motif") or {}).get("name", ""),
         "elements": elements,
         "note": "每个元素均可回指到样本库中的真实样本；溯源关系在生成时确定，非事后推测。",
+        "attribution": ATTRIBUTION_SHORT,     # ★ CC BY-NC 的署名义务，渲染时务必带上
     }
 
 
@@ -91,4 +107,6 @@ def to_markdown(card):
             "/".join(e.get("carrier") or []), (e.get("meaning") or "")[:40],
             e.get("license", ""), e.get("similarity", 0)))
     L += ["", f"> {card.get('note', '')}"]
+    # ★ 署名行：CC BY-NC 4.0 强制要求，不能因为"排版不好看"删掉
+    L += ["", f"<sub>{card.get('attribution', ATTRIBUTION_SHORT)}</sub>"]
     return "\n".join(L)

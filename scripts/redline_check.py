@@ -31,6 +31,22 @@ GENERIC = [
 TEXT_EXT = {".md", ".txt", ".html", ".htm", ".csv", ".json", ".yaml", ".yml",
             ".py", ".js", ".css", ".xml", ".rtf"}
 
+# ★ 跳过这些目录。**必须有** —— 否则 `redline_check.py .` 会扫进 .venv/，
+#   三方库源码里全是形似手机号/身份证的数字串（实测 15328 个文件命中 14296 处，全是噪声），
+#   真正的风险会被淹没，E1 环节直接不可用。
+EXCLUDE_DIRS = {".venv", "venv", "env", "__pycache__", ".git", ".idea", ".vscode",
+                "node_modules", "ckpt", "outputs", ".pytest_cache"}
+
+# ★ 词表文件自己要被排除。理由：redline.yaml 里**原样存着敏感串本身**，
+#   而 .example 里存着规则的字面量 —— 扫它们就是在让词表自己变成泄露源，
+#   也正是本文件开头那条警告要防的事。（本条注释刻意不复述具体词，否则它自己就会被命中。）
+EXCLUDE_FILE_PREFIX = "redline.yaml"
+
+# 二进制 / 媒体 / 压缩包：本就不是文本，扫了只会乱报
+EXCLUDE_SUFFIX = {".bak", ".pyc", ".pyo", ".png", ".jpg", ".jpeg", ".gif", ".webp",
+                  ".zip", ".7z", ".rar", ".pptx", ".docx", ".xlsx", ".pdf",
+                  ".pt", ".pth", ".npz", ".npy", ".index", ".glb", ".gltf", ".mp4"}
+
 
 def load_project_rules(yaml_path: Path):
     """读 redline.yaml：
@@ -55,15 +71,30 @@ def load_project_rules(yaml_path: Path):
     return out
 
 
+def _skipped(path: Path):
+    """是否跳过该文件。"""
+    if path.suffix.lower() in EXCLUDE_SUFFIX:
+        return True
+    if path.name.startswith(EXCLUDE_FILE_PREFIX):
+        return True
+    if any(part in EXCLUDE_DIRS for part in path.parts):
+        return True
+    return False
+
+
 def iter_files(targets):
     for t in targets:
         p = Path(t) if Path(t).is_absolute() else (Path.cwd() / t)
         p = p.resolve()
         if p.is_file():
-            yield p
+            # 显式点名的文件照样尊重排除规则（不然 `redline_check.py .` 仍会漏进去）
+            if _skipped(p):
+                print(f"[跳过] {p.name}（在排除名单内）")
+            else:
+                yield p
         elif p.is_dir():
             for f in sorted(p.rglob("*")):
-                if f.is_file() and f.suffix.lower() in TEXT_EXT:
+                if f.is_file() and f.suffix.lower() in TEXT_EXT and not _skipped(f):
                     yield f
         else:
             print(f"[警告] 路径不存在，已跳过：{p}")
