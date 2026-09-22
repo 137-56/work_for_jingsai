@@ -1,20 +1,110 @@
 {
-  "measured_at": "2026-09-18",
+  "measured_at": "2026-09-23",
   "sample_lib_size": 100,
+
+  "metric_definition": {
+    "index_selfretrieval": "输入为【库内母题名 + 该母题的构成元素】，检索对象为同一批 100 条样本。衡量的是索引与重排的【排序质量】，不等同于端到端准确率。之所以输入是库内名称，是因为 M1 的母题选择受母题白名单约束（只能从库内选），这是架构决定的，不是测试集构造上的取巧。",
+    "end2end": "【待测】一句自然语言需求 → 最终选出的母题是否正确。需人工标注测试集，与 C3 合并执行。",
+    "ablation": "关闭任一项检索策略后的指标变化，用于证明每项策略的必要性。"
+  },
+
   "retrieval_top1_selfhit": 0.97,
   "retrieval_top5_hit_rate": 1.0,
+  "index_selfretrieval": {
+    "top1": 0.97,
+    "top5": 1.0,
+    "testset_size": 100,
+    "method": "库内每条母题以「名 + 构成元素」构造查询，检索自身，统计 Top-1 / Top-5 命中",
+    "date": "2026-09-18（B1-4）"
+  },
+
   "ablation": {
     "full_top1": 0.97,
     "no_rerank_top1": 0.58,
     "no_category_prefix_top1": 0.98,
     "bare_motif_name_only_top1": 0.78,
     "full_top5": 1.0,
-    "no_rerank_top5": 0.91
+    "no_rerank_top5": 0.91,
+    "note": "「bare_motif_name_only」= 查询只用母题名，但配方里仍有 elements、③ 二次筛选照常生效。★ 与本文件 input_ablation.bare 口径不同，勿混用。"
   },
+
+  "input_ablation": {
+    "date": "2026-09-23",
+    "method": "改变「配方里有多少信息」，看检索指标如何变化；检索配置固定为现有三招",
+    "testset_size": 100,
+    "bare": {
+      "top1": 0.59,
+      "top5": 0.92,
+      "definition": "配方只有母题名，没有 elements → ②多查询只剩名字，③二次筛选不可用"
+    },
+    "name_elem": {
+      "top1": 0.97,
+      "top5": 1.0,
+      "definition": "母题名 + elements（= 现有生产口径）"
+    },
+    "elem_only": {
+      "top1": 0.96,
+      "top5": 0.97,
+      "definition": "只有 elements，不给母题名（此时不加类别前缀，否则等于泄露答案）"
+    },
+    "finding": "bare 59% → name_elem 97%（+38pp）；而 elem_only 单独也能到 96%。说明【检索的区分度主要来自 elements，不是母题名】。这直接支撑了 B1-2/B1-3 对 elements 做批量标注与人工抽检的投入。"
+  },
+
+  "related_motifs_experiment": {
+    "date": "2026-09-23",
+    "hypothesis": "把 related_motifs（关联纹样）用于检索增强，能否提升指标",
+    "source": "docs/exp_related_motifs.json（scripts/exp_related_motifs.py 产出，可复跑）",
+    "parity_check": "本实验脚本的 base × name_elem 已复现生产代码结果（Top-1 97/100、Top-5 100/100），两侧一致；两次独立运行输出逐字一致",
+    "expand": {
+      "mechanism": "把该母题的关联纹样也当作查询串",
+      "delta_vs_base": {
+        "bare": {"top1": -0.40, "top5": -0.35},
+        "name_elem": {"top1": -0.01, "top5": 0.0},
+        "elem_only": {"top1": -0.02, "top5": 0.03}
+      },
+      "verdict": "无效（大幅降精排，仅在 elem_only 下换到 +3pp 召回）"
+    },
+    "boost": {
+      "mechanism": "候选若属于该母题的关联纹样，则加分（weight=0.05）",
+      "delta_vs_base": {
+        "bare": {"top1": -0.43, "top5": -0.08},
+        "name_elem": {"top1": -0.03, "top5": 0.0},
+        "elem_only": {"top1": -0.05, "top5": 0.0}
+      },
+      "verdict": "无效（三种输入下均为负）"
+    },
+    "conclusion": "关联纹样对【自检索 Top-1】结构性无正向作用：expand 把关联母题变成查询、boost 给关联母题加分——两条路都只是抬高竞争者，目标自身的相对排名只会变差或不变。这是机制决定的，与参数取值无关。该字段的价值在【可解释性】与【结果列表的相关参考槽位】，不在提升自检索指标。"
+  },
+
+  "neighbor_related_rate": {
+    "date": "2026-09-23",
+    "definition": "对该母题的检索结果取第 2–5 名，统计其中落在该母题 related_motifs 内的比例。复用生产检索结果，不引入任何额外机制。",
+    "testset_size": 100,
+    "slot_rate": 0.3075,
+    "slot_detail": "123/400",
+    "motif_any_rate": 0.72,
+    "motif_any_detail": "72/100",
+    "finding": "72% 的母题，其检索前 5 名里至少有一个是源数据明确标注的关联纹样。这是「排序结果的近邻在语义上可解释，而非随机混淆」的量化证据。"
+  },
+
+  "confusable_check": {
+    "date": "2026-09-23",
+    "definition": "base × name_elem 下未排第 1 的条目，其检索第 1 名是否属于该母题的 related_motifs",
+    "miss_count": 3,
+    "hit_related": 3,
+    "items": [
+      {"id": "WENYANG-045", "name": "菱格纹", "top1": "方胜纹", "is_related": true},
+      {"id": "WENYANG-060", "name": "连环纹", "top1": "锁子纹", "is_related": true},
+      {"id": "WENYANG-092", "name": "团寿纹", "top1": "福寿纹", "is_related": true}
+    ],
+    "finding": "3/3 的「第 1 名」都是该母题的关联纹样，且该关系在源数据中有据可查。排序结果可解释。"
+  },
+
   "history": {
     "sample_lib_size": 30,
     "retrieval_top1_selfhit": 1.0,
     "retrieval_top5_hit_rate": 1.0
   },
-  "notes": "100 条规模的自检索结果。扩库前后对比：Top-1 100%(30条) -> 97%(100条)；纯 CLIP 从 77% -> 58%。5 条排不到第1的均为同族纹样混淆（菱格/方胜、连环/锁子、祥云/流云/卷云、如意云/如意、团寿/福寿），且全部在 Top-5 内。① 类别前缀在两种规模上都是 0 贡献（甚至略降），需如实报告。"
+
+  "notes": "100 条规模的自检索结果。扩库前后对比：Top-1 100%(30条) → 97%(100条)；纯 CLIP 从 77% → 58%。① 类别前缀在两种规模上都是 0 贡献（甚至略降），需如实报告。★ 2026-09-23 更正：此前本文写「5 条排不到第 1 的均为同族混淆（含祥云/流云/卷云、如意云/如意）」，经与生产代码逐条对齐后核实为 3 条（045 菱格↔方胜、060 连环↔锁子、092 团寿↔福寿）——祥云纹与如意云纹实际排到了第 1（第 1 名即自身）。清单必须从结果算出，不得手抄。"
 }

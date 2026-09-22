@@ -1,0 +1,69 @@
+{
+  "sample_size": 100,
+  "overlap_weight": 0.15,
+  "boost_weight": 0.05,
+  "topk": 10,
+  "table": {
+    "bare/base": {
+      "top1": 0.59,
+      "top5": 0.92
+    },
+    "bare/expand": {
+      "top1": 0.19,
+      "top5": 0.57
+    },
+    "bare/boost": {
+      "top1": 0.16,
+      "top5": 0.84
+    },
+    "name_elem/base": {
+      "top1": 0.97,
+      "top5": 1.0
+    },
+    "name_elem/expand": {
+      "top1": 0.96,
+      "top5": 1.0
+    },
+    "name_elem/boost": {
+      "top1": 0.94,
+      "top5": 1.0
+    },
+    "elem_only/base": {
+      "top1": 0.96,
+      "top5": 0.97
+    },
+    "elem_only/expand": {
+      "top1": 0.94,
+      "top5": 1.0
+    },
+    "elem_only/boost": {
+      "top1": 0.91,
+      "top5": 0.97
+    }
+  },
+  "neighbor_related": {
+    "motifs_with_related": 100,
+    "slot_rate": 0.3075,
+    "motif_any_rate": 0.72
+  },
+  "confusable_check": [
+    {
+      "id": "WENYANG-045",
+      "name": "菱格纹",
+      "top1": "方胜纹",
+      "is_related": true
+    },
+    {
+      "id": "WENYANG-060",
+      "name": "连环纹",
+      "top1": "锁子纹",
+      "is_related": true
+    },
+    {
+      "id": "WENYANG-092",
+      "name": "团寿纹",
+      "top1": "福寿纹",
+      "is_related": true
+    }
+  ]
+}
