@@ -25,6 +25,20 @@
 脚本会调用 `src.m2_retrieve.retrieve()` 跑一遍作对照，**两者不一致就直接报错退出** ——
 否则说明本脚本的打分公式与生产代码已经漂移，实验结论全部作废。
 
+## ★ 这个字段"该测什么"——一条设计教训
+
+关联纹样对**「自检索 Top-1」这个指标结构性无正向作用**：
+  · `expand` 把关联母题变成查询串 → 它们被检索出来，跟目标竞争
+  · `boost`  给关联母题的分数加分 → 同样是抬高竞争者
+两条路都只是让目标的相对排名变差。**所以 9 格里出现"下降/无变化"是预期内的，不是 bug。**
+（注：脚本第一版有个 bug —— 把 `sid in rel_ids`（字典）当成"属于该母题的关联集合"，
+  条件恒为真，等于给所有候选加同一常数，排序不变，指标显示"无变化"。
+  已修为 `sid in my_rel`。）
+
+因此本脚本**额外测两个与该字段价值对齐的指标**（复用 base 的检索结果，不引入新机制）：
+  1. **近邻关联率** —— 前 5 名里有多少落在该母题的关联纹样内（可解释性的量化证据）
+  2. **同族混淆核验** —— 那 5 条排不到第 1 的，第 1 名是不是它的关联纹样
+
 用法（在工程根目录 work/ 下执行）：
     .venv/Scripts/python.exe scripts/exp_related_motifs.py --limit 8     # 冒烟：只跑 8 条
     .venv/Scripts/python.exe scripts/exp_related_motifs.py               # 全量 100 条
@@ -101,9 +115,14 @@ def build_qs(s, mode, cfg):
     return out
 
 
+# 用模块级变量传编码器与加分权重，避免到处穿参
+ctx_enc = None
+ctx_boost = [0.05]
+
+
 def scores_for(s, mode, cfg, ctx):
     """返回 {sample_id: 总分}。打分公式与 src/m2_retrieve.py 保持一致。"""
-    index, id_order, by_id, related_ids = ctx
+    index, id_order, by_id, rel_ids = ctx
 
     qs = build_qs(s, mode, cfg)
     if not qs:
@@ -111,6 +130,14 @@ def scores_for(s, mode, cfg, ctx):
 
     # 查询侧的元素集合：只有输入里含 elements 时才参与 ③ 的交集加分
     q_elems = set(s.get("elements") or []) if mode != "bare" else set()
+
+    # ★★ 当前母题**自己**的关联纹样集合。
+    #   这里绝不能写成 `if sid in rel_ids` —— rel_ids 是 {样本id: {关联id集合}} 的字典，
+    #   而每个样本 id 都是它的键，条件会**恒为真**，等于给每个候选都加同一个常数，
+    #   排序完全不变，指标看起来就是"无变化"。
+    #   这个 bug 曾静默产出一个假结论（boost 全为 +0.0%），且冒烟测不出来（--limit 时
+    #   字典的键不全，加分反而不均匀，表现得像是有效果）。改这里务必小心。
+    my_rel = rel_ids.get(s["id"], set())
 
     best = {}
     for q in qs:
@@ -131,24 +158,24 @@ def scores_for(s, mode, cfg, ctx):
             continue
         overlap = len(set(cand.get("elements") or []) & q_elems) if q_elems else 0
         total = sim + W * overlap
-        if cfg == "boost" and sid in related_ids:
+        if cfg == "boost" and sid in my_rel:
             total += ctx_boost[0]
         out[sid] = total
     return out
 
 
-# 用模块级变量传编码器与加分权重，避免到处穿参
-ctx_enc = None
-ctx_boost = [0.05]
+def ranked_ids(s, mode, cfg, ctx):
+    """按总分降序的样本 id 列表（平局按 id 升序，保证可复现）。"""
+    sc = scores_for(s, mode, cfg, ctx)
+    return [sid for sid, _ in sorted(sc.items(), key=lambda kv: (-kv[1], kv[0]))]
 
 
-def rank_of(sid, sc):
-    """该样本在全部候选里的排名（0 = 第一）。"""
-    order = sorted(sc.items(), key=lambda kv: (-kv[1], kv[0]))   # 分数降序，id 升序打破平局
-    for pos, (i, _) in enumerate(order):
-        if i == sid:
-            return pos
-    return 10 ** 6          # 没进候选（未在 base 检索深度内出现）
+def rank_of(sid, order):
+    """该样本在候选列表里的排名（0 = 第一）。未进候选返回一个大数。"""
+    try:
+        return order.index(sid)
+    except ValueError:
+        return 10 ** 6
 
 
 def main() -> int:
@@ -192,7 +219,7 @@ def main() -> int:
             if s["id"] in order[:5]:
                 prod_top5 += 1
             sc = scores_for(s, "name_elem", "base", ctx)
-            rk = rank_of(s["id"], sc)
+            rk = rank_of(s["id"], ranked_ids(s, "name_elem", "base", ctx))
             if rk == 0:
                 mine_top1 += 1
             if rk < 5:
@@ -221,8 +248,7 @@ def main() -> int:
         for cfg in cfgs:
             t1 = t5 = 0
             for s in samples:
-                sc = scores_for(s, mode, cfg, ctx)
-                rk = rank_of(s["id"], sc)
+                rk = rank_of(s["id"], ranked_ids(s, mode, cfg, ctx))
                 if rk == 0:
                     t1 += 1
                 if rk < 5:
@@ -241,17 +267,72 @@ def main() -> int:
             mark = "提升" if (d1 > 0 or d5 > 0) else ("无变化" if (d1 == 0 and d5 == 0) else "下降")
             log(f"  {mode:<10} + {cfg:<7} Top-1 {d1:+.1%}   Top-5 {d5:+.1%}   → {mark}")
 
+    # ───────── 近邻关联率：量化「排序可解释性」─────────
+    # 为什么必须单独测这个：上面 9 格测的是"自检索 Top-1"，而关联纹样在**设计上**
+    # 就不是为提升它服务的 —— expand 把关联母题变成查询、boost 给关联母题加分，
+    # 两条路都是**抬高竞争者**，对 Top-1 结构性无益。
+    # 它真正的价值在另外两处：① 结果列表的「相关参考」槽位 ② 解释近邻为什么合理。
+    # 本指标测后者，且**复用 base 已有的检索结果**，不引入任何额外机制。
+    sample_ids = {x["id"] for x in samples}      # noqa: F841 （保留备查）
+    n_with_rel = hit_any = near_total = hit_total = 0
+    for s in samples:
+        my_rel = rel_ids.get(s["id"], set())
+        if not my_rel:
+            continue
+        n_with_rel += 1
+        order = ranked_ids(s, "name_elem", "base", ctx)
+        near = [sid for sid in order[:5] if sid != s["id"]]
+        near_total += len(near)
+        h = sum(1 for sid in near if sid in my_rel)
+        hit_total += h
+        if h:
+            hit_any += 1
+    rate_slot = hit_total / near_total if near_total else 0.0
+    rate_motif = hit_any / n_with_rel if n_with_rel else 0.0
+
+    log("=== 近邻关联率（量化「排序可解释性」）===")
+    log("  对每条母题取检索结果第 2–5 名，看是否落在该母题的关联纹样里")
+    log(f"  有关联纹样的母题        {n_with_rel} 条")
+    log(f"  前 5 名中属关联纹样的槽位 {hit_total}/{near_total} = {rate_slot:.1%}")
+    log(f"  至少一个关联纹样进前 5 的母题 {hit_any}/{n_with_rel} = {rate_motif:.1%}")
+    log("  → 越高，越能说「排序的近邻在语义上合理」——这是可解释性的量化证据")
     log("")
+
+    # ───────── B2-3：未排到第 1 的条目，第 1 名是不是它的关联纹样 ─────────
+    # ★ 清单**必须从结果算出来，不能硬编码条目号**。
+    #   脚本第一版硬编码了 B1-4 时期记录的 5 条（045/060/061/062/092），
+    #   实测发现 061 祥云纹、062 如意云纹 在本口径下**其实排到了第 1**（第 1 名就是自己），
+    #   硬编码的清单与真实"未命中集合"对不上，表格会误导。
+    log("=== 未命中第 1 的条目核验（B2-3 报告素材）===")
+    misses = [s for s in samples
+              if rank_of(s["id"], ranked_ids(s, "name_elem", "base", ctx)) != 0]
+    log(f"  base × name_elem 下未排第 1 的共 {len(misses)} 条")
+    log(f"{'条目':<13}{'母题':<10}{'检索第 1 名':<12}{'是它的关联纹样？'}")
+    log("-" * 56)
+    b23 = []
+    for s in misses:
+        order = ranked_ids(s, "name_elem", "base", ctx)
+        first = order[0] if order else None
+        fname = by_id[first]["name"] if first else "(无)"
+        ok = fname in set(s.get("related_motifs") or [])
+        b23.append({"id": s["id"], "name": s["name"], "top1": fname, "is_related": bool(ok)})
+        log(f"{s['id']:<13}{s['name']:<10}{fname:<12}{'是 ✅' if ok else '否'}")
+    n_ok = sum(1 for x in b23 if x["is_related"])
+    if b23:
+        log(f"  → {n_ok}/{len(b23)} 条的「第 1 名」是该母题的关联纹样（源数据有据可查）")
+    log("")
+
     log("─" * 60)
     log("阅读提示（很重要，别把预期内的结果当成 bug）")
-    log("  1. expand 在本机制下**结构性**难有正向效果：")
-    log("     打分取「同一候选在各查询上的最高分」，而目标母题已被它自己的查询命中；")
-    log("     追加关联纹样作查询，只会把关联纹样也拉进前列来跟目标竞争。")
-    log("     → 它下降是**预期内**的，这本身就是一条结论：")
-    log("       「关联纹样不适合当查询扩展（在本打分机制下）」")
-    log("  2. boost 不改查询、只对关联母题调分，是更合理的用法。")
-    log("  3. name_elem 一格已到 100%，属于**饱和**——在那里加什么都看不出差别，")
-    log("     要看效果必须看信息更少的 bare 一行。")
+    log("  1. expand 与 boost 在本机制下**结构性**都难有正向效果，原因不同：")
+    log("     · expand：把关联纹样当查询串 → 关联母题被检索出来，跟目标竞争")
+    log("     · boost ：给关联母题的分数加分 → 同样是抬高竞争者")
+    log("     两者都只会让目标的相对排名变差。这是**预期内**的，本身就是结论：")
+    log("     「关联纹样对『自检索 Top-1』无正向作用」")
+    log("  2. 那它有什么价值？看上面的「近邻关联率」与 B2-3 核验 ——")
+    log("     它的价值在**可解释性**与**结果列表的相关参考**，不在提升 Top-1。")
+    log("  3. name_elem 接近饱和（97% / 100%），在那里加什么都看不出差别；")
+    log("     要看区分度必须看信息更少的 bare 一行。")
     log("─" * 60)
 
     out = ROOT / "docs" / "exp_related_motifs.json"
@@ -259,6 +340,12 @@ def main() -> int:
     out.write_text(json.dumps({
         "sample_size": n, "overlap_weight": W, "boost_weight": args.boost,
         "topk": TOPK, "table": table,
+        "neighbor_related": {
+            "motifs_with_related": n_with_rel,
+            "slot_rate": round(rate_slot, 4),
+            "motif_any_rate": round(rate_motif, 4),
+        },
+        "confusable_check": b23,
     }, ensure_ascii=False, indent=2), encoding="utf-8")
     log("")
     log(f"[OK] 明细已落 {out.relative_to(ROOT)}")
