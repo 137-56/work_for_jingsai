@@ -19,6 +19,25 @@ validate:
   severity_order: [high, medium, low]
   min_confidence: 0.6
 
+# 传统色板 —— 单一事实来源，三处共用：
+#   ① src/m1_intent.py 的 prompt（限定 LLM 只能从板内选色）
+#   ② rules/culture_rules.json 的 R021 / R022 的 allowed（由 scripts/check_rules.py 校验一致）
+#   ③ M4 设计依据板的配色依据
+# ⚠️ 色值须与所用传统色谱资料核对后再定稿。
+# ⚠️ #FFFFFF / #000000 **刻意不在板内** —— 传统配色不用绝对黑白（须为墨、米白等有倾向的传统色），
+#    规则 R025 正是据此禁止纯黑纯白主色。
+traditional_palette:
+  - { name: 正红, hex: "#C8102E" }
+  - { name: 朱砂, hex: "#E34234" }
+  - { name: 金色, hex: "#F2A900" }
+  - { name: 浅金, hex: "#D4AF37" }
+  - { name: 靛蓝, hex: "#1B4B8F" }
+  - { name: 青绿, hex: "#2E8B57" }
+  - { name: 赭石, hex: "#955539" }
+  - { name: 墨黑, hex: "#2B2318" }
+  - { name: 米白, hex: "#F7F1E6" }
+  - { name: 藤黄, hex: "#E8C55C" }
+
 compose:
   canvas_size: 1024
   dpi: 300

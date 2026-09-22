@@ -1,1 +1,603 @@
-[]
+[
+  {
+    "id": "R001",
+    "name": "婚庆场景禁用哀悼意象",
+    "category": "场合-意象冲突",
+    "version": "1.0",
+    "severity": "high",
+    "source": "《中国传统吉祥图案》相关章节 + 民俗通行认知：白菊、挽联、纸钱属祭奠意象，与婚庆相斥",
+    "trigger": {
+      "op": "any",
+      "conditions": [
+        { "field": "intent.occasion", "op": "intersect", "value": ["婚庆"] }
+      ]
+    },
+    "constraint": {
+      "type": "forbidden_terms",
+      "scope": ["structure.center_motif.name", "structure.center_motif.elements", "intent.blessing"],
+      "terms": ["菊花", "白菊", "挽联", "纸钱", "素白"]
+    },
+    "action": {
+      "message": "婚庆场合不宜出现「{term}」——该意象属祭奠范畴，建议替换为「{suggestion}」",
+      "suggestions": {
+        "菊花": "牡丹 / 莲花 / 宝相花",
+        "白菊": "牡丹 / 莲花",
+        "挽联": "双喜 / 龙凤",
+        "纸钱": "铜钱 / 元宝",
+        "素白": "正红 / 金色"
+      }
+    }
+  },
+  {
+    "id": "R002",
+    "name": "婚庆场景禁用分离孤单意象",
+    "category": "场合-意象冲突",
+    "version": "1.0",
+    "severity": "high",
+    "source": "婚俗讲究成双成对，「孤」「残」「断」类意象与婚庆主题相斥（民俗通行认知）",
+    "trigger": {
+      "op": "any",
+      "conditions": [
+        { "field": "intent.occasion", "op": "intersect", "value": ["婚庆"] }
+      ]
+    },
+    "constraint": {
+      "type": "forbidden_terms",
+      "scope": ["structure.center_motif.name", "structure.center_motif.elements"],
+      "terms": ["孤雁", "寒鸦", "残荷", "断枝", "孤木"]
+    },
+    "action": {
+      "message": "婚庆场合不宜出现「{term}」——该意象含孤单、残破之意，建议替换为「{suggestion}」",
+      "suggestions": {
+        "孤雁": "鸳鸯 / 双鱼",
+        "寒鸦": "喜鹊",
+        "残荷": "莲花 / 并蒂莲",
+        "断枝": "连理枝",
+        "孤木": "连理枝"
+      }
+    }
+  },
+  {
+    "id": "R003",
+    "name": "寿诞场景禁用丧仪意象",
+    "category": "场合-意象冲突",
+    "version": "1.0",
+    "severity": "high",
+    "source": "寿庆与丧仪意象相斥（民俗通行认知）。注：菊花为长寿象征，寿诞可用，故不在禁用之列",
+    "trigger": {
+      "op": "any",
+      "conditions": [
+        { "field": "intent.occasion", "op": "intersect", "value": ["寿诞"] }
+      ]
+    },
+    "constraint": {
+      "type": "forbidden_terms",
+      "scope": ["structure.center_motif.name", "structure.center_motif.elements", "intent.blessing"],
+      "terms": ["挽联", "丧仪", "纸钱", "祭文"]
+    },
+    "action": {
+      "message": "寿诞场合不宜出现「{term}」——该意象属丧仪范畴，建议替换为「{suggestion}」",
+      "suggestions": {
+        "挽联": "寿字 / 团寿",
+        "丧仪": "松鹤 / 蟠桃",
+        "纸钱": "铜钱 / 元宝",
+        "祭文": "寿联"
+      }
+    }
+  },
+  {
+    "id": "R004",
+    "name": "开业乔迁禁用破败意象",
+    "category": "场合-意象冲突",
+    "version": "1.0",
+    "severity": "medium",
+    "source": "开业、乔迁取「新、旺、发」之意，破败类意象与之相斥（民俗通行认知）",
+    "trigger": {
+      "op": "any",
+      "conditions": [
+        { "field": "intent.occasion", "op": "intersect", "value": ["开业", "乔迁"] }
+      ]
+    },
+    "constraint": {
+      "type": "forbidden_terms",
+      "scope": ["structure.center_motif.name", "structure.center_motif.elements"],
+      "terms": ["枯枝", "败叶", "残破", "寒鸦"]
+    },
+    "action": {
+      "message": "开业乔迁场合不宜出现「{term}」——该意象含衰败之意，建议替换为「{suggestion}」",
+      "suggestions": {
+        "枯枝": "灵芝 / 竹",
+        "败叶": "牡丹 / 宝相花",
+        "残破": "铜钱 / 元宝",
+        "寒鸦": "喜鹊"
+      }
+    }
+  },
+  {
+    "id": "R005",
+    "name": "祭祀场景禁用欢愉意象",
+    "category": "场合-意象冲突",
+    "version": "1.0",
+    "severity": "high",
+    "source": "祭祀重庄敬，忌欢愉娱玩之意（传统礼俗通行认知）",
+    "trigger": {
+      "op": "any",
+      "conditions": [
+        { "field": "intent.occasion", "op": "intersect", "value": ["祭祀"] }
+      ]
+    },
+    "constraint": {
+      "type": "forbidden_terms",
+      "scope": ["intent.blessing", "structure.center_motif.name"],
+      "terms": ["贺喜", "祝寿", "迎春", "喜庆"]
+    },
+    "action": {
+      "message": "祭祀场合不宜使用「{term}」这类欢愉表述，建议改为「{suggestion}」",
+      "suggestions": {
+        "贺喜": "追远 / 敬奉",
+        "祝寿": "追远",
+        "迎春": "敬奉",
+        "喜庆": "庄敬"
+      }
+    }
+  },
+  {
+    "id": "R006",
+    "name": "寓意须给出且为完整词条",
+    "category": "寓意与要素完整性",
+    "version": "1.0",
+    "severity": "medium",
+    "source": "单字寓意（如「福」）无法构成可推导的表述，须用完整词条（如「五福临门」），否则「寓意可由母题推导」这一立论不成立",
+    "trigger": {
+      "op": "any",
+      "conditions": [
+        { "field": "structure.center_motif.name", "op": "contains", "value": "纹" }
+      ]
+    },
+    "constraint": { "type": "required_evidence", "field": "intent.blessing" },
+    "action": {
+      "message": "寓意字段缺少有效依据：「{term}」——请使用完整词条（如「五福临门」「连年有余」），单字不构成可推导的寓意",
+      "suggestions": { "intent.blessing": "五福临门 / 连年有余 / 吉祥如意" }
+    }
+  },
+  {
+    "id": "R007",
+    "name": "中心母题须给出构成元素",
+    "category": "寓意与要素完整性",
+    "version": "1.0",
+    "severity": "medium",
+    "source": "构成元素是 M2 检索二次筛选与寓意推导的共同依据，缺失则检索退化为纯视觉相似度",
+    "trigger": {
+      "op": "any",
+      "conditions": [
+        { "field": "structure.center_motif.name", "op": "contains", "value": "纹" }
+      ]
+    },
+    "constraint": { "type": "required_evidence", "field": "structure.center_motif.elements" },
+    "action": {
+      "message": "中心母题未给出构成元素：「{term}」——缺少该依据，检索将退化为纯视觉相似度匹配",
+      "suggestions": { "structure.center_motif.elements": "须与母题在库中的构成元素一致" }
+    }
+  },
+  {
+    "id": "R008",
+    "name": "配色须给出依据说明",
+    "category": "寓意与要素完整性",
+    "version": "1.0",
+    "severity": "low",
+    "source": "配色应有传统依据，供溯源卡片展示与设计依据板使用",
+    "trigger": {
+      "op": "any",
+      "conditions": [
+        { "field": "palette.primary", "op": "contains", "value": "#" }
+      ]
+    },
+    "constraint": { "type": "required_evidence", "field": "palette.scheme_basis" },
+    "action": {
+      "message": "配色缺少依据说明：「{term}」——请标注传统配色依据（如「传统点染配色」）",
+      "suggestions": { "palette.scheme_basis": "传统点染配色 / 青绿山水 / 宫廷彩绘" }
+    }
+  },
+  {
+    "id": "R009",
+    "name": "用途须明确",
+    "category": "寓意与要素完整性",
+    "version": "1.0",
+    "severity": "low",
+    "source": "用途影响构图密度与载体选择，是配方完整性的组成部分（契约 §3.2 标为必填）",
+    "trigger": {
+      "op": "any",
+      "conditions": [
+        { "field": "intent.occasion", "op": "contains", "value": "" }
+      ]
+    },
+    "constraint": { "type": "required_evidence", "field": "intent.purpose" },
+    "action": {
+      "message": "配方缺少用途说明：「{term}」——用途决定构图密度与载体选择",
+      "suggestions": { "intent.purpose": "礼品包装 / 服饰面料 / 空间装饰" }
+    }
+  },
+  {
+    "id": "R010",
+    "name": "风格须明确",
+    "category": "寓意与要素完整性",
+    "version": "1.0",
+    "severity": "low",
+    "source": "风格影响后续提示词构造与合成参数，缺失会使生成阶段缺少可控依据",
+    "trigger": {
+      "op": "any",
+      "conditions": [
+        { "field": "intent.occasion", "op": "contains", "value": "" }
+      ]
+    },
+    "constraint": { "type": "required_evidence", "field": "intent.style" },
+    "action": {
+      "message": "配方缺少风格说明：「{term}」——风格影响后续合成与提示词构造",
+      "suggestions": { "intent.style": "传统窗花 / 工笔重彩 / 青花瓷绘" }
+    }
+  },
+  {
+    "id": "R011",
+    "name": "龙纹不得用于日常陈设",
+    "category": "纹样等级与僭越",
+    "version": "1.0",
+    "severity": "medium",
+    "source": "龙纹属礼制等级纹样，明清两代限帝后与赐服使用，不宜用于日常陈设题材",
+    "trigger": {
+      "op": "any",
+      "conditions": [
+        { "field": "intent.occasion", "op": "intersect", "value": ["日常陈设"] }
+      ]
+    },
+    "constraint": {
+      "type": "forbidden_terms",
+      "scope": ["structure.center_motif.name"],
+      "terms": ["龙纹", "蟒纹"]
+    },
+    "action": {
+      "message": "日常陈设不宜使用「{term}」——该纹样属礼制等级纹样，建议替换为「{suggestion}」",
+      "suggestions": {
+        "龙纹": "卷草纹 / 缠枝莲纹 / 祥云纹",
+        "蟒纹": "卷草纹 / 祥云纹"
+      }
+    }
+  },
+  {
+    "id": "R012",
+    "name": "龙纹不得用于开业乔迁",
+    "category": "纹样等级与僭越",
+    "version": "1.0",
+    "severity": "medium",
+    "source": "同上：商俗场景不宜僭用礼制纹样（明清舆服制度通行认知）",
+    "trigger": {
+      "op": "any",
+      "conditions": [
+        { "field": "intent.occasion", "op": "intersect", "value": ["开业", "乔迁"] }
+      ]
+    },
+    "constraint": {
+      "type": "forbidden_terms",
+      "scope": ["structure.center_motif.name"],
+      "terms": ["龙纹"]
+    },
+    "action": {
+      "message": "开业乔迁场合不宜使用「{term}」——建议替换为「{suggestion}」",
+      "suggestions": { "龙纹": "铜钱纹 / 元宝纹 / 回纹" }
+    }
+  },
+  {
+    "id": "R013",
+    "name": "禁用帝后专用明黄主色",
+    "category": "纹样等级与僭越",
+    "version": "1.0",
+    "severity": "medium",
+    "source": "明黄为帝后专用色，民间不得僭用（明清舆服制度通行认知）",
+    "trigger": {
+      "op": "any",
+      "conditions": [
+        { "field": "palette.primary", "op": "contains", "value": "#" }
+      ]
+    },
+    "constraint": {
+      "type": "forbidden_terms",
+      "scope": ["palette.primary", "palette.secondary"],
+      "terms": ["#FFD200", "#FFDE00"]
+    },
+    "action": {
+      "message": "配色不宜使用帝后专用明黄色「{term}」——建议替换为「{suggestion}」",
+      "suggestions": { "#FFD200": "浅金 #D4AF37", "#FFDE00": "浅金 #D4AF37" }
+    }
+  },
+  {
+    "id": "R014",
+    "name": "禁用僭越性形制表述",
+    "category": "纹样等级与僭越",
+    "version": "1.0",
+    "severity": "medium",
+    "source": "五爪龙、正龙、蟒袍为帝王专用形制，民间纹样不得使用该表述（明清舆服制度）",
+    "trigger": {
+      "op": "any",
+      "conditions": [
+        { "field": "structure.center_motif.name", "op": "contains", "value": "" }
+      ]
+    },
+    "constraint": {
+      "type": "forbidden_terms",
+      "scope": ["structure.center_motif.name", "structure.center_motif.elements", "intent.blessing"],
+      "terms": ["五爪", "正龙", "蟒袍"]
+    },
+    "action": {
+      "message": "出现僭越性形制表述「{term}」——建议替换为「{suggestion}」",
+      "suggestions": {
+        "五爪": "卷草 / 祥云",
+        "正龙": "夔龙 / 螭龙",
+        "蟒袍": "团花 / 缠枝莲"
+      }
+    }
+  },
+  {
+    "id": "R015",
+    "name": "补子类不得用于民用场景",
+    "category": "纹样等级与僭越",
+    "version": "1.0",
+    "severity": "low",
+    "source": "补子为明清官员品级标识，属职官制度纹样，不宜用于民用场景",
+    "trigger": {
+      "op": "any",
+      "conditions": [
+        { "field": "intent.occasion", "op": "intersect", "value": ["日常陈设", "开业", "乔迁"] }
+      ]
+    },
+    "constraint": {
+      "type": "forbidden_terms",
+      "scope": ["structure.center_motif.name"],
+      "terms": ["补子", "官补"]
+    },
+    "action": {
+      "message": "民用场景不宜使用职官标识纹样「{term}」——建议替换为「{suggestion}」",
+      "suggestions": { "补子": "团花纹 / 缠枝莲纹", "官补": "团花纹" }
+    }
+  },
+  {
+    "id": "R016",
+    "name": "有边饰须有宽度比例",
+    "category": "结构依赖",
+    "version": "1.0",
+    "severity": "low",
+    "source": "边饰占画布比例是构图密度的直接参数，缺失则合成阶段只能取默认值（config.compose.border_ratio）",
+    "trigger": {
+      "op": "any",
+      "conditions": [
+        { "field": "structure.border.pattern", "op": "contains", "value": "" }
+      ]
+    },
+    "constraint": {
+      "type": "dependency",
+      "if_field": "structure.border.pattern",
+      "then_field": "structure.border.width_ratio",
+      "rule": "指定了边饰纹样，就必须给出其占画布的比例"
+    },
+    "action": {
+      "message": "指定了边饰却未给出宽度比例：「{term}」缺失——构图密度参数不完整",
+      "suggestions": { "structure.border.width_ratio": "建议 0.15" }
+    }
+  },
+  {
+    "id": "R017",
+    "name": "有角花须有边饰",
+    "category": "结构依赖",
+    "version": "1.0",
+    "severity": "low",
+    "source": "传统构图程式中，角花附属于边饰体系，无边框则角花无处安放",
+    "trigger": {
+      "op": "any",
+      "conditions": [
+        { "field": "structure.corner.pattern", "op": "contains", "value": "" }
+      ]
+    },
+    "constraint": {
+      "type": "dependency",
+      "if_field": "structure.corner.pattern",
+      "then_field": "structure.border.pattern",
+      "rule": "指定了角花，就必须同时给出边饰"
+    },
+    "action": {
+      "message": "指定了角花却未给出边饰：「{term}」缺失——角花须依附于边饰体系",
+      "suggestions": { "structure.border.pattern": "卷草纹 / 回纹" }
+    }
+  },
+  {
+    "id": "R018",
+    "name": "有寓意须有构成元素",
+    "category": "结构依赖",
+    "version": "1.0",
+    "severity": "medium",
+    "source": "本作品要求「寓意须能由母题推导」，故给出寓意就必须同时给出构成元素作为推导依据",
+    "trigger": {
+      "op": "any",
+      "conditions": [
+        { "field": "intent.blessing", "op": "contains", "value": "" }
+      ]
+    },
+    "constraint": {
+      "type": "dependency",
+      "if_field": "intent.blessing",
+      "then_field": "structure.center_motif.elements",
+      "rule": "给出寓意就必须给出构成元素，否则寓意无从推导"
+    },
+    "action": {
+      "message": "给出了寓意却缺少构成元素：「{term}」——寓意须能由母题构成元素推导",
+      "suggestions": { "structure.center_motif.elements": "须与母题在库中的构成元素一致" }
+    }
+  },
+  {
+    "id": "R019",
+    "name": "有中心母题须明确对称方式",
+    "category": "结构依赖",
+    "version": "1.0",
+    "severity": "low",
+    "source": "对称方式是传统构图的基本参数，缺失会使合成阶段无构图依据",
+    "trigger": {
+      "op": "any",
+      "conditions": [
+        { "field": "structure.center_motif.name", "op": "contains", "value": "" }
+      ]
+    },
+    "constraint": {
+      "type": "dependency",
+      "if_field": "structure.center_motif.name",
+      "then_field": "structure.symmetry",
+      "rule": "选定中心母题后必须给出对称方式"
+    },
+    "action": {
+      "message": "选定了中心母题却未明确对称方式：「{term}」缺失",
+      "suggestions": { "structure.symmetry": "四轴对称 / 二轴对称" }
+    }
+  },
+  {
+    "id": "R020",
+    "name": "有场合须有用途",
+    "category": "结构依赖",
+    "version": "1.0",
+    "severity": "low",
+    "source": "场合与用途共同决定构图密度与载体选择，二者应成对出现",
+    "trigger": {
+      "op": "any",
+      "conditions": [
+        { "field": "intent.occasion", "op": "contains", "value": "" }
+      ]
+    },
+    "constraint": {
+      "type": "dependency",
+      "if_field": "intent.occasion",
+      "then_field": "intent.purpose",
+      "rule": "指定了场合就必须给出用途"
+    },
+    "action": {
+      "message": "指定了场合却未给出用途：「{term}」缺失——场合与用途应成对出现",
+      "suggestions": { "intent.purpose": "礼品包装 / 空间装饰 / 服饰面料" }
+    }
+  },
+  {
+    "id": "R021",
+    "name": "主色须落在传统色板内",
+    "category": "色彩与取值域规程",
+    "version": "1.0",
+    "severity": "medium",
+    "source": "传统纹样配色有既定色域；色板定义见 work/config.yaml 的 traditional_palette",
+    "trigger": {
+      "op": "any",
+      "conditions": [
+        { "field": "palette.primary", "op": "contains", "value": "#" }
+      ]
+    },
+    "constraint": {
+      "type": "domain_check",
+      "field": "palette.primary",
+      "allowed": ["#C8102E", "#E34234", "#F2A900", "#D4AF37", "#1B4B8F", "#2E8B57", "#955539", "#2B2318", "#F7F1E6", "#E8C55C"]
+    },
+    "action": {
+      "message": "主色「{term}」不在传统色板内——请改用色板中的传统色：正红 #C8102E / 靛蓝 #1B4B8F / 青绿 #2E8B57 / 浅金 #D4AF37",
+      "suggestions": {}
+    }
+  },
+  {
+    "id": "R022",
+    "name": "辅色须落在传统色板内",
+    "category": "色彩与取值域规程",
+    "version": "1.0",
+    "severity": "low",
+    "source": "同 R021：色板定义见 work/config.yaml 的 traditional_palette",
+    "trigger": {
+      "op": "any",
+      "conditions": [
+        { "field": "palette.secondary", "op": "contains", "value": "#" }
+      ]
+    },
+    "constraint": {
+      "type": "domain_check",
+      "field": "palette.secondary",
+      "allowed": ["#C8102E", "#E34234", "#F2A900", "#D4AF37", "#1B4B8F", "#2E8B57", "#955539", "#2B2318", "#F7F1E6", "#E8C55C"]
+    },
+    "action": {
+      "message": "辅色「{term}」不在传统色板内——请改用色板中的传统色：金色 #F2A900 / 浅金 #D4AF37 / 米白 #F7F1E6",
+      "suggestions": {}
+    }
+  },
+  {
+    "id": "R023",
+    "name": "配色依据不得含现代风格词",
+    "category": "色彩与取值域规程",
+    "version": "1.0",
+    "severity": "low",
+    "source": "本作品定位传统纹样，配色依据须落在传统色体系内，不得引入现代流行色系表述",
+    "trigger": {
+      "op": "any",
+      "conditions": [
+        { "field": "palette.scheme_basis", "op": "contains", "value": "" }
+      ]
+    },
+    "constraint": {
+      "type": "forbidden_terms",
+      "scope": ["palette.scheme_basis"],
+      "terms": ["荧光", "赛博", "莫兰迪", "高饱和", "撞色", "马卡龙"]
+    },
+    "action": {
+      "message": "配色依据中出现现代风格词「{term}」——建议改用「{suggestion}」",
+      "suggestions": {
+        "荧光": "传统点染",
+        "赛博": "青绿山水",
+        "莫兰迪": "雅致灰调",
+        "高饱和": "浓艳重彩",
+        "撞色": "对比设色",
+        "马卡龙": "柔和粉彩"
+      }
+    }
+  },
+  {
+    "id": "R024",
+    "name": "场合取值须在受控词表内",
+    "category": "色彩与取值域规程",
+    "version": "1.0",
+    "severity": "high",
+    "source": "契约 §1.3 场合受控词表（9 词）；越界取值会使后续所有场合相关规则失效",
+    "trigger": {
+      "op": "any",
+      "conditions": [
+        { "field": "intent.occasion", "op": "contains", "value": "" }
+      ]
+    },
+    "constraint": {
+      "type": "domain_check",
+      "field": "intent.occasion",
+      "allowed": ["春节", "婚庆", "寿诞", "开业", "乔迁", "节庆通用", "日常陈设", "祭祀", "文人雅玩"]
+    },
+    "action": {
+      "message": "场合取值「{term}」不在受控词表内——越界取值会使所有场合规则失效。请改用：春节 / 婚庆 / 寿诞 / 开业 / 乔迁 / 节庆通用 / 日常陈设 / 祭祀 / 文人雅玩",
+      "suggestions": {}
+    }
+  },
+  {
+    "id": "R025",
+    "name": "禁用纯黑纯白主色",
+    "category": "色彩与取值域规程",
+    "version": "1.0",
+    "severity": "low",
+    "source": "传统配色不用绝对黑白，须为墨、米白等有倾向的传统色（故 #FFFFFF/#000000 刻意不在色板内）",
+    "trigger": {
+      "op": "any",
+      "conditions": [
+        { "field": "palette.primary", "op": "contains", "value": "#" }
+      ]
+    },
+    "constraint": {
+      "type": "forbidden_terms",
+      "scope": ["palette.primary", "palette.secondary"],
+      "terms": ["#FFFFFF", "#000000"]
+    },
+    "action": {
+      "message": "配色不宜使用绝对黑白色「{term}」——建议替换为「{suggestion}」",
+      "suggestions": { "#FFFFFF": "米白 #F7F1E6", "#000000": "墨黑 #2B2318" }
+    }
+  }
+]

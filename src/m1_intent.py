@@ -30,6 +30,12 @@ SAMPLES = Path(CFG["paths"]["samples"])
 
 OCCASIONS = ["春节", "婚庆", "寿诞", "开业", "乔迁", "节庆通用", "日常陈设", "祭祀", "文人雅玩"]
 
+# 传统色板 —— 来自 config.yaml，**单一事实来源**（规则库 R021/R022 的 allowed 也是它）。
+# 为什么必须在这里约束 LLM：M3 的「色彩规程」规则用 domain_check 判"主色是否在传统色板内"，
+# 而 palette.primary 是 hex 字符串。**不约束 LLM，规则每次都会误报。**
+PALETTE = CFG.get("traditional_palette") or []
+PALETTE_HINT = "、".join(f"{p['name']} {p['hex']}" for p in PALETTE)
+
 SYSTEM_PROMPT = f"""你是中国传统纹样文化专家。用户会用一句话描述他想要的纹样，你要把它解析成一份结构化的《纹样文化配方》。
 
 只输出 JSON，不要任何解释、不要 markdown 代码块。
@@ -60,7 +66,8 @@ JSON 结构（字段一个都不能少）：
 2. center_motif.elements 要与该母题在库中的构成元素一致。
 3. intent.occasion 必须是数组，取值只能从：{'/'.join(OCCASIONS)}。
 4. 每个寓意词都要能由中心母题推导出来（谐音、象征、典故）。
-5. palette 用十六进制色值。
+5. palette 的 primary 与 secondary **只能从下面这份传统色板里选，不要自创色值**：
+   {PALETTE_HINT}
 6. **选母题时，要看它的「适用场合」是否与用户需求匹配、「寓意」是否与用户诉求相符**
    —— 不要只按名字的字面联想。比如"祝寿"应该选场合含「寿诞」、寓意含「长寿」的母题。
 7. border.pattern 和 corner.pattern **也必须从上面的「可用母题」里选**；
