@@ -84,7 +84,18 @@ def save_all(result):
     (out / "card.json").write_text(
         json.dumps(result["card"], ensure_ascii=False, indent=2), encoding="utf-8")
     (out / "card.md").write_text(to_markdown(result["card"]), encoding="utf-8")
+    # ---- B4 新增：溯源卡片出图 ----
+    # ★ 必须 try/except：管线原则是"任何单点失败都不中断"，演示时崩一次印象分就没了
+    try:
+        from src.m6_provenance import render_card_png
+        png, size = render_card_png(result["card"], out / "provenance_card.png")
+        print(f"溯源卡片图 → {png}  尺寸 {size}")
+    except Exception as e:
+        result["errors"].append(f"M6 出图失败：{type(e).__name__}: {e}")
+        print(f"[警告] 溯源卡片出图失败：{type(e).__name__}: {e}")
+
     return out
+
 
 
 def main():
