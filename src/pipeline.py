@@ -37,10 +37,23 @@ def load_rules():
         return []
 
 
-def run(user_request, top_k=None):
+def run(user_request, top_k=None, on_step=None):
+    """端到端管线。
+
+    on_step: 可选回调（B7 界面用）。每进入一个环节就调一次，用于分步显示进度。
+             ★ 回调里抛异常**不能影响主管线** —— 报告进度是锦上添花，不是关键路径。
+    """
+    def _step(msg):
+        if on_step is not None:
+            try:
+                on_step(msg)
+            except Exception:
+                pass          # 界面出问题不能拖垮管线
+
     result = {"user_request": user_request, "errors": []}
 
     # ---- M1 意图解析 ----
+    _step("① 解析需求 →《纹样文化配方》")
     try:
         recipe = parse_intent(user_request)
     except Exception as e:
@@ -50,6 +63,7 @@ def run(user_request, top_k=None):
     recipe["recipe_id"] = gen_recipe_id(user_request)
 
     # ---- M2 元素检索 ----
+    _step("② 从样本库检索真实纹样元素")
     hits = []
     try:
         hits = retrieve(recipe, top_k=top_k)
@@ -58,20 +72,23 @@ def run(user_request, top_k=None):
         result["errors"].append(f"M2 失败：{type(e).__name__}: {e}")
 
     # ---- M3 文化校验 ----
+    rules = load_rules()                     # ★ 只读一次，别在 _step 里再读一遍
+    _step(f"③ 文化规则校验（{len(rules)} 条规则）")
     try:
-        recipe["violations"] = validate(recipe, load_rules(),
-                                        CFG["validate"]["severity_order"])
+        recipe["violations"] = validate(recipe, rules, CFG["validate"]["severity_order"])
     except Exception as e:
         result["errors"].append(f"M3 失败：{type(e).__name__}: {e}")
         recipe["violations"] = []
 
     # ---- M6 溯源卡片 ----
+    _step("④ 组装元素级溯源卡片")
     try:
         card = build_card(recipe, hits)
     except Exception as e:
         result["errors"].append(f"M6 失败：{type(e).__name__}: {e}")
         card = {"elements": []}
 
+    _step("完成")
     result.update({"recipe": recipe, "hits": hits, "card": card})
     return result
 
