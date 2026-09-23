@@ -46,8 +46,19 @@ compose:
 copyright:
   phash_size: 8
   phash_highfreq: 4
-  phash_threshold: 6        # 汉明距离，<= 6 判为高度相似（需标定）
-  clip_sim_threshold: 0.92  # 余弦相似度阈值，需标定，不能照抄
+  # ---- 以下阈值由 scripts/calibrate_m7.py 标定得出（2026-09-24）----
+  # 标定方法：正例=库内图 4 种轻微改动变体(120)，负例=库内原图跨门类比对(30)
+  #           选点准则 Youden J = TPR - FPR 最大
+  # ⚠️ 负例仅 30 个，FPR=0 的 95% 置信上界约 9.5% —— 对外表述不可写成"误报率 0%"，
+  #    应写"在 30 个负例上未出现误报"。测试集规模待扩充。
+  # phash：曲线显示区分力有限（t=3 时 TPR 49%/FPR 0；t=4 时 FPR 直接飙到 40%）。
+  #        所以 phash **只用于"极近"判定**，灰区不设档 —— 否则 40% 的正常图会被判 medium。
+  #        灰区交给 CLIP：它的曲线在 0.87~0.90 之间才有意义。
+  phash_threshold: 3
+  phash_threshold_medium: 3      # 与 high 同值 = 不设 phash 灰区（见上）
+  # clip：t=0.89~0.90 区间 J 最大（TPR 100%/FPR 0）。取 0.90 以留一点余量。
+  clip_sim_threshold: 0.90
+  clip_sim_threshold_medium: 0.87
 
 paths:
   samples: data/samples.json

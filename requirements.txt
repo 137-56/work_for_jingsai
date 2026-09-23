@@ -20,6 +20,12 @@ requests==2.34.2
 # 感知哈希（版权预警）
 ImageHash==4.3.2
 
+# 图表与分析（M7 阈值标定曲线、实验对照图）
+# ⚠️ 直连 PyPI 会下载中断，装的时候走国内镜像：
+#   pip install matplotlib -i https://pypi.tuna.tsinghua.edu.cn/simple
+matplotlib==3.11.2
+scipy==1.18.1
+
 # 配置与数据
 PyYAML==6.0.3
 python-dotenv==1.2.3
