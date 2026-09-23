@@ -1,7 +1,12 @@
 {
   "positives": 120,
-  "negatives": 30,
+  "negatives_cross": 30,
+  "negatives_same": 30,
   "sources": 30,
+  "working_point": {
+    "phash_threshold": 3.0,
+    "clip_threshold": 0.9
+  },
   "phash": {
     "threshold": 2,
     "tpr": 0.4917,
@@ -446,5 +451,49 @@
       }
     ]
   },
-  "method": "正例=库内图 4 种轻微改动（旋转4°/亮度1.12/白边5%/JPEG q60），比完整库；负例=库内原图，只比跨门类子集。选点准则 Youden J = TPR - FPR 最大。"
+  "by_transform": {
+    "rotate4": {
+      "n": 30,
+      "phash_rate": 0.0,
+      "clip_rate": 1.0,
+      "phash_median_dist": 6.0,
+      "zero_dist_ratio": 0.0
+    },
+    "bright12": {
+      "n": 30,
+      "phash_rate": 0.9667,
+      "clip_rate": 1.0,
+      "phash_median_dist": 0.0,
+      "zero_dist_ratio": 0.7
+    },
+    "border5": {
+      "n": 30,
+      "phash_rate": 0.0,
+      "clip_rate": 1.0,
+      "phash_median_dist": 6.0,
+      "zero_dist_ratio": 0.0
+    },
+    "jpeg60": {
+      "n": 30,
+      "phash_rate": 1.0,
+      "clip_rate": 1.0,
+      "phash_median_dist": 0.0,
+      "zero_dist_ratio": 0.9
+    }
+  },
+  "negatives_by_tier": {
+    "跨门类": {
+      "n": 30,
+      "phash_fpr": 0.0,
+      "clip_fpr": 0.0,
+      "combined_fpr": 0.0
+    },
+    "同门类": {
+      "n": 30,
+      "phash_fpr": 0.1333,
+      "clip_fpr": 0.3,
+      "combined_fpr": 0.3667
+    }
+  },
+  "method": "正例=库内图 4 种轻微改动（旋转4°/亮度×1.12/白边5%/JPEG q60），比完整库；负例=库内原图，分跨门类与同门类两档。选点准则 Youden J = TPR − FPR 最大。B6b 诊断固定在工作点上，不重新选点。"
 }
