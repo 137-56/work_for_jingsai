@@ -120,6 +120,15 @@ def save_all(result):
     except Exception as e:
         result["errors"].append(f"M4 失败：{type(e).__name__}: {e}")
         print(f"[警告] 设计依据板生成失败：{type(e).__name__}: {e}")
+  # ---- M4a 新增：真组合合成 ----
+    try:
+        from src.m4_compose import compose_pattern
+        pat, psize = compose_pattern(result["recipe"], result["hits"],
+                                     out / "composed_pattern.png")
+        print(f"组合纹样图 → {pat}  尺寸 {psize}")
+    except Exception as e:
+        result["errors"].append(f"M4a 失败：{type(e).__name__}: {e}")
+        print(f"[警告] 组合纹样图生成失败：{type(e).__name__}: {e}")
     return out
 
 
