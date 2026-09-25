@@ -38,3 +38,6 @@ lmdb==2.3.0
 
 # 界面
 streamlit==1.63.0
+
+# 界面截图（自动驱动，复用系统 Chrome）
+playwright==1.63.0

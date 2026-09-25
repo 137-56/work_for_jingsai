@@ -1,0 +1,17 @@
+# Streamlit 运行配置 —— 主要目的是让**截图/演示时界面干净**。
+#
+# toolbarMode = "minimal"：隐藏右上角的 Deploy 菜单与各类提示条
+#   （否则截图里会出现 "Help agents write better apps" 弹窗，
+#     演示与 PPT 里很难看）
+# gatherUsageStats = false：关闭遥测上报
+
+[client]
+toolbarMode = "minimal"
+showErrorDetails = true
+showSidebarNavigation = false
+
+[browser]
+gatherUsageStats = false
+
+[server]
+headless = true
