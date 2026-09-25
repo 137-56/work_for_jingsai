@@ -110,7 +110,16 @@ def save_all(result):
     except Exception as e:
         result["errors"].append(f"M6 出图失败：{type(e).__name__}: {e}")
         print(f"[警告] 溯源卡片出图失败：{type(e).__name__}: {e}")
-
+     # ---- B5 新增：设计依据板 ----
+    try:
+        from src.m4_compose import compose_board
+        bd, bsize = compose_board(result["recipe"], result["hits"],
+                                  out / "design_board.png",
+                                  generated_at=result["card"].get("generated_at"))
+        print(f"设计依据板 → {bd}  尺寸 {bsize}")
+    except Exception as e:
+        result["errors"].append(f"M4 失败：{type(e).__name__}: {e}")
+        print(f"[警告] 设计依据板生成失败：{type(e).__name__}: {e}")
     return out
 
 

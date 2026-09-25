@@ -36,6 +36,9 @@ st.set_page_config(page_title="纹有其源 · 可溯源纹样生成系统", lay
 
 DEFAULT_REQ = "做一个有吉祥寓意的窗花，用于春节礼品包装"
 
+# 配方槽位的中文名（用于标注"槽位保底命中"）
+SLOT_CN = {"border": "边饰", "corner": "角花"}
+
 
 @st.cache_data(show_spinner=False)
 def sample_count():
@@ -112,8 +115,16 @@ with tab_gen:
             st.json(recipe)
 
         # ---------- ② 检索结果 ----------
+        # ★ 注意：retrieve() 会把"配方指定槽位（边饰/角花）"的命中**钉到榜单最前面**（槽位保底机制），
+        #   所以这份列表**不是**严格按相似度排序的。必须把这个机制显式标出来 ——
+        #   否则界面上会出现"相似度 0.45 排在 0.75 前面"，看起来像 bug。
         st.subheader("② 真实纹样元素检索结果")
-        st.caption(f"共 {len(hits)} 个候选（按相似度排序）")
+        n_pin = sum(1 for h in hits if h.get("slot"))
+        if n_pin:
+            st.caption(f"共 {len(hits)} 个候选。其中前 {n_pin} 个为**配方指定槽位（边饰 / 角花）的保底命中**"
+                       "——它们的绝对相似度天然偏低，若不保底会被挤出榜单；其余按相似度排序。")
+        else:
+            st.caption(f"共 {len(hits)} 个候选（按相似度排序）")
         if hits:
             ncol = min(5, len(hits))
             cols = st.columns(ncol)
@@ -124,8 +135,9 @@ with tab_gen:
                     if ip.exists():
                         st.image(str(ip), width=150)
                     st.markdown(f"**{s['name']}**")
-                    st.caption(f"相似度 {h.get('score', 0):.2f}")
-                    st.caption(f"{s.get('category', '')}")
+                    if h.get("slot"):
+                        st.caption(f"★ 配方「{SLOT_CN.get(h['slot'], h['slot'])}」槽位保底命中")
+                    st.caption(f"相似度 {h.get('score', 0):.2f}｜{s.get('category', '')}")
 
         # ---------- ③ 文化校验 ----------
         st.subheader("③ 文化规则校验")
