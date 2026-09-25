@@ -112,7 +112,7 @@ def main() -> int:
         if t is None:
             print(f"[跳过] {p.name}：未安装 python-pptx")
             continue
-        tag = "当前口径" if "纹有其源" in t else "⚠️ 疑似方案A口径（待 D 阶段重做）"
+        tag = "当前口径" if "纹初迹现" in t else "⚠️ 疑似方案A口径（待 D 阶段重做）"
         sources.append((p.name, t, tag))
 
     if not sources:

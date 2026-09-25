@@ -1,5 +1,5 @@
 # app.py
-"""纹有其源 · 传统纹样可溯源 AI 生成系统 —— 演示界面（B7）。
+"""纹初迹现 · 传统纹样可溯源生成系统 —— 演示界面（B7）。
 
 单页两个标签页：
   Tab 1「生成与溯源」    一句需求 → 配方 → 检索 → 校验 → 溯源卡片
@@ -32,7 +32,7 @@ from src.m7_copyright import assess
 from src.pipeline import run, save_all
 from src.utils import CFG
 
-st.set_page_config(page_title="纹有其源 · 可溯源纹样生成系统", layout="wide")
+st.set_page_config(page_title="纹初迹现 · 可溯源纹样生成系统", layout="wide")
 
 DEFAULT_REQ = "做一个有吉祥寓意的窗花，用于春节礼品包装"
 
@@ -66,7 +66,7 @@ with st.sidebar:
     st.caption("首次运行需加载 CLIP 模型（约 20–40 秒），之后会缓存。")
 
 
-st.title("纹有其源 · 传统纹样可溯源 AI 生成系统")
+st.title("纹初迹现 · 传统纹样可溯源生成系统")
 st.caption("一句需求 →《纹样文化配方》→ 真实纹样元素检索 → 文化校验 → 元素级溯源卡片")
 
 tab_gen, tab_check = st.tabs(["生成与溯源", "版权相似度审查"])
@@ -166,6 +166,58 @@ with tab_gen:
             with st.expander("降级记录（不影响主链路）"):
                 for e in res["errors"]:
                     st.write("- " + e)
+
+        # ---------- ⑤ AI 风格化（可选，不可溯源） ----------
+        st.divider()
+        st.subheader("⑤ AI 风格化（可选）")
+        # ★★ 这段声明必须显式放在界面上，不能只写在文档里。
+        #    指南要求："报告与界面中必须明确区分【组合式合成（可溯源）】
+        #    与【AI 风格化（不可溯源）】，不要混在一起宣称 100% 可溯源。"
+        st.warning("**AI 风格化 · 元素级溯源不适用** —— 本步骤由扩散模型重绘，"
+                   "元素与纹理为 AI 生成，**不参与元素级溯源**。"
+                   "可溯源的部分只有 ①–④（配方 / 检索 / 校验 / 溯源卡片）。"
+                   "**请勿把本步结果与溯源卡片混在一起展示。**")
+
+        comp = Path(st.session_state.get("out", "")) / "composed_pattern.png"
+        if comp.exists():
+            st.caption("参考图（M4a 组合纹样图，元素级可溯源）：")
+            st.image(str(comp), width=420)
+
+        c1, c2 = st.columns([3, 2])
+        with c1:
+            strength = st.radio(
+                "风格化强度",
+                options=[0.30, 0.85],
+                format_func=lambda v: ("探索档 0.30 —— 好看，但元素会被重绘"
+                                       if v < 0.5 else
+                                       "保构图档 0.85 —— 构图保住，风格化明显"),
+                key="m5_strength")
+        with c2:
+            st.caption("每张约 35 秒并消耗 API 额度，**刻意不自动跑**，需手动点击。")
+            go_s = st.button("生成风格化效果", key="m5_go", type="primary")
+
+        if go_s and comp.exists():
+            with st.spinner(f"调用通义万相风格化（ref_strength={strength}），约 35 秒…"):
+                try:
+                    from src.m5_stylize import stylize
+                    rec = json.loads((Path(st.session_state["out"]) / "recipe.json")
+                                     .read_text(encoding="utf-8"))
+                    info = stylize(comp, rec,
+                                   Path(st.session_state["out"]) / f"stylized_{int(strength * 100)}.png",
+                                   strength, rec.get("recipe_id", ""))
+                except Exception as e:
+                    info = None
+                    st.error(f"风格化失败：{type(e).__name__}: {e}")
+            if info:
+                st.session_state["m5_info"] = info
+
+        info = st.session_state.get("m5_info")
+        if info and Path(info["file"]).exists():
+            st.image(info["file"], width="stretch")
+            m1, m2 = st.columns(2)
+            m1.metric("构图漂移（phash）", info["phash_drift"])
+            m2.metric("ref_strength", info["ref_strength"])
+            st.caption(f"⚠️ {info['disclaimer']}")
 
 # ================================================================ Tab 2
 with tab_check:
