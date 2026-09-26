@@ -91,11 +91,12 @@ def _section(d, x, y, title, fonts):
 
 
 # ---------------------------------------------------------------- 主入口
-def compose_board(recipe, hits, out_path, generated_at=None):
+def compose_board(recipe, hits, out_path, generated_at=None, texture=None):
     """生成设计依据板。返回 (路径, (宽, 高))。
 
     generated_at: 生成时间。**recipe 里没有这个字段**——它由 build_card() 写进 card，
                   所以调用方（pipeline.save_all）应把 card["generated_at"] 传进来。
+    texture:      实物佐证层选中的织物肌理（与 composed_pattern 用同一件，保证一致）。
     """
     st = recipe.get("structure") or {}
     cm = st.get("center_motif") or {}
@@ -213,7 +214,7 @@ def compose_board(recipe, hits, out_path, generated_at=None):
     # ★ 直接用 compose_pattern 的输出，不再自己拼一遍（避免两份实现分叉）
     _tmp = Path(out_path).parent / "_board_schematic.png"
     try:
-        compose_pattern(recipe, hits, _tmp, size=SQUARE)
+        compose_pattern(recipe, hits, _tmp, size=SQUARE, texture=texture)
         img.paste(Image.open(_tmp).convert("RGB"), (MARGIN, y_sq))
         _tmp.unlink(missing_ok=True)
     except Exception:
@@ -412,13 +413,20 @@ def _tile_col(tile_img, band_w, band_h):
     return col
 
 
-def compose_pattern(recipe, hits, out_path, size=1024):
+def compose_pattern(recipe, hits, out_path, size=1024, texture=None, texture_strength=0.35):
     """按配方位置，用**库内真实纹样块**拼出一张组合式纹样图。
 
     构图：中心母题居中，边饰按 border_ratio 环绕，四角为角花。
-    **这就是"可解释的组合式生成"的实际形态** —— 每个位置都对应一个可查出处的真实素材。
 
-    返回 (路径, (宽, 高))。
+    texture: 实物佐证层的一件（来自 `src.artifact_layer.pick_texture`）。
+      ★ 它是**材质层**，不是纹样层 —— 只作为整幅的低透明度织物肌理叠上去，
+        不参与元素级溯源。传导到卡片/报告时必须**分区标注**：
+          纹样层（中心/边饰/角花）→ 元素级可溯（母题库）
+          材质层（织物肌理）      → 实物可溯（克利夫兰，CC0）
+      texture_strength 控制肌理强度（只取亮度起伏，不改颜色）。0.35 为实测甜点。
+      texture=None 时跳过，输出与旧版一致。
+
+    返回 (路径, (宽, 高), 实际采用的 texture 条目或 None)。
     """
     st = recipe.get("structure") or {}
     cm_name = ((st.get("center_motif") or {}).get("name") or "").strip()
@@ -475,7 +483,30 @@ def compose_pattern(recipe, hits, out_path, size=1024):
         for px, py in ((0, 0), (size - bw, 0), (0, size - bw), (size - bw, size - bw)):
             canvas.paste(c, (px, py))
 
+    # ---- 实物佐证层：织物肌理（材质层）----
+    # ★ 只取纹理的「亮度起伏」，**不引入色偏**。
+    #   第一版用 Image.blend 整幅混合，实测 alpha≥0.28 就把底色弄灰、蓝色变浊
+    #   （因为把克利夫兰织物的颜色也叠上来了）。
+    #   改成：把纹理灰度化 → 除以自身均值得到"相对亮度起伏" → 与底图逐像素相乘。
+    #   这样只加织物的经纬/褶皱质感，颜色仍是配方配色。
+    used_texture = None
+    if texture is not None:
+        try:
+            from src.artifact_layer import texture_image
+            tex = texture_image(texture, size).convert("RGB")
+            if tex.size != (size, size):
+                tex = tex.resize((size, size), Image.LANCZOS)
+            base = np.asarray(canvas.convert("RGB"), np.float32)
+            g = np.asarray(tex.convert("L"), np.float32)
+            g = g / (g.mean() + 1e-6)                       # 相对亮度，均值≈1
+            factor = 1.0 + (g - 1.0) * float(texture_strength)
+            canvas = Image.fromarray(
+                np.clip(base * factor[..., None], 0, 255).astype(np.uint8))
+            used_texture = texture
+        except Exception as e:
+            print(f"[警告] 织物肌理叠加失败（已跳过）：{type(e).__name__}: {e}")
+
     out_path = Path(out_path)
     out_path.parent.mkdir(parents=True, exist_ok=True)
     canvas.save(out_path, "PNG")
-    return out_path, canvas.size
+    return out_path, canvas.size, used_texture

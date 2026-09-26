@@ -80,6 +80,33 @@ def run(user_request, top_k=None, on_step=None):
         result["errors"].append(f"M3 失败：{type(e).__name__}: {e}")
         recipe["violations"] = []
 
+    # ---- 实物佐证层：挑一件织物肌理（材质层） ----
+    # ★ 必须在 build_card 之前挑：卡片要**分区标注**（纹样层 vs 材质层），
+    #   而卡片是依据 recipe 组建的 → 信息必须先写进 recipe。
+    # ★ 它只作整幅低透明度肌理，**不参与元素级溯源**（克利夫兰数据无文化语义字段）。
+    _step("＋ 选取实物织物肌理（实物佐证层）")
+    texture_item = None
+    try:
+        from src.artifact_layer import pick_texture, desc_era
+        texture_item, tex_d = pick_texture(recipe)
+        if texture_item:
+            recipe["texture_layer"] = {
+                "source": "Cleveland Museum of Art (Open Access)",
+                "accession_number": texture_item.get("accession_number"),
+                "era": desc_era(texture_item),
+                "creation_date": texture_item.get("creation_date"),
+                "license": texture_item.get("license"),
+                "color_distance": round(tex_d, 1) if tex_d is not None else None,
+                "role": "材质层（织物肌理）",
+                "note": "★ 不参与元素级溯源 —— 纹样层（中心/边饰/角花）来自母题库，可元素级溯源；"
+                        "材质层来自实物佐证层，仅实物可溯。两者不得混称 100% 可溯源。",
+            }
+            print(f"  织物肌理 → {texture_item.get('accession_number')}"
+                  f"（{recipe['texture_layer']['era']}）｜色距 {tex_d:.1f}")
+    except Exception as e:
+        result["errors"].append(f"实物佐证层选材失败：{type(e).__name__}: {e}")
+        print(f"  [警告] 实物佐证层选材失败（已跳过）：{type(e).__name__}: {e}")
+
     # ---- M6 溯源卡片 ----
     _step("④ 组装元素级溯源卡片")
     try:
@@ -89,7 +116,8 @@ def run(user_request, top_k=None, on_step=None):
         card = {"elements": []}
 
     _step("完成")
-    result.update({"recipe": recipe, "hits": hits, "card": card})
+    result.update({"recipe": recipe, "hits": hits, "card": card,
+                   "_texture": texture_item})     # 下划线开头 = 内部用，不落盘
     return result
 
 
@@ -110,22 +138,28 @@ def save_all(result):
     except Exception as e:
         result["errors"].append(f"M6 出图失败：{type(e).__name__}: {e}")
         print(f"[警告] 溯源卡片出图失败：{type(e).__name__}: {e}")
-     # ---- B5 新增：设计依据板 ----
+    # ---- B5 新增：设计依据板 ----
+    # ★ 与组合纹样图共用同一件织物肌理（在 run() 里挑的），保证两处一致
+    tex = result.get("_texture")
     try:
         from src.m4_compose import compose_board
         bd, bsize = compose_board(result["recipe"], result["hits"],
                                   out / "design_board.png",
-                                  generated_at=result["card"].get("generated_at"))
+                                  generated_at=result["card"].get("generated_at"),
+                                  texture=tex)
         print(f"设计依据板 → {bd}  尺寸 {bsize}")
     except Exception as e:
         result["errors"].append(f"M4 失败：{type(e).__name__}: {e}")
         print(f"[警告] 设计依据板生成失败：{type(e).__name__}: {e}")
-  # ---- M4a 新增：真组合合成 ----
+
+    # ---- M4a 新增：真组合合成 ----
     try:
         from src.m4_compose import compose_pattern
-        pat, psize = compose_pattern(result["recipe"], result["hits"],
-                                     out / "composed_pattern.png")
-        print(f"组合纹样图 → {pat}  尺寸 {psize}")
+        pat, psize, used_tex = compose_pattern(result["recipe"], result["hits"],
+                                               out / "composed_pattern.png",
+                                               texture=tex)
+        extra = f"（含织物肌理 {used_tex.get('accession_number')}）" if used_tex else ""
+        print(f"组合纹样图 → {pat}  尺寸 {psize}{extra}")
     except Exception as e:
         result["errors"].append(f"M4a 失败：{type(e).__name__}: {e}")
         print(f"[警告] 组合纹样图生成失败：{type(e).__name__}: {e}")
