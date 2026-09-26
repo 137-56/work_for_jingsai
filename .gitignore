@@ -21,3 +21,6 @@ dist/
 data/artifacts/images/
 data/artifacts/candidates.json
 data/artifacts/*.tmp
+
+# 图片不入库（与 data/artifacts/images/ 一致）—— 脚本可重现：scripts/fetch_cleveland.py
+data/artifacts_cle/images/
