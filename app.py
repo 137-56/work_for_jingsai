@@ -219,6 +219,57 @@ with tab_gen:
             m2.metric("ref_strength", info["ref_strength"])
             st.caption(f"⚠️ {info['disclaimer']}")
 
+        # ---------- ⑥ 文创效果预览（3D，载体层不参与元素级溯源） ----------
+        st.divider()
+        st.subheader("⑥ 文创效果预览（3D）")
+        # ★ 与 ⑤ 同理：这里的声明必须显式放在界面上，不能只写在文档里。
+        st.info("**纹样层可溯，载体层不参与元素级溯源** —— "
+                "本例把上一步的**组合纹样图**贴附到三种器物形态上，用于预览文创落地效果。"
+                "纹样仍来自语义层母题库（**元素级可溯**）；"
+                "而三种器物形态是**程序化生成的标准几何体**，"
+                "**不是文物三维模型、也不是 AI 生成**，因此不引入新的溯源问题。")
+        st.caption("⚠️ 形态为示意性预览，**不代表任何具体器物的真实形制或三维复原**。")
+
+        if comp.exists():
+            c3, c4 = st.columns([3, 2])
+            with c3:
+                q = st.radio("渲染质量",
+                             options=["fast", "high"],
+                             format_func=lambda v: ("快速预览（约 15 秒，适合演示）"
+                                                    if v == "fast" else
+                                                    "高清（约 2 分钟，适合出图）"),
+                             key="p3d_q")
+            with c4:
+                st.caption("纯 CPU 解析渲染，**无需 GPU**，结果可复现。需手动点击。")
+                go3 = st.button("生成 3D 文创预览", key="p3d_go", type="primary")
+
+            if go3:
+                with st.spinner(f"渲染三种形态（{q}）…"):
+                    try:
+                        from src.preview3d import render_preview
+                        rec = json.loads((Path(st.session_state["out"]) / "recipe.json")
+                                         .read_text(encoding="utf-8"))
+                        paths = render_preview(comp, Path(st.session_state["out"]),
+                                               rec, quality=q)
+                        st.session_state["p3d_paths"] = {k: str(v) for k, v in paths.items()}
+                    except Exception as e:
+                        st.error(f"3D 预览失败：{type(e).__name__}: {e}")
+
+            p3 = st.session_state.get("p3d_paths") or {}
+            tri = p3.get("triptych")
+            if tri and Path(tri).exists():
+                st.image(tri, width="stretch")
+                with st.expander("查看单形态大图"):
+                    cols = st.columns(3)
+                    for col, (k, lab) in zip(cols, (("vase", "陶瓶"),
+                                                    ("box", "包装方盒"),
+                                                    ("plate", "赏盘"))):
+                        p = p3.get(k)
+                        if p and Path(p).exists():
+                            col.image(p, caption=lab, width="stretch")
+                st.caption("纹样层：来自语义层母题库，元素级可溯　｜　"
+                           "载体层：程序化生成的标准几何体（非文物三维模型、非 AI 生成），仅作形态预览")
+
 # ================================================================ Tab 2
 with tab_check:
     st.markdown("上传一张纹样图片，系统会与样本库比对，给出**相似度风险分级**。")
