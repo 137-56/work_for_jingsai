@@ -1,0 +1,12 @@
+{
+  "n_motif": 100,
+  "n_edge": 385,
+  "raw_refs": 505,
+  "n_elem": 150,
+  "n_co": 156,
+  "modularity": 0.549,
+  "n_community": 5,
+  "isolated": 0,
+  "max_degree_node": "祥云纹",
+  "max_degree": 25
+}
