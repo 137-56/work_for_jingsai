@@ -322,6 +322,39 @@ def pattern_crop_box(path, fill_ratio=0.62, bg_tol=60):
     return (left, top, min(w, left + side), min(h, top + side))
 
 
+def pattern_region_mask(path, bg_tol=60):
+    """返回 (掩码, (宽,高))：掩码=True 处是**纹样区本身**。
+
+    ★ 为什么要把它单独暴露出来（而不是只给 pattern_crop_box 一个框）
+      纹样区是个**弧边形状**（D 形 / 整圆），不是矩形。
+      `pattern_crop_box` 用的是"中心正方形"，正方形一定有角落在弧形外面 ——
+      给它加个 12% 内缩就够糊住了（因为它只用在中景/平铺）。
+
+      但 `src/pattern_layout.py` 给**主题纹**取框时用的是母题外接矩形，
+      那个矩形比中心正方形更靠边，左下角会**越过弧线伸进纸色区**，
+      于是裁块里带进一块米白 + 一道金色弧边（实测就是这样：蝙蝠纹裁块左下角）。
+      事后用颜色填掉治标不治本，而且弧线本身填不掉。
+
+      **正解是把框与纹样区掩码取交集** —— 弧线外一律不算。
+    """
+    im = Image.open(path).convert("RGB")
+    a = np.asarray(im).astype(np.int16)
+    h, w, _ = a.shape
+    bg = a[0:20, 0:20].reshape(-1, 3).mean(0)
+    mask = (np.abs(a - bg).sum(2) > bg_tol)
+    mask[:, : int(w * 0.30)] = False
+    mask[int(h * 0.90):, :] = False
+    from scipy import ndimage
+    lab, n_lab = ndimage.label(mask)
+    if n_lab > 1:
+        sizes = ndimage.sum(mask, lab, range(1, n_lab + 1))
+        mask = (lab == (int(np.argmax(sizes)) + 1))
+    # ★ 腐蚀一圈：弧线本身也是"非背景"，会让掩码比真实纹样区**外扩几像素**。
+    #   腐蚀 5px 后掩码退到弧线内侧，取交集时就不会带入弧线。
+    mask = ndimage.binary_erosion(mask, np.ones((5, 5)))
+    return mask, (w, h)
+
+
 # 裁切框缓存：同一张图只算一次（自动求框有点慢）
 _CROP_CACHE = {}
 

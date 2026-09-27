@@ -4,10 +4,17 @@
 ★ 为什么需要这个脚本
     渲染器里的法线一旦朝向反了，画面**看起来仍然是 3D 的**（明暗关系依旧存在），
     只是**光从错误的一侧来**。肉眼几乎发现不了，尤其在器物形态上。
-    本项目的渲染器有两处容易反：
+    本项目的渲染器有**三**处容易反（形态集增加后从两处变三处）：
       ① 长方体的面法线（光线方向与法线符号）
-      ② 旋转体的外法线（取决于"实体在轴内侧还是下方"——瓶对、盘不对）
-    实测就是这样：方盒与赏盘的法线都反了，但渲染图乍看正常。
+      ② 旋转体的外法线（取决于"实体在轴内侧还是下方"）
+      ③ 团扇的圆面法线（±Z 两片，写错一面的符号会变成"背光板"）
+    实测就是这样：方盒与（已移除的）赏盘的法线都反过，渲染图乍看却正常。
+
+  ★ 形态集变更必须同步这里（踩过）：
+      原来只处理 `prof is not None` / `else`（旋转体 / 长方体）两种情况，
+      加入团扇后它既不是旋转体、也不是长方体 —— 会走进 `_box_hit`，
+      拿到一堆无效命中，自检结果变成"无命中像素"，**静默失效**。
+      所以下面按 kind 显式三分支。
 
 ★ 判据
     对**凸**物体从外部观察，可见点的外法线必然朝向相机：
@@ -38,9 +45,12 @@ def check(kind, W=160, H=200, cam=3.35, fov=26.0, azim=30.0):
     o_obj = Rt @ o.astype(np.float32)
     d_obj = (d.reshape(-1, 3) @ Rt.T).reshape(H, W, 3)
 
-    if prof is not None:
-        cap_b = extra if kind != "plate" else None
-        t, n_obj, _ = P._revolve_hit(o_obj, d_obj, prof, cap_bottom=cap_b, cap_top=None)
+    if kind == "fan":
+        # ★ 团扇走专用求交（圆面 + 柄），不是旋转体也不是长方体
+        t, n_obj, _ = P._fan_hit(o_obj, d_obj, prof)
+    elif prof is not None:
+        t, n_obj, _ = P._revolve_hit(o_obj, d_obj, prof,
+                                     cap_bottom=extra, cap_top=None)
     else:
         t, n_obj, _ = P._box_hit(o_obj, d_obj, half)
     if flip:
@@ -83,8 +93,7 @@ def main():
     tex = np.full((64, 64, 3), 200.0, np.float32)
     nan_bad = []
     for kind in P.FORMS:
-        a = P.render_form(kind, tex, W=120, H=150, ss=1,
-                          use_planar_uv=(kind == "plate"))
+        a = P.render_form(kind, tex, W=120, H=150, ss=1)
         hit = a[..., 3] > 0
         nan = int(np.isnan(a[..., :3]).sum())
         mean = float(a[..., :3][hit].mean()) if hit.any() else 0.0

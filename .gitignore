@@ -24,3 +24,15 @@ data/artifacts/*.tmp
 
 # 图片不入库（与 data/artifacts/images/ 一致）—— 脚本可重现：scripts/fetch_cleveland.py
 data/artifacts_cle/images/
+
+# ------------------------------------------------------------------ 3D 交付物
+# 与"图片不入库"同一原则：**GLB 是派生产物，可由脚本重现**：
+#     .venv/Scripts/python.exe -m src.glb_export --recipe outputs/<id>
+# 每个约 0.8~1.2 MB、且随配方变化，入库会持续膨胀仓库，故忽略。
+# ★ 但 `web/viewer.html` 与 `web/vendor/*.js`（Three.js，约 600 KB）
+#   是**手写的源码 / 固定依赖**，必须提交 —— 不提交则查看器无法运行。
+web/glb/
+# `static/` 整个是 **web/ 的运行时副本**（Streamlit 只认 <app_dir>/static，
+# 见 app.py::_embed_viewer 的说明）。副本由程序自动生成，不入库 ——
+# 入库会变成"同一份文件两处维护"，迟早不一致。运行时缺了会自动补。
+static/

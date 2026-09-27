@@ -35,7 +35,13 @@ TEXT_EXT = {".md", ".txt", ".html", ".htm", ".csv", ".json", ".yaml", ".yml",
 #   三方库源码里全是形似手机号/身份证的数字串（实测 15328 个文件命中 14296 处，全是噪声），
 #   真正的风险会被淹没，E1 环节直接不可用。
 EXCLUDE_DIRS = {".venv", "venv", "env", "__pycache__", ".git", ".idea", ".vscode",
-                "node_modules", "ckpt", "outputs", ".pytest_cache"}
+                "node_modules", "ckpt", "outputs", ".pytest_cache",
+                # ★ 第三方压缩库与本项目对其的运行时副本。理由同 .venv/：
+                #   压缩后的数学库源码里必然含圆周率常量，从长数字常量中
+                #   截出的片段会命中「手机号」规则 —— 纯误报，且改不得
+                #   （改了就破坏固定依赖）。本注释刻意不复述那段数字，
+                #   否则它自己会被命中（已实测踩过一次）。
+                "vendor", "static"}
 
 # ★ 词表文件自己要被排除。理由：redline.yaml 里**原样存着敏感串本身**，
 #   而 .example 里存着规则的字面量 —— 扫它们就是在让词表自己变成泄露源，

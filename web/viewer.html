@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>纹初迹现 · 三维预览</title>
+<style>
+  :root{
+    --paper:#f3eee4; --ink:#3a342c; --grey:#8b8275; --gold:#b08d3f;
+    --card:#fbf8f2; --line:#e2d9c9;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%}
+  body{
+    background:var(--paper); color:var(--ink);
+    font-family:"Songti SC","Noto Serif CJK SC","Source Han Serif SC",
+                "Microsoft YaHei",system-ui,sans-serif;
+    display:flex; flex-direction:column; overflow:hidden;
+  }
+  header{
+    padding:16px 24px 12px; border-bottom:1px solid var(--line);
+    display:flex; align-items:baseline; gap:14px; flex-wrap:wrap;
+    background:var(--card);
+  }
+  header h1{font-size:19px;font-weight:600;letter-spacing:.04em}
+  header .sub{font-size:12.5px;color:var(--grey)}
+  main{flex:1;display:flex;min-height:0}
+  #stage{flex:1;position:relative;min-width:0}
+  #stage canvas{display:block;width:100%;height:100%}
+  aside{
+    width:264px;flex:0 0 264px;border-left:1px solid var(--line);
+    background:var(--card);padding:18px 18px 24px;overflow-y:auto;
+  }
+  aside h2{
+    font-size:12px;letter-spacing:.14em;color:var(--grey);
+    font-weight:600;margin:0 0 10px;
+  }
+  .tabs{display:flex;gap:6px;margin-bottom:16px}
+  .tabs button{
+    flex:1;padding:9px 6px;border:1px solid var(--line);background:#fff;
+    color:var(--ink);border-radius:5px;font:inherit;font-size:13px;
+    cursor:pointer;transition:.15s;
+  }
+  .tabs button:hover{border-color:var(--gold)}
+  .tabs button[aria-pressed="true"]{
+    background:var(--ink);border-color:var(--ink);color:var(--card);
+  }
+  .row{display:flex;gap:8px;margin-bottom:9px}
+  .row button{
+    flex:1;padding:8px 6px;border:1px solid var(--line);background:#fff;
+    color:var(--ink);border-radius:5px;font:inherit;font-size:12.5px;
+    cursor:pointer;transition:.15s;
+  }
+  .row button:hover{border-color:var(--gold);background:#fffdf8}
+  .meta{
+    margin-top:18px;padding-top:14px;border-top:1px solid var(--line);
+    font-size:12px;line-height:1.85;color:var(--grey);
+  }
+  .meta b{color:var(--ink);font-weight:600}
+  .warn{
+    margin-top:14px;padding:9px 11px;border-radius:5px;
+    background:#fdf6e6;border:1px solid #ecdcb4;
+    font-size:11.5px;line-height:1.7;color:#7a6427;
+  }
+  #hint{
+    position:absolute;left:16px;bottom:14px;font-size:11.5px;
+    color:var(--grey);background:rgba(251,248,242,.86);
+    padding:6px 10px;border-radius:5px;border:1px solid var(--line);
+    pointer-events:none;
+  }
+  #err{
+    position:absolute;inset:0;display:none;place-items:center;
+    padding:32px;text-align:center;font-size:13px;color:#8a3b2e;
+    background:rgba(243,238,228,.94);line-height:1.9;
+  }
+  #spin{
+    position:absolute;inset:0;display:grid;place-items:center;
+    font-size:13px;color:var(--grey);pointer-events:none;
+  }
+</style>
+</head>
+<body>
+<header>
+  <h1>纹初迹现 · 三维预览</h1>
+  <span class="sub" id="sub">纹样分区贴附于器物形态</span>
+</header>
+
+<main>
+  <div id="stage">
+    <div id="spin">载入中…</div>
+    <div id="hint">拖拽旋转 · 滚轮缩放 · 右键平移</div>
+    <div id="err"></div>
+  </div>
+
+  <aside>
+    <h2>载体形态</h2>
+    <div class="tabs" id="tabs"></div>
+
+    <h2>视图</h2>
+    <div class="row">
+      <button id="btn-reset">重置视角</button>
+      <button id="btn-rot">自动旋转</button>
+    </div>
+    <div class="row">
+      <button id="btn-download">下载 GLB</button>
+    </div>
+
+    <div class="meta" id="meta"></div>
+    <!-- ★ 溯源说明由 JS 按 ?ground= 参数填充：
+         启用 AI 地子时不能再说"非 AI 生成"，否则失实（见 setNote）。 -->
+    <div class="warn" id="note"></div>
+  </aside>
+</main>
+
+<script src="vendor/three.min.js"></script>
+<script src="vendor/GLTFLoader.js"></script>
+<script>
+(function(){
+"use strict";
+
+/* ── 形态清单 ─────────────────────────────────────────────
+   ★ 与 src/preview3d.py 的 FORMS 一一对应。
+     改一处必须改另一处（形态集变更时尤其容易漏）。       */
+const FORMS = [
+  {key:"vase", label:"陶瓶（梅瓶）", elev:12, dist:3.35},
+  {key:"box",  label:"包装方盒",     elev:16, dist:3.75},
+  {key:"fan",  label:"团扇",         elev:8,  dist:3.55},
+];
+
+/* GLB 通过 ?base=<url> 指定目录，默认 ./glb/
+   这样既能配合 Streamlit 静态目录，也能直接双击打开看图。 */
+const qs   = new URLSearchParams(location.search);
+const BASE = (qs.get("base") || "./glb/").replace(/\/?$/, "/");
+const NAME = qs.get("name") || "";
+const GROUND = qs.get("ground") || "neutral";   // "ai" = 底纹取自 AI 风格化图
+
+const stage = document.getElementById("stage");
+const errEl = document.getElementById("err");
+const spinEl= document.getElementById("spin");
+const metaEl= document.getElementById("meta");
+const subEl = document.getElementById("sub");
+const noteEl= document.getElementById("note");
+
+/* ── 溯源说明（必须与实际贴图方案一致）─────────────────────
+   ★ 为什么不能写死：地子启用 AI 风格化图后，再说"非 AI 生成"就是失实。
+     两种模式的**纹样层口径完全相同**（都来自母题库、元素级可溯），
+     差别只在**底色层**：neutral = 纯色地子；ai = 来自风格化图。
+     这句话是要写进参赛材料的，不能含糊。 */
+(function setNote(){
+  const common = "载体层：程序化生成的标准几何体，仅作形态预览。";
+  noteEl.innerHTML = (GROUND === "ai")
+    ? ("纹样层：各分区纹样分别来自语义层母题库，元素级可溯。<br>"
+       + "地子层：底纹取自 AI 风格化图（M5 输出），<b>仅作渲染色底、不承载语义</b>。<br>"
+       + common)
+    : ("纹样层：各分区纹样分别来自语义层母题库，元素级可溯。<br>"
+       + "载体层：程序化生成的标准几何体（非文物三维模型、非 AI 生成），"
+       + "仅作形态预览。");
+})();
+
+/* ── 渲染器 ─────────────────────────────────────────────── */
+const renderer = new THREE.WebGLRenderer({antialias:true, alpha:true});
+renderer.setPixelRatio(Math.min(devicePixelRatio||1, 2));
+renderer.outputEncoding = THREE.sRGBEncoding;
+renderer.physicallyCorrectLights = false;
+stage.appendChild(renderer.domElement);
+
+const scene  = new THREE.Scene();
+const camera = new THREE.PerspectiveCamera(26, 1, 0.1, 100);
+
+/* 纸色背景 + 三盏灯（与 preview3d 同构，保证观感一致） */
+scene.background = new THREE.Color(0xf3eee4);
+const key  = new THREE.DirectionalLight(0xfff6e8, 1.05);
+key.position.set(-0.48, 0.72, 0.50);
+const fill = new THREE.DirectionalLight(0xffe9d0, 0.42);
+fill.position.set(0.62, 0.28, 0.24);
+const rim  = new THREE.DirectionalLight(0xdfe8ff, 0.30);
+rim.position.set(0.30, -0.55, 0.78);
+const amb  = new THREE.AmbientLight(0xffffff, 0.52);
+scene.add(key, fill, rim, amb);
+
+/* 接地投影（一个柔和的椭圆，营造"立在台面上"） */
+const shadowTex = (function(){
+  const c = document.createElement("canvas"); c.width = c.height = 256;
+  const g = c.getContext("2d");
+  const grd = g.createRadialGradient(128,128,0,128,128,128);
+  grd.addColorStop(0,   "rgba(120,108,90,0.34)");
+  grd.addColorStop(0.55,"rgba(120,108,90,0.14)");
+  grd.addColorStop(1,   "rgba(120,108,90,0)");
+  g.fillStyle = grd; g.beginPath();
+  g.ellipse(128,128,124,124,0,0,Math.PI*2); g.fill();
+  return new THREE.CanvasTexture(c);
+})();
+const shadow = new THREE.Mesh(
+  new THREE.PlaneGeometry(1.9,1.9),
+  new THREE.MeshBasicMaterial({map:shadowTex, transparent:true,
+                               depthWrite:false})
+);
+shadow.rotation.x = -Math.PI/2;
+shadow.position.y = -0.60;
+scene.add(shadow);
+
+/* ── 交互（自写轨道控制，避免再引一个依赖） ─────────────── */
+const ctl = {
+  theta: THREE.MathUtils.degToRad(30),
+  phi:   THREE.MathUtils.degToRad(75),   // 与 +Y 轴夹角
+  dist:  3.35,
+  target:new THREE.Vector3(0,0,0),
+  auto:false,
+};
+let drag = null;
+
+function applyCamera(){
+  ctl.phi  = THREE.MathUtils.clamp(ctl.phi, 0.18, Math.PI-0.18);
+  ctl.dist = THREE.MathUtils.clamp(ctl.dist, 1.6, 9);
+  camera.position.set(
+    ctl.target.x + ctl.dist*Math.sin(ctl.phi)*Math.sin(ctl.theta),
+    ctl.target.y + ctl.dist*Math.cos(ctl.phi),
+    ctl.target.z + ctl.dist*Math.sin(ctl.phi)*Math.cos(ctl.theta)
+  );
+  camera.lookAt(ctl.target);
+}
+
+renderer.domElement.addEventListener("pointerdown", e=>{
+  drag = {x:e.clientX, y:e.clientY, btn:e.button};
+  renderer.domElement.setPointerCapture(e.pointerId);
+});
+renderer.domElement.addEventListener("pointermove", e=>{
+  if(!drag) return;
+  const dx = e.clientX - drag.x, dy = e.clientY - drag.y;
+  drag.x = e.clientX; drag.y = e.clientY;
+  if(drag.btn === 2){                       // 右键 → 平移
+    const k = ctl.dist * 0.0016;
+    const right = new THREE.Vector3().crossVectors(
+      camera.getWorldDirection(new THREE.Vector3()),
+      new THREE.Vector3(0,1,0)).normalize();
+    const up = new THREE.Vector3(0,1,0);
+    ctl.target.addScaledVector(right, -dx*k).addScaledVector(up, dy*k);
+  }else{                                    // 左键 → 旋转
+    ctl.theta -= dx * 0.0075;
+    ctl.phi   -= dy * 0.0075;
+  }
+  applyCamera();
+});
+addEventListener("pointerup", ()=>{ drag = null; });
+renderer.domElement.addEventListener("contextmenu", e=>e.preventDefault());
+renderer.domElement.addEventListener("wheel", e=>{
+  e.preventDefault();
+  ctl.dist *= Math.exp(e.deltaY * 0.0011);
+  applyCamera();
+},{passive:false});
+
+/* 触屏双指缩放 */
+let pinch = null;
+renderer.domElement.addEventListener("touchmove", e=>{
+  if(e.touches.length === 2){
+    const d = Math.hypot(
+      e.touches[0].clientX-e.touches[1].clientX,
+      e.touches[0].clientY-e.touches[1].clientY);
+    if(pinch) { ctl.dist *= pinch/d; applyCamera(); }
+    pinch = d;
+  }
+},{passive:true});
+renderer.domElement.addEventListener("touchend", ()=>{ pinch = null; });
+
+/* ── 载入 GLB ───────────────────────────────────────────── */
+const loader = new THREE.GLTFLoader();
+let current = null;
+let reloadToken = 0;
+
+function clearCurrent(){
+  if(!current) return;
+  scene.remove(current);
+  current.traverse(o=>{
+    if(o.geometry) o.geometry.dispose();
+    if(o.material){
+      const m = o.material;
+      if(m.map) m.map.dispose();
+      m.dispose();
+    }
+  });
+  current = null;
+}
+
+function fitCamera(obj, form){
+  const box = new THREE.Box3().setFromObject(obj);
+  const size = box.getSize(new THREE.Vector3());
+  const ctr  = box.getCenter(new THREE.Vector3());
+  ctl.target.copy(ctr);
+  // 让物体大致填满画面：按最大尺寸反推距离
+  const maxDim = Math.max(size.x, size.y, size.z);
+  ctl.dist = form.dist * (maxDim / 1.20);
+  // 由俯角推算极角
+  ctl.phi = THREE.MathUtils.degToRad(90 - form.elev);
+  shadow.position.y = box.min.y - 0.012;
+  const s = Math.max(size.x, size.z) * 1.5;
+  shadow.scale.set(s/1.9, s/1.9, 1);
+  applyCamera();
+}
+
+function load(form){
+  const token = ++reloadToken;
+  spinEl.style.display = "grid";
+  errEl.style.display  = "none";
+  clearCurrent();
+
+  const url = BASE + "pattern_" + form.key + ".glb";
+  loader.load(url, gltf=>{
+    if(token !== reloadToken) return;           // 已被更晚的请求取代
+    const root = gltf.scene;
+    /* 陶瓷质感：给所有材质补一点粗糙度与轻微高光，
+       避免默认材质发"塑料亮"。 */
+    root.traverse(o=>{
+      if(!o.isMesh) return;
+      const m = o.material;
+      m.side = THREE.DoubleSide;
+      if("roughness" in m) m.roughness = 0.62;
+      if("metalness" in m) m.metalness = 0.0;
+      if(m.map){
+        m.map.encoding = THREE.sRGBEncoding;
+        m.map.anisotropy = renderer.capabilities.getMaxAnisotropy();
+        m.map.needsUpdate = true;
+      }
+      m.needsUpdate = true;
+    });
+    scene.add(root);
+    current = root;
+    fitCamera(root, form);
+    spinEl.style.display = "none";
+    metaEl.innerHTML =
+      "<b>当前形态</b>：" + form.label + "<br>" +
+      "顶点数 " + countVerts(root).toLocaleString() + "　" +
+      "三角面 " + countTris(root).toLocaleString();
+  },
+  undefined,
+  e=>{
+    if(token !== reloadToken) return;
+    spinEl.style.display = "none";
+    errEl.style.display  = "grid";
+    errEl.innerHTML =
+      "未能载入 <code>" + url + "</code><br>" +
+      "请确认该目录下存在 <code>pattern_" + form.key + ".glb</code>，" +
+      "并且是通过 HTTP 服务打开本页（直接双击打开时，浏览器会因" +
+      "同源策略拒绝读取本地文件）。";
+    console.error(e);
+  });
+}
+
+function countVerts(root){
+  let n = 0; root.traverse(o=>{ if(o.isMesh) n += o.geometry.attributes.position.count; });
+  return n;
+}
+function countTris(root){
+  let n = 0; root.traverse(o=>{
+    if(!o.isMesh) return;
+    const g = o.geometry;
+    n += (g.index ? g.index.count : g.attributes.position.count) / 3;
+  });
+  return Math.round(n);
+}
+
+/* ── 形态切换 ───────────────────────────────────────────── */
+// ★ 支持 ?form=box / fan 直接定位到某个形态 ——
+//   用途：① Streamlit 里按需嵌入某个形态；② 出报告截图时免去手点。
+const wantForm = qs.get("form");
+let active = FORMS.find(f => f.key === wantForm) || FORMS[0];
+const tabsEl = document.getElementById("tabs");
+FORMS.forEach(f=>{
+  const b = document.createElement("button");
+  b.textContent = f.label.replace(/（.*?）/,"");
+  b.title = f.label;
+  b.setAttribute("aria-pressed", String(f === active));
+  b.onclick = ()=>{
+    active = f;
+    [...tabsEl.children].forEach(c=>c.setAttribute("aria-pressed",
+      String(c === b)));
+    load(f);
+  };
+  tabsEl.appendChild(b);
+});
+
+document.getElementById("btn-reset").onclick = ()=>{
+  if(current) fitCamera(current, active);
+  else { ctl.theta = THREE.MathUtils.degToRad(30); applyCamera(); }
+};
+const rotBtn = document.getElementById("btn-rot");
+rotBtn.onclick = ()=>{
+  ctl.auto = !ctl.auto;
+  rotBtn.style.background = ctl.auto ? "var(--ink)" : "#fff";
+  rotBtn.style.color      = ctl.auto ? "var(--card)" : "var(--ink)";
+  rotBtn.style.borderColor= ctl.auto ? "var(--ink)" : "var(--line)";
+};
+document.getElementById("btn-download").onclick = ()=>{
+  const a = document.createElement("a");
+  a.href = BASE + "pattern_" + active.key + ".glb";
+  a.download = "pattern_" + active.key + ".glb";
+  document.body.appendChild(a); a.click(); a.remove();
+};
+
+/* ── 尺寸与主循环 ───────────────────────────────────────── */
+function resize(){
+  const w = stage.clientWidth, h = stage.clientHeight;
+  if(!w || !h) return;
+  renderer.setSize(w, h, false);
+  camera.aspect = w/h;
+  camera.updateProjectionMatrix();
+}
+addEventListener("resize", resize);
+new ResizeObserver(resize).observe(stage);
+
+let last = performance.now();
+function tick(now){
+  const dt = (now - last)/1000; last = now;
+  if(ctl.auto){ ctl.theta += dt * 0.55; applyCamera(); }
+  renderer.render(scene, camera);
+  requestAnimationFrame(tick);
+}
+
+if(NAME) subEl.textContent = NAME;
+resize();
+applyCamera();
+load(active);
+requestAnimationFrame(tick);
+
+})();
+</script>
+</body>
+</html>
