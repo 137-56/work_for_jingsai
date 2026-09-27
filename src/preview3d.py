@@ -509,9 +509,10 @@ def _fan_hit(o, d, g):
 FORMS = {
     # name, builder, elev(俯角), flip_normals
     # ★ flip_normals：旋转体的外法线按"实体在轴内侧"来定义（对瓶子是对的）。
-    #   但赏盘的剖面是从盘心向外画到口沿、**实体在下方**，所以法线要整体翻转，
-    #   否则受光面会跑到背面去（渲染出来是一块闷掉的深色）。
-    #   这个错误肉眼不容易发现，靠 scripts 里的法线朝向自检才能查出来。
+    #   若将来加入剖面朝外的形态（如盘类），法线需整体翻转，
+    #   否则受光面会跑到背面（渲染出来是一块闷掉的深色）——
+    #   这种错误肉眼不易发现，靠 scripts/check_render3d.py 的法线朝向自检才查得出。
+    #   当前三形态（vase / box / fan）都取 False。
     "vase":  ("陶瓶（梅瓶）", form_vase, 12.0, False),
     "box":   ("包装方盒", form_box, 16.0, False),
     "fan":   ("团扇", form_fan, 8.0, False),
