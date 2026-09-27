@@ -18,8 +18,13 @@ AI 生成传统纹样已不稀奇，但结果普遍"三不"：**不可解释、�
 5. 过一道**文化校验**（寓意冲突 / 场合失配 / 色彩越界）
 6. 输出**元素级溯源卡片**
 7. （可选）AI 风格化 + 3D 器物形态预览
+8. 可审查任意设计图与本库的**版权相似度风险**
+9. 提供**全库纹样谱系**（100 条母题的关联网络与五族划分）
 
 > 一句话：**别人的 AI 给你一张图，本系统给你一张图 + 一张配料表。**
+
+三条能力支柱对应**三种溯源层次**，互不替代：
+**元素级**（每个部件的出处）→ **谱系级**（这类纹样跟谁最近）→ **风险级**（是否与库内雷同）。
 
 ---
 
@@ -134,11 +139,16 @@ save_all(run('做一个春节用的窗花，要喜庆'))"
 | **M1** 意图解析 | `src/m1_intent.py` | 一句话 →《纹样文化配方》（LLM + 规则兜底） |
 | **M2** 元素检索 | `src/m2_retrieve.py` | Chinese-CLIP + faiss，**三招调优**（类别前缀 / 多查询 / 元素二次筛选） |
 | **M3** 文化校验 | `src/m3_validate.py` | 25 条文化规则，四类约束引擎 |
-| **M4** 设计依据板 | `src/m4_compose.py` | 素材 + 配方 → 可视化板 + 组合纹样图 |
+| **M4** 设计依据板 | `src/m4_compose.py` | 素材 + 配方 → 可视化依据板（`compose_board`） |
+| **M4a** 组合纹样合成 | `src/m4_compose.py` | 按构图程式把检索到的元素**真合成**成纹样图（`compose_pattern`） |
 | **M5** AI 风格化 | `src/m5_stylize.py` | 可选。**输出不可溯源**，与溯源严格分区 |
 | **M6** 溯源卡片 | `src/m6_provenance.py` | 元素 → 出处 → 寓意 → 授权 |
 | **M7** 版权预警 | `src/m7_copyright.py` | 双路相似度（感知哈希 + CLIP 语义），输出**风险分级** |
 | **B7** 演示界面 | `app.py` | Streamlit 入口 |
+
+> **M4 与 M4a 同在 `src/m4_compose.py`**：M4 产出"依据板"（给人看的素材与理由），
+> M4a 产出"组合纹样图"（真正的图案，供 M5 风格化与 3D 贴图使用）。
+> 两者是**上下游关系**而非同一件事 —— 依据板解释"为什么这样组合"，组合图是组合的结果。
 
 ### 三种溯源层次
 
@@ -191,11 +201,12 @@ work/
 │   ├── m1_intent.py         ① 需求解析
 │   ├── m2_retrieve.py       ② 元素检索（三招调优）
 │   ├── m3_validate.py       ③ 文化校验
-│   ├── m4_compose.py        ④ 设计依据板与组合纹样
+│   ├── m4_compose.py        ④ 设计依据板（compose_board）+ ④a 组合纹样合成（compose_pattern）
 │   ├── m5_stylize.py        ⑤ AI 风格化（可选）
 │   ├── m6_provenance.py     ⑥ 溯源卡片
 │   ├── m7_copyright.py      ⑦ 版权预警
 │   ├── artifact_layer.py    实物佐证层读取（材质层）
+│   ├── clip_model.py        CLIP 加载与编码（`lru_cache` 单例，M2 / M7 共用）
 │   ├── pipeline.py          端到端编排（单点失败不中断）
 │   ├── pattern_layout.py    3D 分区贴图（展开图 / 极坐标 / 盒盖）
 │   ├── preview3d.py         3D 静态渲染（前向光线投射，纯 CPU）
@@ -218,14 +229,14 @@ work/
 │   │   exp_related_motifs.py   关联数据消融实验（负结论的出处）
 │   ├── 【自检 · 数据】
 │   │   validate_samples.py     契约校验（10 条规则）
-│   │   check_rules.py          文化规则结构校验（13 项）
+│   │   check_rules.py          文化规则结构校验（25 条 / 5 类 / 约束类型分布）
 │   │   check_metrics.py        指标一致性校验（跨报告/PPT/简介取数）
-│   └── 【自检 · 3D】
+│   └── 【自检 · 3D 与界面】
 │       check_render3d.py       法线朝向 + NaN 污染
-│       check_glb_uv.py         从 .glb 字节流独立重解析
+│       check_glb_uv.py         从 .glb 字节流独立重解析（UV 越界 / 采空白 / 索引）
 │       preview_glb.py          独立 z-buffer 渲染（交叉验证贴图方向）
-│       check_style_ground.py   贴图双路线均可渲染
-│       check_app_embed.py      界面 06 区嵌入链路
+│       check_style_ground.py   贴图双路线均可渲染 + 地子来源必须不同
+│       check_app_embed.py      界面 ⑥ 区嵌入链路（★ 需服务已在跑）
 ├── data/
 │   ├── samples.json         纹样母题库（100 条，契约见 docs/schema.md）
 │   ├── images/              母题参考图
@@ -360,7 +371,7 @@ https://github.com/dososo/chinese-traditional-patterns ，授权协议 **CC BY-N
 **Q：没有 DASHSCOPE_API_KEY 能跑吗？**
 能。M1 会退化为规则兜底解析，M5 风格化不可用，其余模块正常。
 
-**Q：06 区 3D 查看器白屏？**
+**Q：⑥ 区 3D 查看器白屏？**
 依次检查三处（详见 `文档/B8_3D交付说明.md`）：
 ① 静态目录必须是 `<app_dir>/static`（**不是** `.streamlit/static/`）；
 ② `.streamlit/config.toml` 里 `server.enableStaticServing = true`；
@@ -368,8 +379,20 @@ https://github.com/dososo/chinese-traditional-patterns ，授权协议 **CC BY-N
 启动日志里的 `no static folder found at ...` 是唯一线索。
 
 **Q：改 3D 贴图后要跑什么？**
-五个自检脚本，见 `文档/B8_3D交付说明.md` 第五节。改任何 UV 相关代码后
-**必须同时验静态预览与 GLB**，否则"预览看到的"≠"下载到的"。
+五个自检脚本（用法见 `文档/B8_3D交付说明.md` 第五节）：
+
+```bash
+PY=.venv/Scripts/python.exe
+$PY scripts/check_render3d.py                              # ① 法线朝向 + NaN
+$PY scripts/check_glb_uv.py --dir outputs/<recipe_id>      # ② GLB 独立重解析
+$PY scripts/preview_glb.py --dir outputs/<recipe_id> --out outputs/_chk.png   # ③ 独立渲染验方向
+$PY scripts/check_style_ground.py                          # ④ 贴图双路线
+$PY scripts/check_app_embed.py --port 8794                 # ⑤ 界面嵌入（需服务在跑）
+```
+
+改任何 UV 相关代码后**必须同时验静态预览与 GLB**，否则"预览看到的"≠"下载到的"。
+其中 ② 与 ③ 是**两条独立实现**（字节流重解析 / 独立 z-buffer 光栅化）——
+数值自检查不出"上下颠倒 / 左右镜像"，只有交叉验证才能发现。
 
 **Q：为什么不用故宫数字文物库的图？**
 授权明确禁止 AI 创作与数字展示，与本作品用法直接冲突。见上文「不使用的数据源」。
