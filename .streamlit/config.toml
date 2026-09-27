@@ -15,10 +15,16 @@ gatherUsageStats = false
 
 [server]
 headless = true
-# enableStaticServing：把应用目录下的 `static/`（即 .streamlit/static/）
-# 挂到 URL `app/static/` 下供浏览器直接访问。
-# ★ 06 区的 Three.js 三维查看器必须靠它 —— 查看器是个**真实页面**，
-#   要能相对路径取到 vendor/three.min.js 与 glb/*.glb。
-#   若用 st.components.html(srcdoc) 则拿不到相对路径，页面会全白（实测踩到）。
-#   默认值是 false，**不打开的话查看器会 404**。
+# enableStaticServing：把应用目录下的 `static/` 挂到 URL `/app/static/` 下，
+# 供浏览器直接访问。06 区的 Three.js 三维查看器必须靠它 ——
+# 查看器是个**真实页面**，要能按相对路径取到 vendor/three.min.js 与 glb/*.glb。
+# 若用 st.components.html(srcdoc) 则拿不到相对路径，页面会全白（实测踩到）。
+# 默认值是 false，**不打开的话查看器会 404**。
+#
+# ★ 静态目录的位置是 **<app_dir>/static**（即 work/static/），
+#   **不是** .streamlit/static/（曾踩过，找了两轮才定位）。
+#   放错位置时唯一线索是启动日志里的
+#   `WARNING: ... no static folder found at ...`，页面静默 404 白屏。
+#   URL 前缀是 `/app/static/` —— 前导斜杠不能少，否则被当相对路径。
+#   详见 文档/B8_3D交付说明.md 第四节。
 enableStaticServing = true

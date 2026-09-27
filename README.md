@@ -1,14 +1,15 @@
 # 纹初迹现 · 传统纹样可溯源生成系统
 
-> 本仓库是参赛作品的技术实现，已通过对外材料合规自查，**不包含任何机构标识与人员身份信息**。
+> 参赛作品的技术实现。已通过对外材料合规自查，**不包含任何机构标识与人员身份信息**。
 
 ---
 
 ## 这是什么
 
-AI 生成传统纹样已不稀奇，但结果普遍"三不"：**不可解释、不可追溯、不可控** —— 不知元素出处与文化依据，也难判是否与已有作品雷同，AIGC 因而进不了文创与版权交易场景。
+AI 生成传统纹样已不稀奇，但结果普遍"三不"：**不可解释、不可追溯、不可控** ——
+既说不清元素出处与文化依据，也难判是否与已有作品雷同，AIGC 因而进不了文创与版权交易场景。
 
-本作品提出**「可解释的组合式生成」**范式：不让模型凭空画，而是
+本作品提出 **「可解释的组合式生成」** 范式：不让模型凭空画，而是
 
 1. 把一句自然语言需求解析为结构化的《纹样文化配方》（场合 / 寓意 / 母题 / 配色）
 2. 基于 Chinese-CLIP 从**真实纹样母题库**检索元素
@@ -16,8 +17,130 @@ AI 生成传统纹样已不稀奇，但结果普遍"三不"：**不可解释、�
 4. 生成的同时即确定每个元素的出处与授权（**非事后推测**）
 5. 过一道**文化校验**（寓意冲突 / 场合失配 / 色彩越界）
 6. 输出**元素级溯源卡片**
+7. （可选）AI 风格化 + 3D 器物形态预览
 
-一句话：**别人的 AI 给你一张图，本系统给你一张图 + 一张配料表。**
+> 一句话：**别人的 AI 给你一张图，本系统给你一张图 + 一张配料表。**
+
+---
+
+## 快速开始
+
+### 1. 环境
+
+```bash
+cd work
+python -m venv .venv
+.venv/Scripts/pip install -r requirements.txt      # Windows
+# 其他平台：.venv/bin/pip install -r requirements.txt
+```
+
+> **无需 GPU**，普通笔记本即可（CLIP 走 CPU）。
+> torch 装的是 CPU 版；若默认源装不到，用
+> `pip install torch --index-url https://download.pytorch.org/whl/cpu`。
+> matplotlib 走国内镜像：`pip install matplotlib -i https://pypi.tuna.tsinghua.edu.cn/simple`
+
+配 `.env`（从 `.env.example` 复制），填入：
+
+```
+DASHSCOPE_API_KEY=sk-xxxxxxxx     # 阿里云百炼，M1 意图解析与 M5 风格化要用
+```
+
+> 没有 key 时，M1 会退化为**规则兜底解析**（仍能跑通，但配方质量下降）。
+
+### 2. 准备数据（首次）
+
+```bash
+.venv/Scripts/python.exe scripts/validate_samples.py    # 契约校验，应输出 [PASS]
+.venv/Scripts/python.exe scripts/build_index.py         # 建向量索引（首次需下载 CLIP 权重）
+```
+
+### 3. 启动界面（推荐）
+
+```bash
+.venv/Scripts/python.exe -m streamlit run app.py
+```
+
+浏览器打开 http://localhost:8501 ，界面分两个标签页：
+
+| 标签页 | 内容 |
+|---|---|
+| **生成与溯源** | ① 配方 → ② 元素检索 → ③ 文化校验 → ④ 溯源卡片 → ⑤ AI 风格化（可选）→ ⑥ 3D 文创预览 |
+| **版权相似度审查** | 上传任意图片，与本库比对给出**风险分级**（M7） |
+
+在 ① 处输入一句需求（如「做一个有吉祥寓意的窗花，用于春节礼品包装」），点生成即可。
+
+### 4. 或：纯命令行跑一次
+
+```bash
+# 只跑管线（结果在内存里，返回 dict）
+.venv/Scripts/python.exe -c "
+from src.pipeline import run
+r = run('做一个春节用的窗花，要喜庆')
+print(r['recipe']['recipe_id'], r['errors'])"
+
+# 跑完并落盘到 outputs/<recipe_id>/
+.venv/Scripts/python.exe -c "
+from src.pipeline import run, save_all
+save_all(run('做一个春节用的窗花，要喜庆'))"
+```
+
+产物落在 `outputs/<recipe_id>/`，含配方、检索结果、溯源卡片、设计依据板、组合纹样图。
+
+### 5. 3D 预览与导出
+
+```bash
+# 单独导出某配方的三形态 GLB（梅瓶 / 方盒 / 团扇）
+.venv/Scripts/python.exe -m src.glb_export --recipe outputs/<recipe_id>
+```
+
+产物 `.glb` 是业界通用格式，可拖进 Blender / Unity 或任意在线 glTF 预览器。
+界面 ⑥ 区也内嵌了 Three.js 查看器，可直接旋转查看并下载。
+
+> ★ 改 3D 代码前**先读** `文档/B8_3D交付说明.md`（三条铁律 + 自检脚本 + 已踩的坑）。
+
+---
+
+## 系统架构
+
+### 七模块主链路
+
+| 模块 | 文件 | 职责 |
+|---|---|---|
+| **M1** 意图解析 | `src/m1_intent.py` | 一句话 →《纹样文化配方》（LLM + 规则兜底） |
+| **M2** 元素检索 | `src/m2_retrieve.py` | Chinese-CLIP + faiss，**三招调优**（类别前缀 / 多查询 / 元素二次筛选） |
+| **M3** 文化校验 | `src/m3_validate.py` | 25 条文化规则，四类约束引擎 |
+| **M4** 设计依据板 | `src/m4_compose.py` | 素材 + 配方 → 可视化板 + 组合纹样图 |
+| **M5** AI 风格化 | `src/m5_stylize.py` | 可选。**输出不可溯源**，与溯源严格分区 |
+| **M6** 溯源卡片 | `src/m6_provenance.py` | 元素 → 出处 → 寓意 → 授权 |
+| **M7** 版权预警 | `src/m7_copyright.py` | 双路相似度（感知哈希 + CLIP 语义），输出**风险分级** |
+| **B7** 演示界面 | `app.py` | Streamlit 入口 |
+
+### 两层数据架构（★ 口径关键）
+
+| 层 | 来源 | 规模 | 作用 | 是否参与元素级溯源 |
+|---|---|---|---|---|
+| **语义层**（母题库） | Wényàng | **100 条** | M2 检索依据 / M3 校验依据 | ✅ **是** |
+| **实物佐证层** | 克利夫兰艺术博物馆 | 303 件 | **仅提供织物肌理（材质层）** | ❌ 否 |
+
+**实物佐证层为什么不参与溯源**：它没有 `name`（中文母题名）/ `elements`（构成元素）/
+`meaning`（寓意）字段。用模型去编这些字段，等于重蹈「用 AI 生成的内容充当文化依据」的覆辙。
+
+**因此对外一律表述为**：纹样层元素级可溯；材质层仅实物可溯。**两者不得混称 100% 可溯源。**
+
+### 3D 交付链（B8）
+
+```
+配方 → pattern_layout 分区贴图 ┬→ preview3d 静态三联图
+                              └→ glb_export → GLB ─→ Three.js 查看器 + 下载
+```
+
+三种形态，各自一套布局几何（**布局几何必须匹配载体几何**）：
+
+| 形态 | 布局 |
+|---|---|
+| 梅瓶（旋转体） | 环一圈展开图 |
+| 包装方盒 | 一张图印一面（不绕圈） |
+| 团扇（圆平面） | 极坐标同心 |
 
 ---
 
@@ -25,48 +148,97 @@ AI 生成传统纹样已不稀奇，但结果普遍"三不"：**不可解释、�
 
 ```
 work/
+├── app.py                   Streamlit 界面（B7）
+├── config.yaml              统一配置：模型名 / 阈值 / 路径 / 传统色板
+├── requirements.txt         运行依赖
 ├── src/                     处理管线
-│   ├── m1_intent.py         ① 需求解析：一句话 →《纹样文化配方》
-│   ├── m2_retrieve.py       ② 元素检索：Chinese-CLIP + faiss（三招调优）
-│   ├── m3_validate.py       ③ 文化校验：四类约束引擎
-│   ├── m6_provenance.py     ⑥ 溯源卡片：元素 → 出处 → 寓意 → 授权
-│   ├── clip_model.py        CLIP 单例加载
-│   ├── pipeline.py          端到端编排
+│   ├── m1_intent.py         ① 需求解析
+│   ├── m2_retrieve.py       ② 元素检索（三招调优）
+│   ├── m3_validate.py       ③ 文化校验
+│   ├── m4_compose.py        ④ 设计依据板与组合纹样
+│   ├── m5_stylize.py        ⑤ AI 风格化（可选）
+│   ├── m6_provenance.py     ⑥ 溯源卡片
+│   ├── m7_copyright.py      ⑦ 版权预警
+│   ├── artifact_layer.py    实物佐证层读取（材质层）
+│   ├── pipeline.py          端到端编排（单点失败不中断）
+│   ├── pattern_layout.py    3D 分区贴图（展开图 / 极坐标 / 盒盖）
+│   ├── preview3d.py         3D 静态渲染（前向光线投射，纯 CPU）
+│   ├── glb_export.py        glTF 2.0 / GLB 导出
+│   ├── style_ground.py      从 AI 风格化图提取 3D 地子
 │   └── utils.py             配置与路径解析
-├── scripts/                 一次性工具与自检
-│   ├── wenyang_to_samples.py   源数据 → samples.json（支持 --append 增量）
-│   ├── enrich_samples.py       补录源数据未用字段（关联纹样 / 色彩建议）
-│   ├── auto_annotate.py        LLM 批量标注 occasion / elements
-│   ├── review_annotation.py    标注抽检清单（只读）
-│   ├── apply_annotation.py     抽检结果合并回 samples.json（带写盘前体检）
-│   ├── validate_samples.py     契约校验（10 条规则）
-│   ├── build_index.py          建向量索引
-│   └── fetch_artifacts.py      （备用）抓取公版文物佐证
+├── scripts/                 工具与自检
+│   ├── 【数据构建】
+│   │   wenyang_to_samples.py   源数据 → samples.json（支持 --append）
+│   │   enrich_samples.py       补录源数据未用字段（关联纹样 / 色彩建议）
+│   │   auto_annotate.py        LLM 批量标注 occasion / elements
+│   │   review_annotation.py    标注抽检清单（只读）
+│   │   apply_annotation.py     抽检结果合并回 samples.json（带写盘前体检）
+│   │   fix_carriers.py         载体字段格式修复
+│   │   fetch_artifacts.py      （The Met，备用）
+│   │   fetch_cleveland.py      克利夫兰 303 件实物佐证层
+│   │   filter_cleveland.py     内容筛选
+│   │   build_index.py          建向量索引
+│   │   build_kinship_graph.py  纹样亲缘图（母题关联网络）
+│   ├── 【自检 · 数据】
+│   │   validate_samples.py     契约校验（10 条规则）
+│   │   check_rules.py          文化规则结构校验（13 项）
+│   │   check_metrics.py        指标一致性校验（跨报告/PPT/简介取数）
+│   └── 【自检 · 3D】
+│       check_render3d.py       法线朝向 + NaN 污染
+│       check_glb_uv.py         从 .glb 字节流独立重解析
+│       preview_glb.py          独立 z-buffer 渲染（交叉验证贴图方向）
+│       check_style_ground.py   贴图双路线均可渲染
+│       check_app_embed.py      界面 06 区嵌入链路
 ├── data/
 │   ├── samples.json         纹样母题库（100 条，契约见 docs/schema.md）
 │   ├── images/              母题参考图
-│   └── index/               向量索引产物
-├── rules/culture_rules.json 文化规则库
-└── docs/schema.md           数据契约（冻结）
+│   ├── index/               向量索引产物
+│   ├── artifacts_cle/       克利夫兰实物佐证层
+│   └── raw/                 源数据
+├── rules/culture_rules.json 文化规则库（25 条）
+├── docs/
+│   ├── schema.md            数据契约（冻结）
+│   ├── metrics.json         ★ 指标单一事实来源
+│   ├── m7_calibration.json  M7 阈值标定
+│   └── figures/             图表产物
+├── web/                     Three.js 查看器（源码，必须入库）
+│   ├── viewer.html
+│   └── vendor/              three.min.js r147 + GLTFLoader.js
+├── static/                  web/ 的运行时副本（不入库，自动生成）
+├── tests/                   单元测试
+└── outputs/                 运行产物（不入库）
 ```
 
 ---
 
-## 环境与运行
+## 关键指标
 
-```bash
-python -m venv .venv
-.venv/Scripts/pip install -r requirements.txt        # Windows；其他平台用 .venv/bin/pip
+> ★ **单一事实来源是 `docs/metrics.json`**。报告 / PPT / 作品简介取数一律引用它，
+> 不得到处自算。校验脚本：`scripts/check_metrics.py`。
 
-# 数据侧
-.venv/Scripts/python.exe scripts/validate_samples.py        # 契约校验，应输出 [PASS]
-.venv/Scripts/python.exe scripts/build_index.py             # 建索引
+| 指标 | 结果 | 状态 |
+|---|---|---|
+| 元素溯源覆盖率 | **100%** | 已达成（架构保证） |
+| 元素溯源准确率 | — | ★ 待测（依赖 C3 测试集） |
+| 文化规则检出率 | **100%**（5/5） | 已达成（误报 0/3） |
+| 检索 Top-5 命中率 | **100%** | 已达成（索引层自检索，100 条全量） |
+| 检索 Top-1 命中率 | **97%** | 已达成 |
+| 版权预警检出（语义层） | **100%** | 已达成 |
+| 版权预警检出（结构层） | 49.2% | ★ 未达标：对几何类改动完全失效 |
+| 版权预警误报（跨门类） | 0 / 30 | 已达成 |
+| 版权预警误报（同门类） | 11 / 30 = **36.7%** | ★ 未达标，已列入不足 |
 
-# 跑一次完整管线
-.venv/Scripts/python.exe -c "from src.pipeline import run; run('做一个春节用的窗花，要喜庆')"
-```
+### 消融实验（证明每项策略的必要性）
 
-无需 GPU，普通笔记本即可运行（CLIP 走 CPU）。
+| 配置 | Top-1 |
+|---|---|
+| 完整（三招） | **97%** |
+| 关闭元素二次筛选 | 58% |
+| 关闭类别前缀 | 98% |
+| 查询只用母题名 | 78% |
+
+**输入侧消融**：配方只有母题名 → 59%；母题名 + 元素（生产口径）→ 97%。
+说明**检索的区分度主要来自 elements，不是母题名**。
 
 ---
 
@@ -84,10 +256,11 @@ https://github.com/dososo/chinese-traditional-patterns ，授权协议 **CC BY-N
 - 图片与文字内容：**CC BY-NC 4.0**（署名 · 限非商业）
 - 代码与数据结构：**MIT**
 
-### 公版文物佐证（备用，未纳入主流程）
+### 实物佐证层
 
-文物图像与元数据：**The Metropolitan Museum of Art Open Access**，**CC0**（公有领域，不限用途）。
-每件文物记录保留馆藏编号与来源链接。
+文物图像与元数据：**克利夫兰艺术博物馆（Cleveland Museum of Art）Open Access**，
+**CC0**（公有领域，不限用途）。每件记录保留馆藏编号与来源链接。
+（备用：**The Metropolitan Museum of Art Open Access**，同为 CC0。）
 
 ### 使用范围
 
@@ -104,9 +277,71 @@ https://github.com/dososo/chinese-traditional-patterns ，授权协议 **CC BY-N
 
 ## 说明与边界
 
-- **母题库规模为 100 条**（数据源全集）。本作品的"详实"靠**标注质量与来源可追溯**，不靠条数堆砌。
+### 我们如实报告的不足
+
+- **母题库规模为 100 条**（数据源全集）。本作品的"详实"靠**标注质量与来源可追溯**，
+  不靠条数堆砌。扩库前后 Top-1 从 100%（30 条）降至 97%（100 条），纯 CLIP 从 77% 降至 58%。
 - **`dynasty` 字段全库为「不详」**：源数据不含朝代信息，且纹样母题本身跨朝代
   （如缠枝莲纹自唐沿用至清），填具体朝代属编造。**本项目不虚构朝代。**
-- CLIP 对细粒度纹样的区分能力有限，检索依靠**语义层硬约束**（构成元素二次筛选）兜底 ——
-  消融实验显示关闭该层会使 Top-1 从 97% 降至 58%。
-- 各项指标的测试集规模与测量方法见 `docs/metrics.json`。
+- **版权预警同门类误报 36.7%**：CLIP 对同族纹样的细粒度区分能力弱。对版权预警而言，
+  把「菱格纹」与「方胜纹」判为相似属于**噪声而非有效预警**（两者均为公版传统纹样）。
+- **结构层对几何类改动完全失效**：phash 对旋转 4° 与白边 5% 检出率为 0
+  （重采样打乱 DCT 网格），仅对色彩/编码类改动稳健。这不是单一模块的缺陷，是**结构性边界**。
+- **统计口径不可夸大**：负例仅 30 个，`FPR = 0` 的 95% 置信上界约 **9.5%**。
+  **对外不可写成"误报率 0%"**，应写"在 30 个负例上未出现误报"。
+
+### 各指标的口径
+
+- **索引层自检索**：输入为「库内母题名 + 该母题构成元素」，检索对象为同批 100 条。
+  衡量**排序质量**，**不等同于端到端准确率**。之所以输入库内名称，
+  是因为 M1 的母题选择受**白名单约束**（只能从库内选）——这是架构决定的，不是测试集取巧。
+- **端到端指标**：★ 待测。一句自然语言需求 → 最终母题是否正确，需人工标注测试集（与 C3 合并执行）。
+
+---
+
+## 常见问题
+
+**Q：跑起来报 `No module named 'faiss'`？**
+用了系统 Python。**一律用 `.venv/Scripts/python.exe`**。
+
+**Q：没有 DASHSCOPE_API_KEY 能跑吗？**
+能。M1 会退化为规则兜底解析，M5 风格化不可用，其余模块正常。
+
+**Q：06 区 3D 查看器白屏？**
+依次检查三处（详见 `文档/B8_3D交付说明.md`）：
+① 静态目录必须是 `<app_dir>/static`（**不是** `.streamlit/static/`）；
+② `.streamlit/config.toml` 里 `server.enableStaticServing = true`；
+③ iframe URL 必须带前导斜杠 `/app/static/...`。
+启动日志里的 `no static folder found at ...` 是唯一线索。
+
+**Q：改 3D 贴图后要跑什么？**
+五个自检脚本，见 `文档/B8_3D交付说明.md` 第五节。改任何 UV 相关代码后
+**必须同时验静态预览与 GLB**，否则"预览看到的"≠"下载到的"。
+
+**Q：为什么不用故宫数字文物库的图？**
+授权明确禁止 AI 创作与数字展示，与本作品用法直接冲突。见上文「不使用的数据源」。
+
+---
+
+## 相关文档
+
+`文档/` 目录（仓库外，不含机构信息）：
+
+| 文档 | 内容 |
+|---|---|
+| `B8_3D交付说明.md` | ★ 3D 部分：三条铁律、自检脚本、环境坑 |
+| `B7_Streamlit界面_实施指引.md` | 界面搭建过程 |
+| `B3_文化规则库设计方案.md` | 25 条规则的分类与约束类型 |
+| `B6_版权预警双路与阈值标定_实施指引.md` | M7 双路与阈值标定方法 |
+| `B6b_按改动类型拆解_实施指引.md` | 按改动类型诊断 phash/CLIP 表现 |
+| `B1-5_外部数据源可行性验证.md` | 数据源选型与授权核查 |
+| `实物佐证层_数据说明.md` | 克利夫兰 303 件字段与筛选口径 |
+| `数据来源署名规范.md` | 署名要求 |
+
+---
+
+## 合规说明
+
+- 本仓库**不含**校名 / LOGO / 教师姓名 / 群号 / 邀请码等身份信息。
+- 提交前自查：`scripts/redline_check.py`（词表在 `redline.yaml`，不入库）。
+- 母题参考图与实物佐证图**不入库**（体积大且可脚本重现），仅入库索引与元数据。
