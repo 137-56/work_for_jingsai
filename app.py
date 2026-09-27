@@ -1,14 +1,22 @@
 # app.py
 """纹初迹现 · 传统纹样可溯源生成系统 —— 演示界面（B7）。
 
-单页两个标签页：
+单页三个标签页：
   Tab 1「生成与溯源」    一句需求 → 配方 → 检索 → 校验 → 溯源卡片
   Tab 2「版权相似度审查」 上传任意图片 → 与样本库比对的相似度风险分级
+  Tab 3「纹样谱系」      全库 100 条母题的关联网络 / 五族谱系（**全库级视图**）
 
 ★ 为什么 M7 单独一个标签页：
     M4（组合式合成）尚未实现，生成流程里没有"合成图"可供比对。
     而 M7 的真实价值本来就是"审查任意一张设计图与本库是否雷同"，
     所以它天然适合作为独立入口，而不是硬挂在生成流程末尾。
+
+★ 为什么谱系图也单独一个标签页：
+    它是**全库级**视图（100 条母题之间的关联），与"某一个配方怎么生成"无关。
+    硬塞进生成页末尾会造成语义混乱 —— 用户会以为它跟当前配方有关。
+    注意区分两种溯源：① 本页是**谱系级**（这一类纹样跟谁最近）；
+                     ② 生成页的溯源卡片是**元素级**（这张图的每个部件来自哪条母题）。
+    两者互补，谱系级回答的是元素级给不出的问题。
 
 ★ 分步进度：
     pipeline.run() 支持 on_step 回调，界面据此逐步显示"解析需求… / 检索元素…"，
@@ -135,6 +143,13 @@ with st.sidebar:
     st.divider()
     st.caption(f"样本库：**{sample_count()} 条**纹样母题")
     st.divider()
+    st.markdown("**三种溯源层次**")
+    st.caption(
+        "- 元素级 — 每个部件的出处（生成页）\n"
+        "- 谱系级 — 这类纹样跟谁最近（纹样谱系页）\n"
+        "- 风险级 — 与库内是否雷同（版权审查页）"
+    )
+    st.divider()
     st.caption("**数据来源**")
     st.caption(ATTRIBUTION_SHORT)
     st.divider()
@@ -144,7 +159,8 @@ with st.sidebar:
 st.title("纹初迹现 · 传统纹样可溯源生成系统")
 st.caption("一句需求 →《纹样文化配方》→ 真实纹样元素检索 → 文化校验 → 元素级溯源卡片")
 
-tab_gen, tab_check = st.tabs(["生成与溯源", "版权相似度审查"])
+tab_gen, tab_check, tab_kin = st.tabs(
+    ["生成与溯源", "版权相似度审查", "纹样谱系"])
 
 # ================================================================ Tab 1
 with tab_gen:
@@ -443,3 +459,199 @@ with tab_check:
                     st.write("· " + x)
                 st.caption(f"⚠️ {r.get('disclaimer', '')}")
         tmp.unlink(missing_ok=True)
+
+
+# ================================================================ Tab 3
+# 纹样谱系 —— 全库级视图。
+#
+# ★ 为什么用缓存的静态图，而不是在 Streamlit 里重绘
+#   scripts/build_kinship_graph.py 里的绘图逻辑已经调好了中文字体、配色与排版，
+#   在界面里再写一套 matplotlib 渲染 = 两套实现必然发散（改了脚本忘了改界面）。
+#   这里只做三件事：① 直接展示脚本产出的 PNG；② 现算指标卡；③ 现算五族名单。
+#
+# ★ 为什么指标与名单要现算、不能写死
+#   B2-3 曾硬编码"排不到第 1 的 5 条"，实测其中 2 条其实排到了第 1。
+#   凡清单必须从 samples.json 现算 —— 数据一变，图与文字就不同步了。
+def _load_kinship():
+    """复用 build_kinship_graph 的建图逻辑，返回 (母题图 G, 统计 dict, 五族列表)。
+
+    ★ 必须复用脚本里的 load_graph()，不能在这里另写一遍读 samples.json 的逻辑 ——
+      否则"图里画的"与"界面说的"是两套代码算出来的，迟早不一致。
+      该脚本无第三方副作用（matplotlib 用 Agg 后端，仅导入不弹窗）。
+    """
+    import importlib.util
+
+    spec = importlib.util.spec_from_file_location(
+        "_kinship_build", ROOT / "scripts" / "build_kinship_graph.py")
+    mod = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(mod)
+
+    G, _H, stats = mod.load_graph()
+    try:
+        from networkx.algorithms.community import (
+            greedy_modularity_communities, modularity)
+        comms = list(greedy_modularity_communities(G))
+        stats["modularity"] = round(float(modularity(G, comms)), 3)
+        stats["n_community"] = len(comms)
+    except Exception:
+        comms = []
+        stats["modularity"], stats["n_community"] = None, 0
+    deg = dict(G.degree())
+    if deg:
+        stats["max_degree_node"] = max(deg, key=deg.get)
+        stats["max_degree"] = max(deg.values())
+        stats["isolated"] = len(list(__import__("networkx").isolates(G)))
+    return G, stats, sorted(comms, key=len, reverse=True)
+
+
+@st.cache_data(show_spinner=False)
+def _kinship():
+    """把图对象转成可缓存的基本类型（networkx 对象不能被 cache_data 序列化）。
+
+    社群检测（385 边）与度数统计耗时约数十毫秒，缓存后 rerun 不再重算。
+    """
+    import networkx as nx
+
+    G, stats, comms = _load_kinship()
+    deg = dict(G.degree())
+    families = []
+    for c in comms:
+        mem = sorted(c, key=lambda n: -deg.get(n, 0))
+        families.append({
+            "size": len(mem),
+            "hub": mem[0] if mem else "—",
+            "hub_degree": deg.get(mem[0], 0) if mem else 0,
+            "members": [(n, deg.get(n, 0)) for n in mem],
+        })
+    return stats, families, nx.number_of_isolates(G)
+
+
+@st.cache_data(show_spinner=False)
+def _family_names():
+    """族名 —— 从脚本 import，**不在界面里另写一份**（两处各写必然错位）。"""
+    import importlib.util
+
+    spec = importlib.util.spec_from_file_location(
+        "_kinship_names", ROOT / "scripts" / "build_kinship_graph.py")
+    mod = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(mod)
+    return list(mod.FAMILY_NAMES)
+
+
+with tab_kin:
+    st.markdown("### 纹样谱系 · 全库级视图")
+    st.caption(
+        "把「单个纹样的溯源」升级为「纹样谱系」—— 回答一个元素级溯源给不出的问题："
+        "**这类纹样在谱系上跟谁最近？**"
+    )
+
+    stats_k, families, n_iso = _kinship()
+
+    st.divider()
+
+    # ---------- ① 指标卡 ----------
+    st.subheader("① 全库谱系指标")
+    k1, k2, k3, k4, k5 = st.columns(5)
+    k1.metric("母题节点", stats_k.get("n_motif", "—"))
+    k2.metric("关联边（去重）", stats_k.get("n_edge", "—"),
+              help=f"源数据「关联纹样」字段共 {stats_k.get('raw_refs', '—')} 次引用，"
+                   f"本库内去重后为无向边数")
+    k3.metric("社群（族）", stats_k.get("n_community", "—"))
+    k4.metric("模块度", stats_k.get("modularity", "—"),
+              help="modularity 社群检测算法的质量指标，越高说明分群越清晰")
+    k5.metric("孤立母题", n_iso,
+              help="没有任何关联边的母题数。为 0 说明全库连通，没有掉队的纹样")
+
+    if stats_k.get("max_degree_node"):
+        st.markdown(
+            f"**枢纽纹样**：`{stats_k['max_degree_node']}`（度 "
+            f"{stats_k['max_degree']}）—— 全库关联最多的母题，处在谱系中心位置。"
+        )
+    st.caption("关联数据完全取自源数据既有字段，**未作任何推测性补充**。")
+
+    st.divider()
+
+    # ---------- ② 五族谱系图 ----------
+    st.subheader("② 五族谱系图")
+    _ft = ROOT / "docs" / "figures" / "kinship_family_tree.png"
+    if _ft.exists():
+        st.image(str(_ft), width="stretch")
+        st.caption(
+            "分群由 modularity 社群检测算法得出；**族名是人工按成员构成元素读出的归类**，"
+            "不是算法输出。◆ 标记该族枢纽纹样。"
+        )
+    else:
+        st.warning(f"未找到五族谱系图（{_ft.relative_to(ROOT)}）。"
+                   "请运行 `python scripts/build_kinship_graph.py` 生成。")
+
+    # 五族名单：现算，可展开逐个查看
+    st.markdown("**各族成员名单**（按关联度数降序，现算自 `samples.json`）")
+    st.caption("族名按社群规模降序对应图谱系图中的列（从左到右）。"
+               "族名与图共用同一常量，不会错位。")
+    _names = _family_names()
+    for i, fam in enumerate(families):
+        _name = _names[i] if i < len(_names) else f"族 {i + 1}"
+        with st.expander(f"{_name} ｜ {fam['size']} 条 ｜ 枢纽：{fam['hub']}"
+                         f"（度 {fam['hub_degree']}）"):
+            _cols = st.columns(3)
+            for j, (n, d) in enumerate(fam["members"]):
+                _mark = "◆ " if n == fam["hub"] else "· "
+                _cols[j % 3].markdown(f"{_mark}{n}　`{d}`")
+
+    st.divider()
+
+    # ---------- ③ 网络图 ----------
+    st.subheader("③ 母题关联网络 / 元素共现网络")
+    _n1, _n2 = st.columns(2)
+    with _n1:
+        _p = ROOT / "docs" / "figures" / "kinship_motif_network.png"
+        if _p.exists():
+            st.image(str(_p), width="stretch")
+            st.caption("母题关联网络：节点大小按关联度数、颜色按社群。适合做 PPT 主视觉。")
+    with _n2:
+        _p = ROOT / "docs" / "figures" / "kinship_element_network.png"
+        if _p.exists():
+            st.image(str(_p), width="stretch")
+            st.caption("构成元素共现网络：两个元素若出现在同一条母题里则连边。")
+
+    st.divider()
+
+    # ---------- ④ 诚实的负结论（★ 必须有，否则演示时会被问住）----------
+    st.subheader("④ 这张图的价值，以及它**没有**做到的事")
+    st.markdown(
+        "关联数据对本系统的**检索指标没有正向作用** —— 这一点我们做了消融实验，如实报告："
+    )
+    _abl = [
+        ("输入=仅名称", "0.59", "0.19", "0.16"),
+        ("输入=名称+元素", "0.97", "0.96", "0.94"),
+        ("输入=仅元素", "0.96", "0.94", "0.91"),
+    ]
+    st.table({
+        "检索输入": [a[0] for a in _abl],
+        "基线 Top-1": [a[1] for a in _abl],
+        "+ 关联扩展 (expand)": [a[2] for a in _abl],
+        "+ 关联加权 (boost)": [a[3] for a in _abl],
+    })
+    st.caption("Top-1 命中率。三种输入下，引入关联数据均**未带来提升**（多为下降）。")
+
+    st.markdown(
+        "我们把这条**负结论**留在系统里，因为它是真的，而且它澄清了关联数据的正确用法：\n\n"
+        "- **不该**拿它去做检索扩展或加权 —— 实测无效，还会拖低指标；\n"
+        "- **应当**拿它做**可解释性**与**相关参考** —— 在检索结果里回答"
+        "「为什么这几个纹样常一起出现」，这是相似度分数给不出的信息。\n\n"
+        "`expand`（把关联纹样一并塞进候选）会把噪声一起带进来，"
+        "在「仅名称」输入下 Top-1 从 0.59 掉到 0.19，正说明这一点。"
+    )
+
+    st.info(
+        "**一句话总结**：谱系图不提升准确率，它提升的是**可理解性**。"
+        "这恰好是「可溯源生成系统」立项时最想解决的问题 —— "
+        "让机器给出的结果**有据可查、有理可讲**。"
+    )
+
+    with st.expander("查看完整消融实验结果（JSON）"):
+        _exp = ROOT / "docs" / "exp_related_motifs.json"
+        if _exp.exists():
+            st.json(json.loads(_exp.read_text(encoding="utf-8")))
+        else:
+            st.caption("未找到 docs/exp_related_motifs.json")

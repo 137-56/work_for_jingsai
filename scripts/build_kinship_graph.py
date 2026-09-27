@@ -60,11 +60,18 @@ RED = "#C8102E"
 GOLD = "#D4AF37"
 GREY = "#7A7264"
 LINE = "#DED4C0"
+# PIL 用 RGB 元组、matplotlib 用十六进制串 —— 同一个颜色两种表示，转换一次免得手抄出错
+LINE_HEX = tuple(int(LINE[i:i + 2], 16) for i in (1, 3, 5))   # (222, 212, 192)
 
 # 社群配色（中式色系，循环使用）
 PALETTE = ["#C8102E", "#1F5C4A", "#C88A2E", "#3B5F8A", "#7B4B7E",
            "#A8572B", "#4A7C59", "#8C3B4A", "#5B6E8C", "#9C7A3C",
            "#2E6E6A", "#A0522D"]
+
+# ★ 族名是**人工读"成员构成"后的归类**，不是算法输出 —— 图上与界面上都必须写清这一点。
+#   它是**按社群规模降序**排列的：社群检测的结果必须先排序再套名字，否则名字会串位。
+#   界面（app.py 的「纹样谱系」页）直接 import 本常量，避免两处各写一份而错位。
+FAMILY_NAMES = ["花卉草木族", "几何锦纹族", "云水自然族", "吉祥字符族", "瑞兽神物族"]
 
 
 def load_graph():
@@ -218,7 +225,8 @@ def draw_family_tree(G, out, stats):
     comms = sorted(comms, key=lambda c: -len(c))
 
     # ★ 族名是人工读"成员构成"后的归类，不是算法输出 —— 图上必须写清这一点
-    NAMES = ["花卉草木族", "几何锦纹族", "云水自然族", "吉祥字符族", "瑞兽神物族"]
+    #   常量提到模块级（FAMILY_NAMES），供 app.py 共用，避免两处错位
+    NAMES = FAMILY_NAMES
     CC = [RED, "#1F5C4A", "#C88A2E", "#3B5F8A", "#7B4B7E"]
 
     N = len(comms)
@@ -269,9 +277,6 @@ def draw_family_tree(G, out, stats):
            font=f_f, fill=PGREY)
     img = img.crop((0, 0, W, TOP + 1540))
     img.save(out, "PNG")
-
-
-LINE_HEX = (222, 212, 192)
 
 
 def main():
