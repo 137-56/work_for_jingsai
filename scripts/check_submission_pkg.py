@@ -47,13 +47,41 @@ NEED = [
     "ckpt/clip_cn_vit-b-16.pt",
 ]
 
+DEFAULT_PKG_WEB = Path(
+    r"D:/work/work_space/DeskTop/DeskBox/"
+    r"AIC-2026-49790132-算法模型创新-纹初迹现-Web演示版")
+
+# Web 演示版：单页应用 + Serverless 函数，无本地模型
+NEED_WEB = [
+    # 可执行程序
+    "启动预览.bat", "启动预览.sh", "部署到Netlify.md", "README_运行说明.md",
+    # 源代码
+    "index.html", "config.js", "netlify.toml", "package.json",
+    "netlify/functions/proxy.mjs",
+    "netlify/functions/submit3d.mjs",
+    "netlify/functions/check3d.mjs",
+    "netlify/functions/modelStore.mjs",
+    "netlify/functions/getmodel.mjs",
+    "libs/model-viewer.min.js",
+    # 模型数据（本版本无模型权重，只有业务数据）
+    "data/patterns.json",
+    "images/patterns/w001.jpg",
+    "README_模型数据.md",
+]
+
+PROFILES = {"main": NEED, "web": NEED_WEB}
+
 
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument("--pkg", default=str(DEFAULT_PKG),
-                    help="提交包根目录（其下应有若干 `根名-XY` 子目录）")
+    ap.add_argument("--pkg", default=None,
+                    help="提交包根目录（不给则按 --profile 取默认路径）")
+    ap.add_argument("--profile", choices=list(PROFILES), default="main",
+                    help="main=Streamlit 主版本（默认）；web=Web 演示版")
     args = ap.parse_args()
-    pkg = Path(args.pkg)
+    need = PROFILES[args.profile]
+    pkg = Path(args.pkg) if args.pkg else (
+        DEFAULT_PKG if args.profile == "main" else DEFAULT_PKG_WEB)
 
     if not pkg.exists():
         print(f"★ 找不到提交包：{pkg}")
@@ -94,8 +122,8 @@ def main():
         print("    ✓ 无冲突，可直接合并")
 
     # ---- 3. 齐备 ----
-    miss = [p for p in NEED if p not in merged]
-    print(f"\n[2] 代码依赖路径：{len(NEED)} 项，缺失 {len(miss)} 项")
+    miss = [p for p in need if p not in merged]
+    print(f"\n[2] 代码依赖路径：{len(need)} 项，缺失 {len(miss)} 项")
     if miss:
         for p in miss:
             print(f"    ★ 缺失 {p}")
