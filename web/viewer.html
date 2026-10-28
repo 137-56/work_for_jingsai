@@ -145,20 +145,41 @@ const metaEl= document.getElementById("meta");
 const subEl = document.getElementById("sub");
 const noteEl= document.getElementById("note");
 
-/* ── 溯源说明（必须与实际贴图方案一致）─────────────────────
-   ★ 为什么不能写死：地子启用 AI 风格化图后，再说"非 AI 生成"就是失实。
-     两种模式的**纹样层口径完全相同**（都来自母题库、元素级可溯），
-     差别只在**底色层**：neutral = 纯色地子；ai = 来自风格化图。
-     这句话是要写进参赛材料的，不能含糊。 */
+/* ── 溯源说明（六句声明，由 src/disclosure.py 单一真源生成）──────
+   ★ 本页是纯静态页，import 不了 Python，所以由 app.py 的 _embed_viewer
+     把声明写成 ./disclosure.json，这里 fetch 读取。
+   ★ 为什么不再硬编码：这段文案历史上存在 **4 份副本**
+     （app.py / preview3d.py 两串 / 本文件 / static 运行时副本），
+     后果不是报错，而是「页面说一套、导出图说另一套」——静默失效。
+   ★ 读不到 JSON 时回退到内置兜底，不白屏。兜底本身仍必须与实际地子一致。 */
 (function setNote(){
-  const common = "载体层：程序化生成的标准几何体，仅作形态预览。";
-  noteEl.innerHTML = (GROUND === "ai")
-    ? ("纹样层：各分区纹样分别来自语义层母题库，元素级可溯。<br>"
-       + "地子层：底纹取自 AI 风格化图（M5 输出），<b>仅作渲染色底、不承载语义</b>。<br>"
-       + common)
-    : ("纹样层：各分区纹样分别来自语义层母题库，元素级可溯。<br>"
-       + "载体层：程序化生成的标准几何体（非文物三维模型、非 AI 生成），"
-       + "仅作形态预览。");
+  const fallback = (GROUND === "ai")
+    ? [
+        {label:"纹样层", text:"各分区纹样分别来自语义层母题库，元素级可溯。"},
+        {label:"预览地子", text:"底纹取自 AI 风格化图（M5 输出），仅作渲染色底、不承载语义。"},
+        {label:"载体层", text:"程序化生成的标准几何体，仅作形态预览。"}
+      ]
+    : [
+        {label:"纹样层", text:"各分区纹样分别来自语义层母题库，元素级可溯。"},
+        {label:"载体层", text:"程序化生成的标准几何体（非文物三维模型、非 AI 生成），仅作形态预览。"}
+      ];
+
+  function paint(lines){
+    noteEl.innerHTML = lines.map(x => {
+      const label = x.label || "";
+      const text  = x.text || String(x);
+      const body  = text.includes("：") ? text.slice(text.indexOf("：") + 1) : text;
+      return '<div style="display:flex;gap:8px;margin:2px 0">'
+           + '<b style="flex:0 0 62px">' + label + '</b>'
+           + '<span>' + body + '</span></div>';
+    }).join("");
+  }
+
+  paint(fallback);
+  fetch("./disclosure.json", {cache:"no-store"})
+    .then(r => r.ok ? r.json() : null)
+    .then(j => { if (Array.isArray(j) && j.length) paint(j); })
+    .catch(() => { /* 保持兜底 */ });
 })();
 
 /* ── 渲染器 ─────────────────────────────────────────────── */

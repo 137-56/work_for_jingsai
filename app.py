@@ -39,6 +39,7 @@ from src.m6_provenance import ATTRIBUTION_SHORT, SCORE_NOTE, to_markdown
 from src.m7_copyright import assess
 from src.pipeline import run, save_all
 from src.utils import CFG
+from src import disclosure
 
 st.set_page_config(page_title="纹初迹现 · 可溯源纹样生成系统", layout="wide")
 
@@ -76,7 +77,7 @@ def sample_count():
         return 0
 
 
-def _embed_viewer(glb_info, ground="neutral"):
+def _embed_viewer(glb_info, ground="neutral", disclosure_lines=None):
     """把 GLB 复制到 Streamlit 的静态目录，并用 iframe 嵌入 Three.js 查看器。
 
     ★ 为什么必须走"静态目录 + iframe"（实测踩到）
@@ -106,6 +107,19 @@ def _embed_viewer(glb_info, ground="neutral"):
     static_dir = ROOT / "static" / "viewer"
     (static_dir / "vendor").mkdir(parents=True, exist_ok=True)
     (static_dir / "glb").mkdir(parents=True, exist_ok=True)
+
+    # ★ 把六句声明写成 JSON 交给查看器读取 —— 查看器是纯静态页，import 不了 Python，
+    #   若不这么做，viewer.html 里就必须再硬编码一份（历史上正是"4 份副本"之一）。
+    #   没有 JSON 时查看器会回退到内置文案，不会白屏。
+    if disclosure_lines:
+        try:
+            (static_dir / "disclosure.json").write_text(
+                json.dumps([{"label": x["label"], "text": x["text"]}
+                            for x in disclosure_lines if x.get("status") != "pending"],
+                           ensure_ascii=False, indent=1),
+                encoding="utf-8")
+        except Exception:
+            pass  # 写不进去不影响主流程，查看器走内置兜底
 
     # 查看器与 Three.js（只需拷一次，但检查一下以防首次）
     # ★ design-tokens.css 必须一起拷：viewer.html 用 <link href="./design-tokens.css">
@@ -188,6 +202,78 @@ def _render_elements(items, width=150, strong=True, show_category=True):
             if show_category and e.get("category"):
                 tail += f"｜{e['category']}"
             st.caption(sim_txt + tail)
+
+
+_FORM_CN = {"vase": "陶瓶（梅瓶）", "box": "包装方盒", "fan": "团扇"}
+
+
+def _band_rows(bands):
+    """把 preview3d_layout 的环带数组转成表格行。
+
+    ★ `sample: null` 的环带是"素地弦纹"（分隔带），不是缺数据 ——
+      写成「素地（无母题）」而不是留空，否则看起来像溯源断了。
+    """
+    rows = []
+    for b in bands or []:
+        v = b.get("v")
+        rows.append({
+            "band": b.get("label") or "—",
+            "v": f"{v[0]:.2f}–{v[1]:.2f}" if isinstance(v, (list, tuple)) and len(v) == 2 else "—",
+            "motif": b.get("motif") or "素地（无母题）",
+            "sample": b.get("sample") or "—",
+        })
+    return rows
+
+
+def _md_table(rows):
+    if not rows:
+        return ""
+    out = ["| 环带 | 位置 v | 纹样 | 出处 |", "|---|---|---|---|"]
+    out += [f"| {r['band']} | {r['v']} | {r['motif']} | {r['sample']} |" for r in rows]
+    return "\n".join(out)
+
+
+def _bands_block(layout):
+    """渲染逐环带溯源清单。
+
+    ★ 这是本项目 3D 部分**真正的资产**，不是装饰：
+      它回答"这件器物的哪一圈来自哪条纹样"，而 Web 演示版的 `<model-viewer>`
+      只能转、转完说不出任何出处。所以 3D 这一项不是 work_two 更强，而是相反。
+    ★ 行数用 len(bands) 递归求和，不硬编码（实测 vase 8 / box 5+盒盖 2 / fan 3）。
+    """
+    if not isinstance(layout, dict):
+        return
+    forms = [k for k in ("vase", "box", "fan") if isinstance(layout.get(k), dict)]
+    if not forms:
+        return
+
+    with st.expander("查看各形态的逐环带出处 —— 哪一圈来自哪条纹样", expanded=False):
+        for k in forms:
+            node = layout[k]
+            st.markdown(f"**{_FORM_CN[k]}**")
+            lid = node.get("lid") or {}
+            if lid.get("bands"):
+                # ★ 盒盖是嵌套子结构，**不能平铺**：平铺会把"盒盖主题纹"
+                #   说成盒身的一个环带。分两组、盒盖缩进一级。
+                st.markdown("盒身")
+                st.markdown(_md_table(_band_rows(node.get("bands"))))
+                st.markdown("盒盖")
+                st.markdown(_md_table(_band_rows(lid.get("bands"))))
+            else:
+                st.markdown(_md_table(_band_rows(node.get("bands"))))
+            st.caption("")
+
+        # ★ 盒盖 / 扇面的环带在 layout 里只记 `motif`、不记 `sample` id
+        #   （实测：box.lid 与 fan 的 bands 全部 sample=null）。
+        #   出处栏写「—」是**如实**，不是溯源断了 —— 但必须说一句，
+        #   否则读者会以为这两件器物的纹样没有出处。
+        _miss = [b for k in forms
+                 for b in ((layout[k].get("lid") or {}).get("bands")
+                           or layout[k].get("bands") or [])
+                 if b.get("motif") and not b.get("sample")]
+        if _miss:
+            st.caption("盒盖 / 扇面的环带在布局数据里只记录纹样名、未记录 sample id，"
+                       "故出处栏为「—」；对应母题与授权见 ④ 区溯源卡片。")
 
 
 # ---------------------------------------------------------------- 侧边栏
@@ -412,13 +498,33 @@ with tab_gen:
         # ---------- ⑥ 文创效果预览（3D，载体层不参与元素级溯源） ----------
         st.divider()
         st.subheader("⑥ 文创效果预览（3D）")
-        # ★ 与 ⑤ 同理：这里的声明必须显式放在界面上，不能只写在文档里。
-        st.info("**纹样层可溯，载体层不参与元素级溯源** —— "
-                "本例把上一步的**组合纹样图**贴附到三种器物形态上，用于预览文创落地效果。"
-                "纹样仍来自语义层母题库（**元素级可溯**）；"
-                "而三种器物形态是**程序化生成的标准几何体**，"
-                "**不是文物三维模型、也不是 AI 生成**，因此不引入新的溯源问题。")
-        st.caption("⚠️ 形态为示意性预览，**不代表任何具体器物的真实形制或三维复原**。")
+
+        # ★ 六句声明由 src/disclosure.py 单一真源生成。
+        #   改造前这段是硬编码，且**只说了两层**（纹样层 + 载体层），
+        #   材质层出处（克利夫兰实物）与授权（CC BY-NC 4.0）在界面上**完全不存在**。
+        #   边界句 status=pending（口径待 Mr.G 定）→ 这里跳过不显示，**不摆占位符**。
+        _run_dir = Path(st.session_state["out"]) if st.session_state.get("out") else None
+        _layout = {}
+        if _run_dir and (_run_dir / "preview3d_layout.json").exists():
+            try:
+                _layout = json.loads(
+                    (_run_dir / "preview3d_layout.json").read_text(encoding="utf-8"))
+            except Exception:
+                _layout = {}
+        _ground = (_layout.get("_render") or {}).get("ground_from") or "neutral"
+
+        _lines = [x for x in disclosure.build(recipe, ground_from=_ground)
+                  if x["status"] != "pending"]
+        _rows = "".join(
+            f'<div style="display:flex;gap:8px;margin:3px 0">'
+            f'<b style="flex:0 0 68px;color:#2B2318">{x["label"]}</b>'
+            f'<span style="color:#6E6656">{x["text"].split("：", 1)[-1]}</span></div>'
+            for x in _lines)
+        st.markdown(
+            f'<div style="background:#FCF9F3;border:1px solid #DED4C0;'
+            f'border-left:3px solid #C8102E;border-radius:10px;'
+            f'padding:14px 16px;font-size:13px;line-height:1.85;color:#2B2318">{_rows}</div>',
+            unsafe_allow_html=True)
 
         if comp.exists():
             st.caption(
@@ -513,8 +619,10 @@ with tab_gen:
                         p = p3.get(k)
                         if p and Path(p).exists():
                             col.image(p, caption=lab, width="stretch")
-                st.caption("纹样层：来自语义层母题库，元素级可溯　｜　"
-                           "载体层：程序化生成的标准几何体（非文物三维模型、非 AI 生成），仅作形态预览")
+                # ★ 不再在这里重复声明 —— 六句口径统一由 ⑥ 区顶部
+                #   src/disclosure.py 渲染。此处硬编码曾是"4 份副本"之一，
+                #   多份并存的后果是"页面说一套、导出图说另一套"，且不报错。
+                st.caption("溯源口径见本节顶部声明（纹样层 / 材质层 / 载体层 / 预览地子 / 授权）。")
 
             # ---------- 交互式三维查看器（内嵌 GLB） ----------
             glb = st.session_state.get("glb_info")
@@ -522,7 +630,9 @@ with tab_gen:
                 st.markdown("##### 交互式三维预览")
                 st.caption("拖拽旋转 · 滚轮缩放 · 右键平移。"
                            "下面嵌入的是**真实的 GLB 模型**（纹样贴图已打包在内）。")
-                _embed_viewer(glb, st.session_state.get("p3d_ground", "neutral"))
+                _embed_viewer(glb, st.session_state.get("p3d_ground", "neutral"),
+                              disclosure_lines=_lines)
+                _bands_block(_layout)
                 st.caption("下载的 `.glb` 是业界通用格式，可直接拖进 Blender / Unity "
                            "或任意在线 glTF 预览器打开。")
 
