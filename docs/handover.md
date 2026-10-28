@@ -189,8 +189,12 @@ $PY scripts/build_kinship_graph.py                     # 产物在 docs/figures/
 4. **`dynasty` 字段全库为「不详」，不虚构**。源数据无朝代信息，纹样母题本身跨朝代
    （缠枝莲纹自唐沿用至清），填具体朝代属编造。
 5. **不许编数据**。任何补录必须来自源数据原文。历史教训：曾把源数据没有的母题写进 `elements`。
-6. **授权**：Wényàng 图像与文字 = CC BY-NC 4.0（署名 · 限非商业），代码 MIT；
-   克利夫兰 = CC0。署名要求见 `文档/数据来源署名规范.md`。
+6. **授权**：Wényàng 图像与文字 = CC BY-NC 4.0（署名 · 限非商业）；克利夫兰 = CC0。
+   署名要求见 `文档/数据来源署名规范.md`。
+   ⚠️ **代码授权待定**（2026-10-28 实测：仓库根**没有** `LICENSE` / `COPYING` 文件）。
+   **未经 Mr.G 确认不得添加 LICENSE 文件**，界面也暂不声明"代码 MIT"——
+   竞赛作品是否开源涉及版权归属/独家性/赛事方使用权，随手放一个 MIT 违反参赛条款的
+   风险，远大于界面上少写半句。等 Mr.G 明确要开源再补。
 7. **`related_motifs` 存的是纹样名，不是 id**（如 `"宝相花纹"`）。
    524 条原始引用中 505 条能对上库内 `name`，**对上 `id` 的是 0 条**。
    ★ 接手后若按 id 做关联，会**全数落空**——这是实测过的坑。
@@ -265,6 +269,21 @@ README 与对外材料统一写 **「100 母题 / 385 边 / 5 族」**。
     **协作消息里同样不许复述。**
 17. **清理派生物只用移动，不用删除**。收益只是目录整洁，删错定稿产物的代价不可逆。
 18. **测试文件不要落在待提交目录里**，造样本一律用假数据。
+19. **溯源声明只维护一处**：六句（纹样层 / 材质层 / 载体层 / 预览地子 / 授权 / 边界）
+    由 `src/disclosure.py` 生成，`app.py` 渲染、`web/viewer.html` 通过
+    `disclosure.json` 读取。**不要在任何地方再硬编码这六句** ——
+    改造前它有 4 份副本（`app.py` / `preview3d.py` 两串 / `viewer.html` / `static` 副本），
+    后果不是报错，而是"页面说一套、导出图说另一套"。
+    **边界句口径须 Mr.G 定**（见 §10），未定时 `status=pending`，渲染端**跳过不显示**，
+    不摆占位符 —— 宁可少一句，不可多一句编的。
+20. **状态徽章必须四要素**：`状态词 · 计数 · run id · 时间戳`。
+    时间戳唯一来源 `card.json.generated_at`（`recipe.json` 无 `created_at`，
+    **不能用文件 mtime** —— 拷贝/解压/move 都会变）。
+    只写"未检出违规"而不给计数与 run id，读者无法判断是本次结果还是写死的一句好话。
+21. **材质层文案不许写「±35%」**。`factor = 1 + (g-1)×0.35`，**0.35 是缩放系数不是幅度上限**：
+    实测本 run 素材 `mean L=126.3` → `factor 0.758~1.357` → 亮度 −24.2%~+35.7%。
+    正确写法：「按 0.35 系数缩放相对亮度偏差，不改变任何颜色」。
+    「不改变颜色」成立（标量乘子保持 R:G:B 比例），但**不许**写"无感知/不影响观感"。
 
 ---
 
@@ -293,12 +312,13 @@ README 与对外材料统一写 **「100 母题 / 385 边 / 5 族」**。
 
 | 脚本 | 验什么 |
 |---|---|
-| `scripts/validate_samples.py` | 数据契约（10 条规则） |
+| `scripts/validate_samples.py` | 数据契约（10 条规则，**⑤ 已升级为"存在 + 1086×1448 尺寸"**） |
 | `scripts/check_rules.py` | 文化规则结构校验 + 引擎冒烟 |
 | `scripts/check_metrics.py` | 指标一致性（跨报告 / PPT / 简介取数），`--strict` 严格模式 |
 | `scripts/check_m3_differential.py` | M3 黄金快照差分回归（525 配方，防误报设计见脚本头） |
 | `scripts/check_board_layout.py` | 设计板版面：遮挡 / 出框 / 幂等 / 取值长度变体 |
 | `scripts/check_glb_uv.py` | 从 `.glb` 字节流**独立重解析**：UV 越界 / 采空白 / 索引完整性 |
+| `scripts/check_glb_sync.py` | **三处 GLB 同源**（run / `web/glb` / `static/viewer/glb`），两条不变量分开断言 |
 | `scripts/preview_glb.py` | **独立** z-buffer 渲染 GLB，人眼验贴图方向 |
 | `scripts/check_render3d.py` | 法线朝向 + NaN 污染 |
 | `scripts/check_style_ground.py` | 贴图双路线均可渲染 + 地子来源必须不同 |
@@ -311,7 +331,17 @@ README 与对外材料统一写 **「100 母题 / 385 边 / 5 族」**。
 > 数值自检查不出"上下颠倒 / 左右镜像"，只有交叉验证才能发现。
 > ★ `tests/test_retrieval.py` 目前是 **0 字节**（待补）。
 
-**改 3D 后必跑**：`check_render3d` → `check_glb_uv` → `preview_glb` → `check_style_ground` → `check_app_embed`。
+**改 3D 后必跑**：`check_render3d` → `check_glb_uv` → `preview_glb` → `check_style_ground` → `check_app_embed` → **`check_glb_sync`**。
+
+> ★ `check_glb_sync.py` 是 2026-10-28 新增：实测方盒 run=902,496B 而 `web/glb` 与
+> `static/viewer/glb` 都是 1,032,852B（09-27 修复前版本），团扇的 `web/` 又是第三个版本。
+> **页面照样打开、不报错**，只是"演示转的模型"和"材料里的图"不是同一件东西。
+> 修法是**字节复制**（备份后 `cp -p`），**不要重新生成** —— 重跑会产生新 `recipe_id`，
+> 破坏"所有材料出自同一个 run"。
+
+> ★ `redline_check.py` 2026-10-28 起：`TEXT_EXT` 补了 `.mjs/.toml/.svg` 等，
+> `static/` 移出 `EXCLUDE_DIRS`，且**扫描 0 个文件判 FAIL**（原先 0 文件也报 PASS，
+> 是假绿）。确需空扫描时显式加 `--allow-empty`。
 
 ---
 
