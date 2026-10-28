@@ -154,6 +154,42 @@ def _embed_viewer(glb_info, ground="neutral"):
         )
 
 
+def _render_elements(items, width=150, strong=True, show_category=True):
+    """渲染一组溯源元素（图 + 名 + 匹配分 + 出处 id）。
+
+    ★ 为什么分组渲染而不是一列到底（2026-10-28 实测）
+      `card.json.elements` 的顺序是 **role 语义序**，不是分数序：
+        蝙蝠纹 0.75(center) → 回纹 0.45(border) → 如意纹 0.45(corner)
+        → 祥云纹 0.60 → 麒麟纹 0.59 → …（reference 组内降序）
+      如果按分数全局排，中心母题会被挤到第 2 位、边饰角花掉到 9/10 位 —— 结构就散了；
+      如果原样平铺，又会出现「0.45 后面跟着 0.60」，看起来像排序 bug。
+      两条路都错，所以按 role 分组：结构组在上、参考组在下，各组标题写明排序依据。
+
+    ★ 降级手段只允许改尺寸/留白/字重/边框，**不许碰像素**
+      （opacity / grayscale / 蒙层 都不行）—— 参考组的图也是证据，调暗等于对证据做视觉降权。
+    """
+    if not items:
+        return
+    ncol = min(5, len(items))
+    cols = st.columns(ncol)
+    for i, e in enumerate(items):
+        with cols[i % ncol]:
+            ip = ROOT / (e.get("image_path") or "")
+            if e.get("image_path") and ip.exists():
+                st.image(str(ip), width=width)
+            else:
+                # ★ 缺图必须如实说。Web 演示版用的是 onerror 回落到首图 —— 张冠李戴。
+                st.caption("图像缺失")
+            name = e.get("element") or e.get("source_name") or "—"
+            st.markdown(f"**{name}**" if strong else name)
+            sim = e.get("similarity")
+            sim_txt = f"匹配分 {sim:.2f}" if isinstance(sim, (int, float)) else "匹配分 —"
+            tail = f"｜{e.get('source_id', '')}"
+            if show_category and e.get("category"):
+                tail += f"｜{e['category']}"
+            st.caption(sim_txt + tail)
+
+
 # ---------------------------------------------------------------- 侧边栏
 with st.sidebar:
     st.header("关于本系统")
@@ -245,6 +281,11 @@ with tab_gen:
         else:
             st.caption(f"共 {len(hits)} 个候选（按匹配分排序）")
         st.caption(f"口径：{SCORE_NOTE}")
+        # ★ 与 ④ 区双向互指：读者看到 10 条候选、④ 区只有 3 条构件，
+        #   若只在 ④ 解释，读完 ② 仍然不知道为什么有 10 条。
+        _n_struct = sum(1 for e in (card.get("elements") or [])
+                        if e.get("role") in ("center_motif", "border", "corner"))
+        st.caption(f"以下为**检索候选**；本方案实际采用其中 {_n_struct} 条作为构件（见 ④ 区）。")
         if hits:
             ncol = min(5, len(hits))
             cols = st.columns(ncol)
@@ -274,11 +315,40 @@ with tab_gen:
 
         # ---------- ④ 溯源卡片 ----------
         st.subheader("④ 元素级溯源卡片")
+
+        # ★ 3 + 1 分组（结构构件 / 相关参考），理由见 _render_elements 的 docstring。
+        #   另外：② 区列了 10 条候选、④ 区只用 3 条做构件，读者一定会问
+        #   "为什么 ② 有 10 条、④ 只用 3 条" —— 所以两区必须**双向互指**，
+        #   只在一侧解释是不够的（读者可能在 ④ 才第一次见到这两个 0.45）。
+        els = card.get("elements") or []
+        struct = [e for e in els if e.get("role") in ("center_motif", "border", "corner")]
+        refs = [e for e in els if e.get("role") == "reference"]
+
+        if els:
+            st.caption(
+                f"本方案采用其中 **{len(struct)} 条**作为构件（中心母题 / 边饰 / 角花），"
+                f"其余 {len(refs)} 条为相关参考。"
+                f"② 区列出的是全部 {len(hits)} 条检索候选（含槽位保底命中），"
+                "这里才是**实际进入方案**的构件。"
+            )
+
         png = Path(st.session_state.get("out", "")) / "provenance_card.png"
         if png.exists():
             st.image(str(png), width="stretch")
         else:
             st.caption("（卡片图未生成，以下为文字版）")
+
+        if struct:
+            st.markdown("##### 构件 · 按结构角色排列")
+            st.caption("分数为匹配分，**不是排序依据** —— 结构角色优先。")
+            _render_elements(struct, width=150, strong=True)
+            # ★ 显示低分而不解释，比不显示更危险：读者会以为"系统选了个不匹配的元素"。
+            st.caption("边饰 / 角花为配方指定的结构槽位（`retrieve` 保底钉入），"
+                       "其绝对匹配分天然偏低 —— 这是机制，不是选错。")
+        if refs:
+            st.markdown("##### 相关参考 · 按匹配分降序")
+            _render_elements(refs, width=140, strong=False)
+
         with st.expander("查看卡片文字版", expanded=False):
             st.markdown(to_markdown(card))
 
