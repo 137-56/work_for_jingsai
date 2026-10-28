@@ -235,6 +235,7 @@ work/
 │       check_render3d.py       法线朝向 + NaN 污染
 │       check_glb_uv.py         从 .glb 字节流独立重解析（UV 越界 / 采空白 / 索引）
 │       preview_glb.py          独立 z-buffer 渲染（交叉验证贴图方向）
+│       check_board_layout.py   设计板版面：元素遮挡 / 出框 / 幂等 / 取值长度变体
 │       check_style_ground.py   贴图双路线均可渲染 + 地子来源必须不同
 │       check_app_embed.py      界面 ⑥ 区嵌入链路（★ 需服务已在跑）
 ├── data/
@@ -254,7 +255,7 @@ work/
 │   ├── viewer.html
 │   └── vendor/              three.min.js r147 + GLTFLoader.js
 ├── static/                  web/ 的运行时副本（不入库，自动生成）
-├── tests/                   单元测试
+├── tests/                   单元测试（test_rules.py 覆盖 M3 规则引擎，50 例通过；test_retrieval.py 待补）
 └── outputs/                 运行产物（不入库）
 ```
 

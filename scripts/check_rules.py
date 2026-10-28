@@ -6,7 +6,11 @@
   · terms 写单字  → 引擎 `len(t) < 2` 直接跳过 → **该词永不匹配**（不报错）
   · severity 写错 → 排序时被丢到末尾，但不影响运行（不报错）
   · ty 写错       → 引擎会输出"[规则格式异常] 未知 constraint.type"（这个会报，但混在一堆告警里）
-  · constraint 缺字段 → 检查器抛 KeyError → **整个校验层崩掉**
+  · constraint 缺字段 / condition 漏 op、value
+                  → ★ 2026-10 起：引擎**不再崩**，该条规则失效并留一条 low 告警
+                    （`m3_validate` 已全部改用 `.get()` + 逐条 `try/except` 兜底）。
+                    但仍然**必须由本脚本拦下** —— "不崩"只保证其余 24 条规则还活着，
+                    这条规则本身已经悄悄不生效了，等于白写。
 
 这几类错误只能靠本脚本在写完之后立刻拦下。**先跑它，再跑 validate()。**
 
@@ -30,13 +34,14 @@ from src.utils import CFG
 # ---------------------------------------------------------------- 契约常量
 SEVERITIES = {"high", "medium", "low"}
 
-# 四种约束类型 → 必须提供的额外字段
-CONSTRAINT_FIELDS = {
-    "forbidden_terms":   ["scope", "terms"],
-    "required_evidence": ["field"],
-    "domain_check":      ["field", "allowed"],
-    "dependency":        ["if_field", "then_field"],
-}
+# ★★ 必需键清单**不在这里维护**（2026-10 统一）
+#   原来本脚本自己有一份 CONSTRAINT_FIELDS，"四种约束类型 → 必需字段"，
+#   而运行期 `m3_validate` 也有自己的一套 —— 两份必然会发散（项目栽过）。
+#   现在改成 **import `m3_validate.rule_schema_error()`**，本脚本只负责
+#   "提交前拦"：它比运行期多查 id 唯一性、分类分布、路径真实性、terms 字数、
+#   色板一致性等 lint 项；而"规则结构对不对"这个判定只有一份实现。
+from src.m3_validate import rule_schema_error, validate    # noqa: E402
+
 
 # 五类分类（契约 §2.6 的目标分类；每类目标 5 条、至少 4 条）
 # 注：第 5 类由契约的「色彩规程」扩为「色彩与取值域规程」——因为 domain_check 同时承载
@@ -57,8 +62,16 @@ RECIPE_PATHS = {
     "palette.primary", "palette.secondary", "palette.scheme_basis",
 }
 
-TRIGGER_OPS = {"intersect", "contains", "equals"}
 MIN_TERM_LEN = 2          # 引擎硬规则：单字词不参与匹配
+
+
+def _ctype_of(r):
+    """安全取 constraint.type —— 规则可能是脏的（constraint 写成 str/list），
+    汇总统计不该被一条坏规则搞崩（结构问题由 ⓪ 的 rule_schema_error 负责报）。"""
+    if not isinstance(r, dict):
+        return "(非对象)"
+    c = r.get("constraint")
+    return c.get("type") if isinstance(c, dict) else "(非法 constraint)"
 
 
 def paths_of_rule(r):
@@ -107,7 +120,20 @@ def main() -> int:
             problems.append(f"① id 重复：{i}")
 
     for r in rules:
+        # ---- ⓪ ★ 结构契约（与运行期同一份实现：src/m3_validate.rule_schema_error）----
+        #   这一项是"提交前拦"，比运行期多一层意义：运行期只保证"不崩 + 留痕"，
+        #   但坏规则在运行期已经等于白写了，必须在这里拦下并说清原因。
+        err = rule_schema_error(r)
+        if err:
+            problems.append(f"⓪ {r.get('id', '?') if isinstance(r, dict) else '?'} 结构不合契约：{err}")
+        if not isinstance(r, dict):
+            continue
         rid = r.get("id", "?")
+        # 形状都不对（constraint/trigger 不是对象）时，后面 ②–⑫ 的 lint 全部依赖
+        # dict 形状，硬跑会二次崩溃（实测 `constraint` 写成字符串就 AttributeError）。
+        # 结构问题已由 ⓪ 记录，这里只是别把 lint 自己搞崩。
+        if not isinstance(r.get("constraint"), dict) or not isinstance(r.get("trigger"), dict):
+            continue
 
         # ---- ② 必备字段 ----
         for f in ("id", "name", "version", "severity", "source", "trigger", "constraint", "action"):
@@ -128,28 +154,19 @@ def main() -> int:
         if r.get("category") not in CATEGORIES:
             problems.append(f"⑤ {rid} category 非法：{r.get('category')!r}")
 
-        # ---- ⑥ trigger 结构 ----
+        # ---- ⑥ trigger 结构（仅本脚本才查的 lint 项；op/conditions 的存在性
+        #      与合法性已由 ⓪ 的 rule_schema_error 统一负责，这里不重复）----
         trig = r.get("trigger") or {}
         if trig.get("op", "any") not in ("any", "all"):
             problems.append(f"⑥ {rid} trigger.op 非法：{trig.get('op')}")
         conds = trig.get("conditions") or []
-        if not conds:
-            problems.append(f"⑥ {rid} trigger.conditions 为空 —— 引擎会直接返回 False，规则永不触发")
         for c in conds:
-            if c.get("op") not in TRIGGER_OPS:
-                problems.append(f"⑥ {rid} condition.op 非法：{c.get('op')}")
             if c.get("op") == "intersect" and not isinstance(c.get("value"), list):
                 problems.append(f"⑥ {rid} intersect 的 value 必须是数组，当前 {type(c.get('value')).__name__}")
 
-        # ---- ⑦ constraint 类型与必需字段 ----
+        # ---- ⑦ constraint 类型（合法性已由 ⓪ 负责，这里只取 type 供后续 lint 用）----
         cons = r.get("constraint") or {}
         ctype = cons.get("type")
-        if ctype not in CONSTRAINT_FIELDS:
-            problems.append(f"⑦ {rid} constraint.type 非法：{ctype!r}")
-        else:
-            for f in CONSTRAINT_FIELDS[ctype]:
-                if f not in cons:
-                    problems.append(f"⑦ {rid} type={ctype} 缺必需字段：{f}")
 
         # ---- ⑧ ★ terms 每项必须 ≥2 字（单字会被引擎静默忽略）----
         if ctype == "forbidden_terms":
@@ -209,7 +226,36 @@ def main() -> int:
     for k, v in dist.items():
         if k not in CATEGORIES:
             print(f"  [未知类] {k}  {v} 条")
-    print("\n约束类型分布：", dict(Counter((r.get('constraint') or {}).get('type') for r in rules)))
+    print("\n约束类型分布：", dict(Counter(_ctype_of(r) for r in rules)))
+
+    # ---- ⑭ ★ 引擎冒烟（2 行，专挡"半重构落盘"）----
+    # 教训（2026-10，QA 撞到）：改 m3_validate 的过程中曾落盘过一个中间态
+    # （`NameError: structure_problem`），当时**每一次** validate() 都抛，
+    # 而 pipeline 是 try/except + `violations = []` → 界面照常出图、文化校验全失效。
+    #
+    # ★ 断言的是什么、不是什么：这里验的是「**引擎本身**能不能跑通、会不会多吐
+    #   业务告警」，与「规则库写得对不对」是两件事。所以必须先滤掉
+    #   `[规则格式异常]` / `[规则执行异常]` 这两类**结构/运行期**告警 ——
+    #   它们是引擎按契约给出的正确输出，规则库坏掉时本来就会出现。
+    #   不滤的话会误报成"引擎坏了"（QA 实测：坏规则库 → ⓪ 报对了，⑭ 却诬告引擎）。
+    try:
+        smoke = validate({}, rules)
+    except Exception as e:                          # noqa: BLE001
+        problems.append(f"⑭ 引擎冒烟失败：validate() 在真实规则库上抛 "
+                        f"{type(e).__name__}: {e} —— 校验层此刻是失效的")
+    else:
+        is_infra = lambda a: str(a.get("message", "")).startswith(   # noqa: E731
+            ("[规则格式异常]", "[规则执行异常]"))
+        infra = [a for a in smoke if is_infra(a)]
+        real = [a for a in smoke if not is_infra(a)]
+        if real:
+            problems.append(f"⑭ 引擎冒烟失败：空配方本应 0 条业务告警，实得 {len(real)} 条"
+                            f"（{', '.join(str(a.get('rule_id')) for a in real[:3])}）")
+        elif infra:
+            print(f"引擎冒烟：validate(空配方) → 0 条业务告警 ✅"
+                  f"（另有 {len(infra)} 条规则自身结构/运行期异常，见 ⓪ 类问题）")
+        else:
+            print("引擎冒烟：validate(空配方) → 0 条告警 ✅")
 
     if not problems:
         print("\n[PASS] 规则库结构校验通过")

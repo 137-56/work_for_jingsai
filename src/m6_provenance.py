@@ -5,7 +5,7 @@
 关键点（详细实现指南 6.4）：
   · 出处链接要完整可用，不截断
   · 授权类型如实写（红线相关）
-  · 相似度保留两位小数
+  · 匹配分（检索融合分，非纯余弦相似度）保留两位小数
   · 卡片里不能出现任何机构内部信息
 
 本模块只负责**组装数据**（输出 dict）。渲染 PNG 是后续步骤 —— 管线只需 JSON 就能跑通。
@@ -45,6 +45,27 @@ ATTRIBUTION_FULL = (
 # 为什么不直接用检索结果的顺序：检索是按相似度排的，而槽位保底项（边饰/角花）
 # 分数天然偏低、会被排到很后面甚至挤掉。展示顺序应该按"角色重要性"而不是分数。
 ROLE_ORDER = {"center_motif": 0, "border": 1, "corner": 2, "reference": 3}
+
+# ─────────────────────────────────────────────────────────────────────────────
+# ★ 卡片上那一列到底叫什么 —— 口径修正（2026-10）
+#
+#   原来表头写「相似度」，但 `elements[].similarity`（字段名已冻结，见
+#   docs/schema.md §3）装的**不是余弦相似度**，而是 `m2_retrieve.retrieve()`
+#   的**融合分**：
+#
+#       score = CLIP 余弦相似度 + 0.15 × 构成元素重合数
+#               （DEFAULT_OVERLAP_WEIGHT = 0.15，见 m2_retrieve）
+#
+#   实测值印证：蝙蝠纹 0.75、回纹 0.45 —— 都比纯余弦相似度高出一截，
+#   高出的部分正是"构成元素重合"的加分。把它叫「相似度」会让读者以为
+#   是模型输出的原始语义相似度，属于**口径失实**。
+#
+#   ★ 只改**展示层**：字段名 `similarity` 与数据来源都不动（schema 已冻结），
+#     表头/图例改称「匹配分」，并在卡片加一行脚注把这个组成说清楚。
+# ─────────────────────────────────────────────────────────────────────────────
+SCORE_LABEL = "匹配分"
+SCORE_NOTE = ("匹配分 = CLIP 语义相似度 + 0.15 × 构成元素重合数，"
+              "为检索融合分，非纯余弦相似度。")
 
 
 def _role_of(recipe, sample_name):
@@ -94,6 +115,8 @@ def build_card(recipe, hits):
         "center_motif": ((recipe.get("structure") or {}).get("center_motif") or {}).get("name", ""),
         "elements": elements,
         "note": "每个元素均可回指到样本库中的真实样本；溯源关系在生成时确定，非事后推测。",
+        # ★ 匹配分的口径说明（字段名 similarity 已冻结，只在这一侧解释它是什么）
+        "score_note": SCORE_NOTE,
         "attribution": ATTRIBUTION_SHORT,     # ★ CC BY-NC 的署名义务，渲染时务必带上
     }
 
@@ -104,7 +127,7 @@ def to_markdown(card):
          f"- 需求：{card.get('user_request', '')}",
          f"- 生成时间：{card.get('generated_at', '')}",
          f"- 中心母题：{card.get('center_motif', '')}", "",
-         "| 角色 | 元素 | 出处 | 载体 | 寓意 | 授权 | 相似度 |",
+         "| 角色 | 元素 | 出处 | 载体 | 寓意 | 授权 | " + SCORE_LABEL + " |",
          "|---|---|---|---|---|---|---|"]
     for e in card.get("elements", []):
         L.append("| {} | {} | {} | {} | {} | {} | {:.2f} |".format(
@@ -112,6 +135,8 @@ def to_markdown(card):
             "/".join(e.get("carrier") or []), (e.get("meaning") or "")[:40],
             e.get("license", ""), e.get("similarity", 0)))
     L += ["", f"> {card.get('note', '')}"]
+    # ★ 匹配分的组成必须紧跟在表格下方 —— 否则「匹配分」这个新词没有定义
+    L += ["", f"> {card.get('score_note', SCORE_NOTE)}"]
     # ★ 署名行：CC BY-NC 4.0 强制要求，不能因为"排版不好看"删掉
     L += ["", f"<sub>{card.get('attribution', ATTRIBUTION_SHORT)}</sub>"]
     return "\n".join(L)
@@ -145,6 +170,8 @@ PAD = 14
 LH = 34                       # 中文行距（22px 字号 × 1.55）
 
 # 列定义：(列名, x, 宽)
+# ★ 最后一列表头用 SCORE_LABEL（=「匹配分」）而不是「相似度」：
+#   那一列装的是检索融合分，不是纯余弦相似度（详见文件上方 SCORE_NOTE 的说明）。
 COLS = [
     ("角色",    50,  130),
     ("元素",   180,  120),
@@ -152,7 +179,7 @@ COLS = [
     ("载体",   420,  380),
     ("寓意",   800,  480),
     ("授权",  1280,  430),
-    ("相似度", 1710,  140),
+    (SCORE_LABEL, 1710,  140),
 ]
 KEYS = ["role", "element", "source", "carrier", "meaning", "license", "sim"]
 
@@ -238,7 +265,8 @@ def render_card_png(card, out_path):
     所以第一遍只测量、算总高；第二遍才建画布正式绘制。
     """
     fonts = {"title": _font(46), "meta": _font(22),
-             "head": _font(24), "cell": _font(22), "foot": _font(19)}
+             "head": _font(24), "cell": _font(22), "foot": _font(19),
+             "tiny": _font(16)}          # 脚注（匹配分的组成）用最小号
     f_cell = fonts["cell"]
 
     # ---------- 第一遍：只测量，算总高 ----------
@@ -259,7 +287,10 @@ def render_card_png(card, out_path):
     y_table = MARGIN + 138 + 30 + 46
     h_rows = sum(n * LH + PAD * 2 for _, n in packed)
     y_foot = y_table + h_rows + 26
-    total_h = y_foot + 40 + 34 + 30 + MARGIN
+    # 页脚三段：说明（19px）→ 匹配分脚注（16px）→ 署名（19px，CC BY-NC 强制义务）
+    y_score_note = y_foot + 34
+    y_attr = y_score_note + 26
+    total_h = y_attr + 34 + 30 + MARGIN
 
     # ---------- 第二遍：正式绘制 ----------
     img = Image.new("RGB", (CARD_W, total_h), PAPER)
@@ -295,9 +326,13 @@ def render_card_png(card, out_path):
         d.line([MARGIN, yy + h, CARD_W - MARGIN, yy + h], fill=LINE, width=1)
         yy += h
 
-    # 页脚：说明 + ★ 署名（CC BY-NC 的强制义务，卡片也必须带）
+    # 页脚：说明 + 匹配分口径脚注 + ★ 署名（CC BY-NC 的强制义务，卡片也必须带）
     d.text((MARGIN, y_foot), card.get("note", ""), font=fonts["foot"], fill=GREY)
-    d.text((MARGIN, y_foot + 34),
+    # ★ 「匹配分」这个表头必须有定义 —— 否则读者会当成余弦相似度（原口径失实处）
+    d.text((MARGIN, y_score_note),
+           card.get("score_note") or SCORE_NOTE,
+           font=fonts["tiny"], fill=GREY)
+    d.text((MARGIN, y_attr),
            card.get("attribution") or ATTRIBUTION_SHORT,
            font=fonts["foot"], fill=GOLD)
 

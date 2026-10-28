@@ -1,0 +1,2362 @@
+{
+ "meta": {
+  "version": 1,
+  "recipe_count": 525,
+  "alert_count": 37,
+  "rules_sha256": "55750af0bd4e59b8c19d9e1263034ff965b83d0483588785f6aebe9e2ed3bc5b",
+  "samples_sha256": "ead31c3db75451f5f5afbbe4327f5ed2a76396d895e65bce9ecf343dc1581c67",
+  "note": "由 check_m3_differential.py --update-golden 生成；rules/samples 任一变动需重新生成"
+ },
+ "cases": [
+  {
+   "recipe_hash": "9ddf-8940-d1b9-3570",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "fafa-c855-393c-ff71",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "1d91-2dc0-474f-970c",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "0bed-321b-da44-87e3",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "f7d2-2948-7249-352a",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "f9c4-aef7-c600-6578",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "229b-e2c7-e256-473c",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "0299-e69f-ac2c-8c5c",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "f283-840c-cc61-120d",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "a920-7a6f-a58f-0532",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "7665-507b-dc2b-537c",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "fbf6-05c1-3620-04a6",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "67d6-fb32-9c8d-1010",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "9e29-a1c9-faf7-3ed0",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "de34-3266-0cf6-1161",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "edaf-a656-1d2e-0876",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "8f2a-b35a-6509-032b",
+   "alerts": [
+    [
+     "R001",
+     "high",
+     "菊花",
+     "婚庆场合不宜出现「菊花」——该意象属祭奠范畴，建议替换为「牡丹 / 莲花 / 宝相花」"
+    ]
+   ]
+  },
+  {
+   "recipe_hash": "f978-f60f-3f55-24a5",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "d8ac-02d3-0906-ed93",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "5ce5-6b4a-fe4b-3681",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "84f3-4c22-9cc0-2bdb",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "8af7-3825-14e7-e334",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "5d87-9f77-c3e1-ffad",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "84f3-4c22-9cc0-2bdb",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "b4ff-01a1-9448-8548",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "86f9-687f-c9d7-5ec5",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "ba87-df06-69f5-57ad",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "815f-a2e4-0ef9-43a8",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "8bc2-8dbf-133c-c8ea",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "872e-c654-cdf7-234f",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "522b-6ace-57ab-ddaf",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "3574-ede9-f1b7-e7e2",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "d949-ce9c-de84-7246",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "90d9-7a6a-32b8-3c3c",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "c817-8468-5a96-928a",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "86f9-2065-4c7d-aa27",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "a84b-64d1-a64f-ba31",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "2a02-231b-b099-36a1",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "b42b-81e0-cd64-cfe1",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "8d54-3191-8fdf-71b1",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "fc02-a357-7363-adcf",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "fc02-a357-7363-adcf",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "4c4b-46f4-16bc-8267",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "323c-df0a-290b-2434",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "3f20-0253-cdda-de80",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "405c-b0e6-8f05-7aaf",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "a022-89d8-158b-f4e3",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "77db-df34-9bb2-a948",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "f1fc-7687-2e83-fc99",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "64c3-d6f3-0f60-b121",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "9315-8295-2093-c708",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "9b6b-be3f-56ae-7e9e",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "eda1-d835-2567-e048",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "6710-5d2d-9b0d-c728",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "cc4f-1ce3-e7c9-ba9a",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "3478-b0ec-a419-c7f3",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "e5da-d4f5-9963-2b15",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "955d-e291-501b-23a0",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "542b-5505-bc30-704d",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "14de-36b0-9905-89bf",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "9179-6bee-aaf9-bed4",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "a6d5-fc86-8f6a-b438",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "fdb5-03c4-49e6-da58",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "0437-b290-156b-8973",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "ade3-93b7-b95d-64ed",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "fafc-acb7-7a7b-180f",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "fafc-acb7-7a7b-180f",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "768e-1377-0430-9854",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "bdc4-b3de-8ceb-1169",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "6b09-2cc5-ebb5-d92e",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "4e53-9221-34fa-f4cb",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "a224-dca0-6155-1919",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "d61e-e1c8-7144-a0dc",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "216c-6bc2-d417-2443",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "055b-9745-3f74-e997",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "939f-a0e2-edc5-7535",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "5dec-2703-49fd-0cf4",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "54b0-1c8e-7cc9-3d1d",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "9f7c-d27a-96bc-fb32",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "d0c9-9f95-924d-403d",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "5342-760a-f036-ba4d",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "5342-760a-f036-ba4d",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "de0d-c8db-bbf7-b428",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "5a8d-b6f6-3d07-5cf4",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "09ac-d659-322a-7d5d",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "b92b-faf4-1f75-4da2",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "3542-1347-6c0d-0ad5",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "b361-a4f8-71ee-f82d",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "8944-d3a9-0ecc-8bb3",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "6445-b4db-a7f5-a589",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "9db6-8b42-1d19-a563",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "e585-3a2e-66c3-1789",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "317c-b393-c7c4-bc4d",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "c643-cd12-9c4f-a4f5",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "d85a-382f-f7ad-0a59",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "29b3-547a-42b9-5ba7",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "99bc-9a23-7943-06c3",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "0b65-b3cf-441b-980b",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "0144-dfbd-7bf8-cbd6",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "a8ff-d7ad-da60-2d79",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "083b-4fd1-1738-8777",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "3c06-3ab1-ca32-f0ba",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "080c-4e4d-479f-c64f",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "083b-4fd1-1738-8777",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "0415-f870-f719-71ef",
+   "alerts": [
+    [
+     "R011",
+     "medium",
+     "龙纹",
+     "日常陈设不宜使用「龙纹」——该纹样属礼制等级纹样，建议替换为「卷草纹 / 缠枝莲纹 / 祥云纹」"
+    ]
+   ]
+  },
+  {
+   "recipe_hash": "29bb-07c2-fecb-fb22",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "1174-2b4d-9d0b-6bf1",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "3902-fe19-ef54-75b0",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "29bb-07c2-fecb-fb22",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "6bfe-b7d9-59e8-dc90",
+   "alerts": [
+    [
+     "R011",
+     "medium",
+     "龙纹",
+     "日常陈设不宜使用「龙纹」——该纹样属礼制等级纹样，建议替换为「卷草纹 / 缠枝莲纹 / 祥云纹」"
+    ]
+   ]
+  },
+  {
+   "recipe_hash": "843f-10a0-9296-ce47",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "9d41-b750-c473-5057",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "7cb9-eadb-7e0d-e1fd",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "843f-10a0-9296-ce47",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "14c5-fae0-64db-411d",
+   "alerts": [
+    [
+     "R011",
+     "medium",
+     "龙纹",
+     "日常陈设不宜使用「龙纹」——该纹样属礼制等级纹样，建议替换为「卷草纹 / 缠枝莲纹 / 祥云纹」"
+    ]
+   ]
+  },
+  {
+   "recipe_hash": "ad4e-1ec8-921c-098e",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "f6f0-da42-7c9d-7ad1",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "12f0-a6f4-4755-94f9",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "e408-34d3-5e34-c7f1",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "2d5c-e678-55b6-c08e",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "305f-a6bc-57d8-be70",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "03cc-9b54-04cf-7bc8",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "c9e0-5272-6a36-57f0",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "305f-a6bc-57d8-be70",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "42da-ac50-ee65-3802",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "9399-8044-badd-8b55",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "e559-e0f2-1684-d7b3",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "e841-2247-7fc2-8370",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "9399-8044-badd-8b55",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "6c30-443f-6a75-cb07",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "2977-9be9-53d6-375c",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "5de2-e34b-92b8-aedc",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "874d-6ae3-71c8-e0c2",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "7132-a834-4cec-6b1a",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "2977-9be9-53d6-375c",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "b315-985d-5924-4be3",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "d55e-9aca-6387-d1b2",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "e524-b08e-b4f5-eb8c",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "b315-985d-5924-4be3",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "4980-208f-9e29-a891",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "496d-6a47-c600-108f",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "4a03-4a12-d43d-a03a",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "c0ae-d9d3-ebd4-8249",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "496d-6a47-c600-108f",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "5e2b-d6db-c275-eec0",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "665a-5000-5abe-e8f7",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "7108-f650-3d2c-e1cf",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "496f-da97-30b7-a751",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "7ad5-586a-3150-9458",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "6163-fbff-6a5f-19ee",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "df99-aff5-18c3-abe3",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "720e-affc-473e-191e",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "df99-aff5-18c3-abe3",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "1088-35ea-9256-faf5",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "b82c-2ee8-4f8a-ebd0",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "c760-2f6a-c47e-f18b",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "3d43-b229-ec52-0b97",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "bb0c-2cac-d765-84c6",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "3d4f-78a1-5062-2b83",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "7a57-af4e-8005-bfbe",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "ff52-be15-8901-c728",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "eaba-f3e5-9b8e-bf61",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "c07b-a970-9a0b-d93a",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "bcb5-d5c1-b045-aed7",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "afcd-e1a6-941e-e7f9",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "fe73-6ce1-c48b-af43",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "6698-678d-3d0b-e041",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "22c3-01b2-160a-b00b",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "7750-8389-fcb5-f060",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "3e7e-d9d7-5f27-428e",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "8f07-59e2-7afc-8091",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "8f07-59e2-7afc-8091",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "b3a4-f439-b1e3-5fd7",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "154c-0a83-8d22-a57d",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "c121-1bde-271f-b7d6",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "105a-cecc-2406-1880",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "9d63-875b-3ddd-4277",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "30a9-5b64-7661-82e6",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "84ea-ae2c-8bf2-3ed3",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "c04b-134c-5a8f-4154",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "5126-10a5-fcb0-3276",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "6b50-d21c-fe7a-9022",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "50c2-83c7-a555-8c64",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "c9c0-2d45-eb41-1554",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "2c93-99ed-26b7-c108",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "d564-10cf-061d-9b0b",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "be39-4cc3-aa46-3c8a",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "d564-10cf-061d-9b0b",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "d427-0682-2622-0717",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "cdf3-3553-4692-16fb",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "3c66-4166-1504-18bb",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "3c66-4166-1504-18bb",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "a3bc-3e1a-a1e1-39d0",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "7407-dd88-4674-bfb3",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "1bfc-05c1-dd56-53f8",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "8d35-c248-87fb-b739",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "550f-1ff1-4c1c-bdc9",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "906a-79a0-eba6-1ad0",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "e1c6-c541-6815-64d2",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "ce75-851f-8349-703c",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "829d-3a16-d14a-86ce",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "70b4-f1c3-bda9-a977",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "f08d-b837-7cb0-ed58",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "75a4-d8ce-9207-7048",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "88ef-1a07-8e06-2421",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "2d2d-850d-c844-5860",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "9662-2309-1a5b-c63c",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "7f43-7052-5da2-955b",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "2d2d-850d-c844-5860",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "9627-3635-9662-febe",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "bc52-5251-2d63-f445",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "4a52-40d2-2012-aaec",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "6a72-5df7-4a4d-324b",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "bc52-5251-2d63-f445",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "b4f3-1c05-8426-2f46",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "efd0-b262-f5a3-03bc",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "e64f-4122-0c16-3096",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "efd0-b262-f5a3-03bc",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "56e8-b607-a9e6-c673",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "13ff-b8e5-1ff9-5764",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "4110-cbf7-8b19-a83b",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "bf44-3662-26ad-7074",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "5a45-dd2b-0872-193c",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "152b-4043-c233-e8c2",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "ab3a-1f16-bde2-3cc7",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "48d8-cc19-166d-641a",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "6887-3a95-c272-6067",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "f3f9-33a4-e009-0a9a",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "e2d4-9553-aa95-863a",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "71b1-00f3-f0b5-9344",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "2279-5c6c-0418-2312",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "2279-5c6c-0418-2312",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "1e6d-3cee-a1b4-66e3",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "3972-8cf4-c13d-a419",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "5fcc-08db-dfc7-b8dc",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "4b8b-85e8-ea87-7e16",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "2f57-c6f4-65bc-af64",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "26fc-1776-fa00-d641",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "b916-2452-9cf3-afad",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "b00d-739d-41d8-2abc",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "0daa-ad48-9008-80ae",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "85bc-0953-e37d-3196",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "0389-8fb4-4766-c9bb",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "ad7b-ec14-b48c-61ed",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "4501-edf6-d0f7-42a7",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "bbdf-f673-2b2a-a93d",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "fe01-ed27-0383-c6c0",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "2e32-4268-2339-4b74",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "a7ef-2ab7-5835-1dd1",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "0b43-93c5-c3af-0940",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "238b-ec48-7399-4639",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "6cf1-a793-2d7d-2861",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "4c06-29bc-1298-62cb",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "092c-0080-3148-311c",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "71dd-851b-baa1-c0da",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "e2b4-b270-1496-d9c0",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "2ddb-4948-1e98-f5ac",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "0d32-fb36-86ea-0c04",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "7295-1167-b389-e6e1",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "400e-606b-fbcd-6e5e",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "502e-52c4-c994-15c5",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "019d-5714-0aa4-ceec",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "f654-334d-93dd-7583",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "8829-61d7-c6f8-7416",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "502e-52c4-c994-15c5",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "e9c6-a572-83bd-d569",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "9a52-62e7-6193-a170",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "a9b6-cfcf-4a05-d673",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "0880-621d-6e2f-ee79",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "7c09-bce2-4660-30fd",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "ad90-4115-9810-db05",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "444d-12b6-407f-3713",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "8e04-ad0a-7cbd-4c88",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "f7f7-e90e-ffb1-50aa",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "8fc0-9363-f2d8-3d8f",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "14e0-b3d3-b558-cc88",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "cc0a-90d8-5404-ea76",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "1230-dba1-d2ac-bfec",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "3628-23e9-745f-f9c8",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "209a-3a2f-b0fa-122a",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "0eb4-684e-3939-8176",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "9a98-421d-21b4-90f3",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "2e8c-74ab-760b-8947",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "3987-f64d-cb4a-9daa",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "0eb4-684e-3939-8176",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "c28c-3212-8557-e1df",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "5df8-9ae9-e2cd-0a6a",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "b7b0-6aba-bd45-ec62",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "327e-54a7-4ea0-5d64",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "4a6d-ed5a-a0f9-09ef",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "3e2d-6242-2f48-d577",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "9a41-7081-f057-7a33",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "1959-6b7b-f143-bb9b",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "8aa9-b127-f400-73e6",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "e8ea-4b9f-97d7-fe82",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "f466-a30b-7648-0039",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "08f5-a772-9b57-c4f5",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "034b-a482-5dde-8b58",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "2477-370a-f958-a1b7",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "6b22-cd95-06b4-1f3b",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "2ed7-cce5-1aef-c64e",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "9e86-5769-69e2-70d8",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "a100-d27d-c6c6-ab0d",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "bfb4-7104-a43a-d433",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "6478-a5eb-b7eb-0427",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "d8e2-4b42-8f72-730d",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "a25c-10da-da0c-ff86",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "704d-b972-a4a1-18d6",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "40e7-cbe1-161f-cafb",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "1a68-2afa-0cf7-a463",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "dbb5-4525-a4ec-efc9",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "3939-c24d-4bcb-4bd2",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "fbe5-d5ac-7005-9ad4",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "89c5-9741-e8a6-8631",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "4310-672b-b2a6-ed6e",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "4f7d-750e-2ee7-f1d5",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "5594-bd54-595f-c77d",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "0633-15e3-c0a7-a6c9",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "bf4a-6a42-a913-0b17",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "80f0-bbfb-2296-0a3d",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "8c63-bb4f-87b1-fb63",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "c7fb-8742-4b38-d51e",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "c11c-4d2d-414d-d61e",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "5a3b-6f54-542e-67ec",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "8134-fe67-1df7-fdf9",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "b5ed-a11f-1925-f9b1",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "58bf-3073-c150-80eb",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "4593-ab26-875c-0db4",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "0a33-7bf7-5e03-0b62",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "9493-c529-d017-6a2c",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "62e3-1e44-f931-fbd4",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "92e9-5c8a-92cf-b45f",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "5b61-3f8d-3a76-2e60",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "2fc7-4534-5277-de8d",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "62e3-1e44-f931-fbd4",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "2d40-b4a6-b4d1-c8c8",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "533f-83cb-c4a3-f841",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "8f90-311c-578a-2fa0",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "cb2c-65c6-48fa-b21f",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "5631-c599-12db-ba60",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "d38c-8dd7-b15d-32e9",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "f92e-0726-7c1d-75d6",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "0365-b373-ee23-b81a",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "b5d2-df00-1ddc-8a64",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "8991-bd9e-41a0-a39b",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "6587-e56a-22ca-91d9",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "8534-c792-6106-5af6",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "086e-9c5c-0e4f-ad33",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "6587-e56a-22ca-91d9",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "ad1e-2091-e27c-25e9",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "e8c2-0249-ea31-d101",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "e7da-7ecf-e6a1-eb49",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "0b94-37c8-282a-cce1",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "94b3-8487-d678-2140",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "4fdb-659d-6ae2-5954",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "10ee-1e21-da6c-9c4f",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "262c-a7ea-81fe-5a78",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "af8c-7e4c-fc83-6160",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "36f6-4c14-29c4-2b36",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "1078-1c73-6576-7ccd",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "8f38-b08f-8968-c551",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "4c0f-0feb-33ea-1db5",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "5175-5a3f-e533-0968",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "8f38-b08f-8968-c551",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "6d9e-2ee8-8b90-57dc",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "58c8-ace3-8c76-95d1",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "7d3c-09fa-4087-6dbd",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "ee33-3946-3851-87ba",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "9908-1590-6c38-fc72",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "77d0-a915-d50a-c7c4",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "ee80-f11e-d3f7-81b1",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "a347-f11a-42af-318b",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "c3d1-c57a-b365-f3b3",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "ee80-f11e-d3f7-81b1",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "c9fd-833f-01b6-9ce4",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "5e80-a891-d314-15a4",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "4ff7-f556-d600-350b",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "eb5d-7b23-d683-b4fe",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "1fb9-f1b2-af56-fb61",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "b002-3003-39d1-3676",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "703d-22a1-75ec-a807",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "9e6a-3e67-2cf5-1815",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "aa67-c8f1-8940-a20e",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "fab6-fd1d-571e-8450",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "13bf-ea5a-f0b7-9b8f",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "f1c3-c90d-9fe3-11cb",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "52e0-02e5-3fc2-c1f0",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "7e96-d4fb-9bf4-410a",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "ce39-0dd2-f8a1-cd93",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "e187-b53e-fc51-c41b",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "2d8e-736d-1650-f0dc",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "5ad2-e225-20c9-4325",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "e83f-f570-827f-78c0",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "6cc3-9382-cbd3-d26e",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "a4f7-cdb5-e22e-fd1a",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "cb43-b4a2-6a92-b022",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "165a-a1d6-3820-2e7c",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "03e1-ccab-8569-4e17",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "b8db-2efc-5887-7ae7",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "abd8-241a-5cb0-927f",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "98ae-ad78-eac0-3f36",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "1642-6aff-1a6a-93f0",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "d246-a218-b0d5-5acf",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "e7cd-1db5-b4dc-1d7a",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "1b6c-8606-5d32-fc42",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "1136-4c8a-1a2b-a6ca",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "40a1-664c-42f0-6fba",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "1136-4c8a-1a2b-a6ca",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "c9a7-01b6-2a93-b219",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "8701-0eb4-af0d-8801",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "a1ea-3720-8ff1-fb4a",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "ae10-c1d7-3cee-882b",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "a1ea-3720-8ff1-fb4a",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "724f-7c96-fe82-ffd2",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "ddd7-60b8-6310-b94a",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "f915-6482-20bd-991d",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "bf14-ae48-3dca-c48d",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "4092-4233-f3b6-272c",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "3ecf-3b08-ea32-a024",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "1d7c-4e50-943f-e056",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "53f5-eeaa-7d76-d5c4",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "2b73-1bd4-3c34-d2ef",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "f2ea-4da3-eec0-a656",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "fda6-1199-4583-3ee8",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "ccc6-d2c9-dd21-f838",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "57dc-5c10-d31b-f6bf",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "e346-581a-d49c-e85e",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "8189-7de4-d59d-5efd",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "34e2-9b96-cd7c-ef55",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "6ec8-1980-c1f7-3622",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "ba7e-f435-1685-a733",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "c578-8d32-4c82-fcde",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "0061-c68b-c49e-6eb4",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "f224-4f86-c551-877d",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "6da4-e1ef-0f81-88fe",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "e731-93b8-0cfd-d3a1",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "17c1-943c-fcdb-6902",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "58d4-b496-3eac-39ce",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "e731-93b8-0cfd-d3a1",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "969b-a42c-ff4f-80c3",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "bf52-a5a7-c939-424f",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "e076-4fcc-0279-d576",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "43ff-69ca-4bed-7865",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "dcf3-766d-8d56-bc16",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "1af8-0a69-a72f-1c0f",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "df99-1a51-be73-ab98",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "89fb-3b07-78a1-b6a4",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "3db8-d320-19ae-32d6",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "df99-1a51-be73-ab98",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "9fc1-e6f8-d575-476d",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "bd62-2794-3eec-0200",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "2eb1-26b4-46fd-7093",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "bd62-2794-3eec-0200",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "5158-3bb6-c645-8c5e",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "82d5-8cfc-f50f-7a53",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "75d8-ed74-f573-b9a1",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "308b-f30e-b40c-935b",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "75d8-ed74-f573-b9a1",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "3893-b2ea-9af4-9a8c",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "6733-6be7-1979-bcf0",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "304e-e9b7-71b7-1f13",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "827d-4c1b-ba44-8205",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "90c0-db5b-c4f2-65c4",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "6374-24cb-f7a3-3f54",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "cb96-60a9-388a-77b7",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "9592-a7ef-91e9-1e81",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "9592-a7ef-91e9-1e81",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "0ac6-e1f4-6014-92b0",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "3ea0-5bc4-761b-790c",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "ff3c-1d07-f6b9-5736",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "e911-faf3-5e70-68d5",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "df80-59cc-0f89-4544",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "0e7b-595a-4c16-4047",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "05d4-0c4d-13cf-e010",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "9fc1-54ac-b9ce-d941",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "eec6-bc15-d4d7-0768",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "be2b-e961-94a9-89ad",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "d73d-e741-0f72-860a",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "9a3c-e677-101d-65b8",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "1f68-fe23-4bbd-abe3",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "638d-96bb-ab4f-b57e",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "29ea-2264-01bf-a147",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "eb0f-7008-5ab2-2835",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "292b-3069-1d25-7a50",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "3d56-fa17-f9da-9e62",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "1eb2-fa09-cbfb-208a",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "f42d-3704-d371-7ad9",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "1eb2-fa09-cbfb-208a",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "a81b-02f5-c86a-2837",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "36da-4551-d831-7aac",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "3c68-43f2-a122-feca",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "9078-7acf-4d55-9810",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "f903-b831-6f59-62ef",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "2bd4-bf4b-6f9e-3db9",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "a6a2-3536-6c41-93ec",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "50d5-1b62-cd70-5e96",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "267f-9ad3-1a42-09b1",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "7f2a-9faf-eb7e-a55d",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "4227-b929-7cc3-a8f6",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "b65c-5929-8623-c9ce",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "4413-6fa3-55b3-678a",
+   "alerts": []
+  },
+  {
+   "recipe_hash": "8f2a-b35a-6509-032b",
+   "alerts": [
+    [
+     "R001",
+     "high",
+     "菊花",
+     "婚庆场合不宜出现「菊花」——该意象属祭奠范畴，建议替换为「牡丹 / 莲花 / 宝相花」"
+    ]
+   ]
+  },
+  {
+   "recipe_hash": "4c32-ec0b-4deb-b46a",
+   "alerts": [
+    [
+     "R002",
+     "high",
+     "孤雁",
+     "婚庆场合不宜出现「孤雁」——该意象含孤单、残破之意，建议替换为「鸳鸯 / 双鱼」"
+    ],
+    [
+     "R002",
+     "high",
+     "寒鸦",
+     "婚庆场合不宜出现「寒鸦」——该意象含孤单、残破之意，建议替换为「喜鹊」"
+    ]
+   ]
+  },
+  {
+   "recipe_hash": "97e3-3ac2-0857-cb27",
+   "alerts": [
+    [
+     "R003",
+     "high",
+     "挽联",
+     "寿诞场合不宜出现「挽联」——该意象属丧仪范畴，建议替换为「寿字 / 团寿」"
+    ]
+   ]
+  },
+  {
+   "recipe_hash": "165b-956c-e270-44f6",
+   "alerts": [
+    [
+     "R004",
+     "medium",
+     "枯枝",
+     "开业乔迁场合不宜出现「枯枝」——该意象含衰败之意，建议替换为「灵芝 / 竹」"
+    ],
+    [
+     "R004",
+     "medium",
+     "败叶",
+     "开业乔迁场合不宜出现「败叶」——该意象含衰败之意，建议替换为「牡丹 / 宝相花」"
+    ]
+   ]
+  },
+  {
+   "recipe_hash": "6e35-37c3-453d-bded",
+   "alerts": [
+    [
+     "R005",
+     "high",
+     "贺喜",
+     "祭祀场合不宜使用「贺喜」这类欢愉表述，建议改为「追远 / 敬奉」"
+    ]
+   ]
+  },
+  {
+   "recipe_hash": "5b86-b403-aa43-baf5",
+   "alerts": [
+    [
+     "R006",
+     "medium",
+     "福",
+     "寓意字段缺少有效依据：「福」——请使用完整词条（如「五福临门」「连年有余」），单字不构成可推导的寓意"
+    ]
+   ]
+  },
+  {
+   "recipe_hash": "d3d1-bef1-3987-d6f3",
+   "alerts": [
+    [
+     "R007",
+     "medium",
+     "structure.center_motif.elements",
+     "中心母题未给出构成元素：「structure.center_motif.elements」——缺少该依据，检索将退化为纯视觉相似度匹配"
+    ],
+    [
+     "R018",
+     "medium",
+     "structure.center_motif.elements",
+     "给出了寓意却缺少构成元素：「structure.center_motif.elements」——寓意须能由母题构成元素推导"
+    ]
+   ]
+  },
+  {
+   "recipe_hash": "a919-cf57-3c2b-d647",
+   "alerts": [
+    [
+     "R008",
+     "low",
+     "palette.scheme_basis",
+     "配色缺少依据说明：「palette.scheme_basis」——请标注传统配色依据（如「传统点染配色」）"
+    ]
+   ]
+  },
+  {
+   "recipe_hash": "09bd-4131-1535-dc99",
+   "alerts": [
+    [
+     "R009",
+     "low",
+     "intent.purpose",
+     "配方缺少用途说明：「intent.purpose」——用途决定构图密度与载体选择"
+    ],
+    [
+     "R020",
+     "low",
+     "intent.purpose",
+     "指定了场合却未给出用途：「intent.purpose」缺失——场合与用途应成对出现"
+    ]
+   ]
+  },
+  {
+   "recipe_hash": "37e6-3f42-10b6-5a3d",
+   "alerts": [
+    [
+     "R010",
+     "low",
+     "intent.style",
+     "配方缺少风格说明：「intent.style」——风格影响后续合成与提示词构造"
+    ]
+   ]
+  },
+  {
+   "recipe_hash": "f403-38a4-71f2-8e1d",
+   "alerts": [
+    [
+     "R011",
+     "medium",
+     "龙纹",
+     "日常陈设不宜使用「龙纹」——该纹样属礼制等级纹样，建议替换为「卷草纹 / 缠枝莲纹 / 祥云纹」"
+    ]
+   ]
+  },
+  {
+   "recipe_hash": "edb3-fc21-7a90-523a",
+   "alerts": [
+    [
+     "R012",
+     "medium",
+     "龙纹",
+     "开业乔迁场合不宜使用「龙纹」——建议替换为「铜钱纹 / 元宝纹 / 回纹」"
+    ]
+   ]
+  },
+  {
+   "recipe_hash": "f2e1-08f3-dcd4-fa72",
+   "alerts": [
+    [
+     "R013",
+     "medium",
+     "#FFD200",
+     "配色不宜使用帝后专用明黄色「#FFD200」——建议替换为「浅金 #D4AF37」"
+    ],
+    [
+     "R021",
+     "medium",
+     "#FFD200",
+     "主色「#FFD200」不在传统色板内——请改用色板中的传统色：正红 #C8102E / 靛蓝 #1B4B8F / 青绿 #2E8B57 / 浅金 #D4AF37"
+    ]
+   ]
+  },
+  {
+   "recipe_hash": "e2ba-844f-d66e-f2d3",
+   "alerts": [
+    [
+     "R014",
+     "medium",
+     "五爪",
+     "出现僭越性形制表述「五爪」——建议替换为「卷草 / 祥云」"
+    ]
+   ]
+  },
+  {
+   "recipe_hash": "7c4b-49a3-afd7-8be0",
+   "alerts": [
+    [
+     "R015",
+     "low",
+     "补子",
+     "民用场景不宜使用职官标识纹样「补子」——建议替换为「团花纹 / 缠枝莲纹」"
+    ]
+   ]
+  },
+  {
+   "recipe_hash": "b318-650d-8db2-f131",
+   "alerts": [
+    [
+     "R016",
+     "low",
+     "structure.border.width_ratio",
+     "指定了边饰却未给出宽度比例：「structure.border.width_ratio」缺失——构图密度参数不完整"
+    ]
+   ]
+  },
+  {
+   "recipe_hash": "f2db-b28f-0538-95cc",
+   "alerts": [
+    [
+     "R017",
+     "low",
+     "structure.border.pattern",
+     "指定了角花却未给出边饰：「structure.border.pattern」缺失——角花须依附于边饰体系"
+    ]
+   ]
+  },
+  {
+   "recipe_hash": "df06-e370-e62c-f379",
+   "alerts": [
+    [
+     "R019",
+     "low",
+     "structure.symmetry",
+     "选定了中心母题却未明确对称方式：「structure.symmetry」缺失"
+    ]
+   ]
+  },
+  {
+   "recipe_hash": "3193-c2f7-0d5b-593a",
+   "alerts": [
+    [
+     "R021",
+     "medium",
+     "#123456",
+     "主色「#123456」不在传统色板内——请改用色板中的传统色：正红 #C8102E / 靛蓝 #1B4B8F / 青绿 #2E8B57 / 浅金 #D4AF37"
+    ]
+   ]
+  },
+  {
+   "recipe_hash": "0828-de7c-b841-05ed",
+   "alerts": [
+    [
+     "R022",
+     "low",
+     "#123456",
+     "辅色「#123456」不在传统色板内——请改用色板中的传统色：金色 #F2A900 / 浅金 #D4AF37 / 米白 #F7F1E6"
+    ]
+   ]
+  },
+  {
+   "recipe_hash": "7880-f777-2e1e-a1b2",
+   "alerts": [
+    [
+     "R023",
+     "low",
+     "荧光",
+     "配色依据中出现现代风格词「荧光」——建议改用「传统点染」"
+    ],
+    [
+     "R023",
+     "low",
+     "赛博",
+     "配色依据中出现现代风格词「赛博」——建议改用「青绿山水」"
+    ],
+    [
+     "R023",
+     "low",
+     "撞色",
+     "配色依据中出现现代风格词「撞色」——建议改用「对比设色」"
+    ]
+   ]
+  },
+  {
+   "recipe_hash": "949a-acbc-42b2-5283",
+   "alerts": [
+    [
+     "R024",
+     "high",
+     "清明",
+     "场合取值「清明」不在受控词表内——越界取值会使所有场合规则失效。请改用：春节 / 婚庆 / 寿诞 / 开业 / 乔迁 / 节庆通用 / 日常陈设 / 祭祀 / 文人雅玩"
+    ]
+   ]
+  },
+  {
+   "recipe_hash": "8e97-07ce-50d0-e7b1",
+   "alerts": [
+    [
+     "R021",
+     "medium",
+     "#FFFFFF",
+     "主色「#FFFFFF」不在传统色板内——请改用色板中的传统色：正红 #C8102E / 靛蓝 #1B4B8F / 青绿 #2E8B57 / 浅金 #D4AF37"
+    ],
+    [
+     "R025",
+     "low",
+     "#FFFFFF",
+     "配色不宜使用绝对黑白色「#FFFFFF」——建议替换为「米白 #F7F1E6」"
+    ]
+   ]
+  },
+  {
+   "recipe_hash": "596c-a166-eb13-0286",
+   "alerts": [
+    [
+     "R014",
+     "medium",
+     "五爪",
+     "出现僭越性形制表述「五爪」——建议替换为「卷草 / 祥云」"
+    ],
+    [
+     "R014",
+     "medium",
+     "正龙",
+     "出现僭越性形制表述「正龙」——建议替换为「夔龙 / 螭龙」"
+    ]
+   ]
+  }
+ ]
+}

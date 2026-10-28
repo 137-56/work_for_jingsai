@@ -14,6 +14,7 @@
     `_font` / `wrap_cjk` 在 B4 已经踩过坑（中文字体必须显式 truetype、
     中文换行不能用 textwrap），这里直接复用，**同一个坑不踩第二遍**。
 """
+import json
 import sys
 from pathlib import Path
 
@@ -73,13 +74,24 @@ def _role_of(sample, cm, bd, cn):
     return "reference"
 
 
-def _kv_block(d, x, y, pairs, fonts, lh=36, label_w=118):
-    """画一组「标签：值」，返回结束 y。"""
+def _kv_block(d, x, y, pairs, fonts, lh=36, label_w=118, val_w=470):
+    """画一组「标签：值」，返回**真实的结束 y**。
+
+    ★★ 2026-10 修：原来 `y += lh` 是**无条件**推进 36px，但值会按 `wrap_cjk` 折行 ——
+      值一旦折成两行，第二行画在 `y + 1*lh - 2`，正好压在**下一对**标签上，
+      而返回的 y 仍然只算了一行。两个后果：
+        ① 长值会与下一行文字重叠（肉眼可见的压字）
+        ② 调用方拿到的"结束 y"偏小 → 后续块（配色）按偏小的 y 放置也会撞上
+      现在按**实际行数**推进，并让返回值可信：折行时块自然变高，谁在其下方放东西
+      都能拿到正确的底边。当前配方库的值都很短（中心母题 3~4 字、构成元素 ~8 字），
+      所以这条改动对现有出图**零像素变化**，只是把隐患堵住。
+    """
     for k, v in pairs:
         d.text((x, y), k, font=fonts["h2"], fill=RED)
-        for i, ln in enumerate(wrap_cjk(v or "—", fonts["cell"], 470, d)):
+        lines = wrap_cjk(v or "—", fonts["cell"], val_w, d)
+        for i, ln in enumerate(lines):
             d.text((x + label_w, y + (i * lh) - 2), ln, font=fonts["cell"], fill=INK)
-        y += lh
+        y += lh * max(1, len(lines))
     return y
 
 
@@ -91,12 +103,22 @@ def _section(d, x, y, title, fonts):
 
 
 # ---------------------------------------------------------------- 主入口
-def compose_board(recipe, hits, out_path, generated_at=None, texture=None):
+def compose_board(recipe, hits, out_path, generated_at=None, texture=None,
+                  layout_out=None):
     """生成设计依据板。返回 (路径, (宽, 高))。
 
     generated_at: 生成时间。**recipe 里没有这个字段**——它由 build_card() 写进 card，
                   所以调用方（pipeline.save_all）应把 card["generated_at"] 传进来。
     texture:      实物佐证层选中的织物肌理（与 composed_pattern 用同一件，保证一致）。
+    layout_out:   可选。给一个路径就把本次**实际使用的版面矩形**写成 JSON
+                  （配方框 / 结构块 / 左块 / 配色行），供 `scripts/check_board_layout.py`
+                  做"元素是否重叠"的断言。
+
+    ★ 为什么要把版面矩形导出来：像"红色块盖住「对称」二字"这类缺陷，
+      **从渲染图上是查不出来的** —— 被盖住的字根本没画出来，像素里没有证据。
+      纯像素只能查"有没有画出框""两次是否一致"这类问题。
+      所以判据必须是"布局算出来的矩形有没有相交"，而这些矩形只有这里知道。
+      这是 2026-10 那次压字事故的直接产物，别再退回"看图 + 拍脑袋"。
     """
     st = recipe.get("structure") or {}
     cm = st.get("center_motif") or {}
@@ -112,11 +134,14 @@ def compose_board(recipe, hits, out_path, generated_at=None, texture=None):
     items = []
     for h in hits or []:
         s = h.get("sample") or {}
-        items.append((s, _open(ROOT / s.get("image_path", "")), _role_of(s, cm, bd, cn)))
+        # ★ 四元组：末位带上该素材的**匹配分**（= m2_retrieve 的融合分），
+        #   供缩略图下方第三行显示。见下方"③ 素材区"的说明。
+        items.append((s, _open(ROOT / s.get("image_path", "")),
+                      _role_of(s, cm, bd, cn), float(h.get("score") or 0.0)))
 
-    cm_items = [im for _, im, r in items if r == "center_motif" and im]
-    bd_items = [im for _, im, r in items if r == "border" and im]
-    cn_items = [im for _, im, r in items if r == "corner" and im]
+    cm_items = [im for _, im, r, _sc in items if r == "center_motif" and im]
+    bd_items = [im for _, im, r, _sc in items if r == "border" and im]
+    cn_items = [im for _, im, r, _sc in items if r == "corner" and im]
 
     # ---- 量高度 ----
     n = len(items)
@@ -125,8 +150,12 @@ def compose_board(recipe, hits, out_path, generated_at=None, texture=None):
 
     y_head = MARGIN
     y_recipe = y_head + 132
-    RECIPE_H = 296
-    y_grid_t = y_recipe + RECIPE_H + 34
+    # ★ 2026-10：RECIPE_H 296→310，同时把与 ③ 区的间距 34→20 抵掉 ——
+    #   配方框内部要给"配色行"腾出真正的空档（原来它压在「对称」那一行上），
+    #   而 y_grid_t = y_recipe + RECIPE_H + 间距 必须保持 **512**，
+    #   这样整板总高不变（1680×2172 是硬约束，见文件头/交付说明）。
+    RECIPE_H = 310
+    y_grid_t = y_recipe + RECIPE_H + 20
     y_grid = y_grid_t + SEC_TITLE_H + 6
     y_sq_t = y_grid + grid_h + 34
     y_sq = y_sq_t + SEC_TITLE_H + 6
@@ -154,9 +183,12 @@ def compose_board(recipe, hits, out_path, generated_at=None, texture=None):
     x2 = MARGIN + 800
     yy = y_recipe + 26
     d.text((x1, yy), "① 配方内容", font=fonts["h2"], fill=RED)
-    d.text((x2, yy), "② 配色", font=fonts["h2"], fill=RED)
+    # ★ 2026-10：右半装的是**结构**（中心母题/构成元素/边饰/角花/对称），
+    #   原来标题写「② 配色」是语义错位 —— 配色（色块 + 依据）已被移到框底
+    #   单独一行，不再和结构挤在同一片区域。
+    d.text((x2, yy), "② 结构", font=fonts["h2"], fill=RED)
     yy += 42
-    _kv_block(d, x1, yy, [
+    y_left_end = _kv_block(d, x1, yy, [
         ("场合", " / ".join(it.get("occasion") or [])),
         ("用途", it.get("purpose")),
         ("寓意", " / ".join(it.get("blessing") or [])),
@@ -164,17 +196,40 @@ def compose_board(recipe, hits, out_path, generated_at=None, texture=None):
     ], fonts)
 
     # 右半：结构
-    _kv_block(d, x2, yy, [
+    y_struct_end = _kv_block(d, x2, yy, [
         ("中心母题", cm.get("name")),
         ("构成元素", " / ".join(cm.get("elements") or [])),
         ("边饰", bd.get("pattern")),
         ("角花", cn.get("pattern")),
         ("对称", st.get("symmetry")),
-    ], fonts, label_w=140)
+    ], fonts, label_w=140)          # ← 返回值：结构块**真实**底边（含折行）
 
-    # 配色色块
-    by = y_recipe + RECIPE_H - 74
-    bx = x2
+    # 配色行（色块 + 依据）—— 放在结构块**下方**的那条整幅空档里
+    #
+    # ★★ 2026-10 修（原来这里是压字 bug）
+    #   原做法：by = y_recipe + RECIPE_H - 74 = 404、bx = x2 = 850 —— **两个维度同时错**：
+    #     ① 纵向：结构块 5 行从 250 起、每行 36 → 结束于 430，404 正压在
+    #        「对称」那一行上（重叠 26px）；
+    #     ② 横向：色块 x 起点与结构块标签同列（都是 x2），所以红块**必然**盖住
+    #        标签文字（实测盖住了「对称」二字和「主色」的「主」）。
+    #        → 只调 y 不够（还会压标签列），只调 x 也不够（y 还在行上）。
+    #
+    #   现在：色块仍在**右半**（与 ② 结构同栏，读起来是"结构 + 它的配色"），
+    #   但 y 落到结构块真实底边之下；「配色依据」放到同一行的**左半**（x1），
+    #   两者 x 区间不相交（左半到 ~776，右半从 850 起）。
+    #
+    #   ⚠️ y 依赖 `y_struct_end` / `y_left_end` 而不是常量：值一旦折行，块变高，
+    #      配色行自动下移（这是"不同长度取值不撞车"的关键，别改回固定常量）。
+    PAL_H = 34
+    y_pal = max(y_left_end, y_struct_end) + 16
+    y_pal = min(y_pal, y_recipe + RECIPE_H - PAL_H - 12)     # 兜底：不出配方框
+    # 左半：配色依据（与色块同一行、不同 x 区间）
+    d.text((x1, y_pal + 4), f"配色依据：{pal.get('scheme_basis') or '—'}",
+           font=fonts["cell"], fill=INK)
+    # 右半：配色标签 + 两个色块
+    px = x2
+    d.text((px, y_pal + 4), "配色", font=fonts["h2"], fill=RED)
+    px += 62
     for key, lab in (("primary", "主色"), ("secondary", "辅色")):
         hexv = str(pal.get(key) or "").strip()
         if hexv.startswith("#") and len(hexv) in (4, 7):
@@ -182,20 +237,18 @@ def compose_board(recipe, hits, out_path, generated_at=None, texture=None):
                 rgb = tuple(int(hexv[i:i + 2], 16) for i in (1, 3, 5))
             except ValueError:
                 rgb = (255, 255, 255)
-            d.rectangle([bx, by, bx + 46, by + 34], fill=rgb, outline=LINE)
-            d.text((bx + 56, by + 4), f"{lab} {hexv}", font=fonts["cell"], fill=INK)
+            d.rectangle([px, y_pal, px + 46, y_pal + PAL_H], fill=rgb, outline=LINE)
+            d.text((px + 56, y_pal + 4), f"{lab} {hexv}", font=fonts["cell"], fill=INK)
         else:
-            d.text((bx, by + 4), f"{lab} —", font=fonts["cell"], fill=GREY)
-        bx += 250
-    d.text((x1, by + 4), f"配色依据：{pal.get('scheme_basis') or '—'}",
-           font=fonts["cell"], fill=INK)
+            d.text((px, y_pal + 4), f"{lab} —", font=fonts["cell"], fill=GREY)
+        px += 250
 
     # ---- 素材区 ----
-    _section(d, MARGIN, y_grid_t, f"③ 检索到的真实素材（{n} 个，按配方槽位与相似度排序）", fonts)
+    _section(d, MARGIN, y_grid_t, f"③ 检索到的真实素材（{n} 个，按配方槽位与匹配分排序）", fonts)
     if not items:
         d.text((MARGIN, y_grid + 10), "（本次未检索到素材）", font=fonts["cell"], fill=GREY)
 
-    for i, (s, im, role) in enumerate(items):
+    for i, (s, im, role, score) in enumerate(items):
         r, c = divmod(i, COLS)
         x = MARGIN + c * (THUMB + GAP)
         y = y_grid + r * (THUMB + LABEL_H + GAP)
@@ -207,6 +260,15 @@ def compose_board(recipe, hits, out_path, generated_at=None, texture=None):
         d.text((x, y + THUMB + 8), s.get("name", ""), font=fonts["cell"],
                fill=RED if role != "reference" else INK)
         d.text((x, y + THUMB + 34), f"{ROLE_CN.get(role, '')}｜{s.get('id', '')}",
+               font=fonts["small"], fill=GREY)
+        # ★ 第三行：匹配分（2026-10 加）
+        #   为什么要有：README 把 M4 定义为「给人看的**素材与理由**」，
+        #   只印 ID 和角色，"为什么是它、它排第几"这条理由链是断的；
+        #   ③ 区标题写「按匹配分排序」也就没有落点。
+        #   ★ 口径同 M6 卡片：这是**融合分**（CLIP 余弦 + 0.15×构成元素重合），非纯余弦。
+        #   ★ 不新增行高：用 `LABEL_H=74` 里 +56 这一行、最小字号、GREY（不抢名称）；
+        #     板面总高不变（1680×2172），不要为它加 LABEL_H。
+        d.text((x, y + THUMB + 56), f"匹配分 {score:.2f}",
                font=fonts["small"], fill=GREY)
 
     # ---- 组合示意 ----
@@ -249,6 +311,23 @@ def compose_board(recipe, hits, out_path, generated_at=None, texture=None):
     out_path = Path(out_path)
     out_path.parent.mkdir(parents=True, exist_ok=True)
     img.save(out_path, "PNG")
+
+    if layout_out:
+        # 本次实际用到的版面矩形（像素坐标，left/top/right/bottom）
+        _layout = {
+            "board": [BOARD_W, int(total_h)],
+            "recipe_box": [MARGIN, int(y_recipe), BOARD_W - MARGIN,
+                           int(y_recipe + RECIPE_H)],
+            "left_block": [x1, int(yy), x2, int(y_left_end)],
+            "structure_block": [x2, int(yy), BOARD_W - MARGIN, int(y_struct_end)],
+            "palette_row": [x1, int(y_pal), BOARD_W - MARGIN, int(y_pal + PAL_H)],
+            "palette_swatches": [int(x2), int(y_pal), int(px), int(y_pal + PAL_H)],
+            "n_items": int(n),
+        }
+        Path(layout_out).parent.mkdir(parents=True, exist_ok=True)
+        Path(layout_out).write_text(
+            json.dumps(_layout, ensure_ascii=False, indent=2), encoding="utf-8")
+
     return out_path, img.size
 
 

@@ -35,7 +35,7 @@ ROOT = Path(__file__).resolve().parent
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
-from src.m6_provenance import ATTRIBUTION_SHORT, to_markdown
+from src.m6_provenance import ATTRIBUTION_SHORT, SCORE_NOTE, to_markdown
 from src.m7_copyright import assess
 from src.pipeline import run, save_all
 from src.utils import CFG
@@ -207,15 +207,21 @@ with tab_gen:
 
         # ---------- ② 检索结果 ----------
         # ★ 注意：retrieve() 会把"配方指定槽位（边饰/角花）"的命中**钉到榜单最前面**（槽位保底机制），
-        #   所以这份列表**不是**严格按相似度排序的。必须把这个机制显式标出来 ——
-        #   否则界面上会出现"相似度 0.45 排在 0.75 前面"，看起来像 bug。
+        #   所以这份列表**不是**严格按匹配分排序的。必须把这个机制显式标出来 ——
+        #   否则界面上会出现"匹配分 0.45 排在 0.75 前面"，看起来像 bug。
+        #
+        # ★ 口径（2026-10 统一）：这一列表里显示的是 `m2_retrieve` 的**融合分**
+        #   （CLIP 余弦 + 0.15×构成元素重合），**不是**纯余弦相似度，
+        #   因此全称「匹配分」——与 M6 溯源卡片同一口径。文案直接取 m6.SCORE_NOTE，
+        #   保证界面与卡片不会再各说一套。M7 那一栏是真余弦相似度，仍叫「相似度」。
         st.subheader("② 真实纹样元素检索结果")
         n_pin = sum(1 for h in hits if h.get("slot"))
         if n_pin:
             st.caption(f"共 {len(hits)} 个候选。其中前 {n_pin} 个为**配方指定槽位（边饰 / 角花）的保底命中**"
-                       "——它们的绝对相似度天然偏低，若不保底会被挤出榜单；其余按相似度排序。")
+                       "——它们的绝对匹配分天然偏低，若不保底会被挤出榜单；其余按匹配分排序。")
         else:
-            st.caption(f"共 {len(hits)} 个候选（按相似度排序）")
+            st.caption(f"共 {len(hits)} 个候选（按匹配分排序）")
+        st.caption(f"口径：{SCORE_NOTE}")
         if hits:
             ncol = min(5, len(hits))
             cols = st.columns(ncol)
@@ -228,7 +234,7 @@ with tab_gen:
                     st.markdown(f"**{s['name']}**")
                     if h.get("slot"):
                         st.caption(f"★ 配方「{SLOT_CN.get(h['slot'], h['slot'])}」槽位保底命中")
-                    st.caption(f"相似度 {h.get('score', 0):.2f}｜{s.get('category', '')}")
+                    st.caption(f"匹配分 {h.get('score', 0):.2f}｜{s.get('category', '')}")
 
         # ---------- ③ 文化校验 ----------
         st.subheader("③ 文化规则校验")

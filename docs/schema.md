@@ -326,7 +326,9 @@ UTF-8 编码的 **JSON 数组**，每个元素是一条规则，采用"**触发�
 | `source` | string | ✅ | 来源机构 |
 | `source_url` | string | ✅ | 出处链接，**不截断** |
 | `license` | string | ✅ | 授权类型，**不得为空**（红线相关） |
-| `similarity` | float | ⬜ | 检索相似度，保留 2 位小数 |
+| `similarity` | float | ⬜ | 检索匹配分（CLIP 余弦 + 0.15×构成元素重合，融合分），保留 2 位小数 |
+
+<!-- 2026-10：仅修正字段说明的口径，字段名 similarity 与类型 float 均未变，契约仍为 v1.0 -->
 
 ### 3.4 `violations[]` 元素结构（M3 写入）
 
