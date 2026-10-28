@@ -32,8 +32,13 @@ GENERIC = [
 ]
 
 # 只扫这些后缀的文本文件
+# ★ 2026-10-28 补 .mjs/.toml/.svg/.ts/.tsx/.jsx/.vue：
+#   实测对 work_two 跑 `redline_check.py .` 只覆盖 5 个文件，跳过的 6 个
+#   正是 5 个云函数 .mjs + netlify.toml —— 而那里恰恰是 API key 风险最高的地方。
+#   .svg 是 XML 文本，可能内嵌 <text>；前端生态其余后缀同理。
 TEXT_EXT = {".md", ".txt", ".html", ".htm", ".csv", ".json", ".yaml", ".yml",
-            ".py", ".js", ".css", ".xml", ".rtf"}
+            ".py", ".js", ".mjs", ".cjs", ".ts", ".tsx", ".jsx", ".vue",
+            ".css", ".scss", ".toml", ".svg", ".xml", ".rtf"}
 
 # ★ 跳过这些目录。**必须有** —— 否则 `redline_check.py .` 会扫进 .venv/，
 #   三方库源码里全是形似手机号/身份证的数字串（实测 15328 个文件命中 14296 处，全是噪声），
@@ -45,7 +50,14 @@ EXCLUDE_DIRS = {".venv", "venv", "env", "__pycache__", ".git", ".idea", ".vscode
                 #   截出的片段会命中「手机号」规则 —— 纯误报，且改不得
                 #   （改了就破坏固定依赖）。本注释刻意不复述那段数字，
                 #   否则它自己会被命中（已实测踩过一次）。
-                "vendor", "static",
+                "vendor",
+                # ★ 2026-10-28 把 static 从排除列表里移出（原先是和 vendor 一起排的）。
+                #   理由：static/ 是**本项目自己写的前端资源**运行时目录，
+                #   以后还要放 design-tokens.css、缩略图等；整目录排除等于
+                #   对自家前端完全失明。实测原状态下 `redline_check.py static`
+                #   输出「扫描 0 个文件 … [PASS]」——**0 文件也算通过**，是假绿。
+                #   目录内的第三方库仍在 static/viewer/vendor/ 下，由上面的
+                #   "vendor" 按目录名排除，不会被扫进来。
                 # ★ Web 演示版的第三方 3D 查看器库（model-viewer.min.js）。
                 #   理由同上：压缩库源码里的长数字常量会被截出形似证件号的片段 ——
                 #   纯误报，且改不得（改了就破坏固定依赖）。本注释同样刻意
@@ -119,7 +131,10 @@ def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("targets", nargs="+", help="要扫描的目录或文件（可多个）")
     ap.add_argument("--config", default="redline.yaml", help="项目专属规则文件")
+    ap.add_argument("--allow-empty", action="store_true",
+                    help="扫描到 0 个文件时仍算通过（默认判失败，防「假绿」）")
     args = ap.parse_args()
+    allow_empty = args.allow_empty
 
     cfg = Path(args.config)
     if not cfg.is_absolute():
@@ -154,6 +169,19 @@ def main() -> int:
     print(f"\n扫描 {n_files} 个文件，命中 {n_hits} 处。")
     if n_hits:
         print("[FAIL] 存在红线风险 —— 逐条处理（删除 / 改写 / 确认可接受）后再提交")
+        return 1
+    # ★ 0 文件不等于干净（2026-10-28 实测）：目录名撞上 EXCLUDE_DIRS、
+    #   或路径写错、或后缀都不在 TEXT_EXT 里，都会扫出 0 个文件却报 PASS。
+    #   这种「假绿」比报错更危险 —— 它会让人相信"已经查过了"。
+    #   因此把「扫描数为 0」定为失败，除非显式 --allow-empty。
+    if n_files == 0:
+        if allow_empty:
+            print("[PASS] 未命中（--allow-empty：扫描 0 个文件，已显式放行）")
+            return 0
+        print("[FAIL] 扫描到 0 个文件 —— 这不算通过。")
+        print("       常见原因：① 目标目录名在 EXCLUDE_DIRS 里；② 路径写错；"
+              "③ 文件后缀都不在 TEXT_EXT 里。")
+        print("       确认目标确实没有可扫文件时，显式加 --allow-empty。")
         return 1
     print("[PASS] 未命中任何红线规则")
     return 0
