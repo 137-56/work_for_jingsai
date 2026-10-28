@@ -1,0 +1,142 @@
+/* ============================================================
+   design-tokens.css —— 全项目视觉 token 的唯一真源
+
+   ★ 为什么要有这个文件（2026-10-28 实测）
+     改造前存在**三套互不相同的配色**：
+       .streamlit/config.toml   红 #C8102E + 米白 #F7F1E6 + 墨 #2B2318
+       web/viewer.html         金 #B08D3F + 纸 #F3EEE4 + 墨 #3A342C
+       Web 演示版（work_two）   金 #B98A3E + 纸 #F5EFE6
+     同一套系统三个观感，评委会觉得"这是三个东西拼的"。
+
+   ★ 取值依据：**产物实测，不是审美选择**
+     对定稿 run 的 design_board.png（1680×2172）逐像素采样，按出现次数排序：
+       #F7F1E6  1,867,135 px  纸底
+       #FCF9F3    444,189 px  卡面
+       #C8102E     20,559 px  朱红（纸底对比 5.23:1，白字压红 5.88:1）
+       #2B2318     15,314 px  墨（纸底 13.8:1）
+       #DED4C0     19,573 px  分隔线
+       #D4AF37      7,648 px  金（纸底仅 1.87:1 → **禁用于文字与按钮底**）
+       #F2A900      1,485 px  辅色（仅色块示意）
+     也就是说：**产物本来就是「红主 + 金饰」，Web 演示版的「金主」是偏色。**
+     所以是产物校准界面，不是界面迁就演示版。
+
+   ★ 使用方式
+     app.py        读本文件 → 注入 <style>（不依赖静态目录，离线可用）
+     web/viewer.html  以 <link href="./design-tokens.css"> 引用（运行时由
+                      app.py 的 _embed_viewer 一并复制到 static/viewer/）
+
+   ★ 改色只改这里。界面与查看器都跟随，避免第四次出现"第 4 套配色"。
+   ============================================================ */
+
+:root {
+  /* ---- 纸与墨 ---- */
+  --paper: #F7F1E6;   /* 页面底、侧栏底 */
+  --card: #FCF9F3;    /* 卡片、弹窗、内嵌盒 */
+  --ink: #2B2318;     /* 正文；主按钮底色 */
+  --muted: #6E6656;   /* 注文（纸底 5.05:1，过 AA；#888 只有 3.16:1，不许用） */
+  --line: #DED4C0;    /* 1px 描边、分隔线 */
+
+  /* ---- 强调色 ---- */
+  --red: #C8102E;     /* 朱红：**仅风险语义与 2px 激活下划线**，不作按钮底 */
+  --gold: #D4AF37;    /* 金：**仅 1px 装饰线**，纸底 1.87:1，禁作文字/按钮底 */
+  --accent2: #F2A900; /* 辅色：仅色块示意 */
+
+  /* ---- 圆角 ---- */
+  --r-panel: 14px;
+  --r-card: 12px;
+  --r-ctl: 10px;
+  --r-thumb: 8px;
+
+  /* ---- 间距 ---- */
+  --gap-card: 14px;
+  --pad-panel: 22px;
+  --content-w: 960px;
+}
+
+/* ============================================================
+   Streamlit 覆盖
+   ★ 硬约束：只准用 [data-testid="..."] 与 .st-key-* 选择器，
+     **禁用 nth-child** —— Streamlit 内部 DOM 不稳定，升级即碎。
+     本文件所有覆盖都遵守这条；新加规则也请遵守。
+   ============================================================ */
+
+/* ---- 1) 主区与侧栏底色：统一到纸色，去掉纯白 ---- */
+[data-testid="stAppViewContainer"] {
+  background: var(--paper);
+}
+[data-testid="stHeader"] {
+  background: transparent;
+}
+
+/* ---- 2) 提示条：Streamlit 默认是饱和气泡 ----
+   默认值实测为 #FF2B2B / #FACA2B / #09AB3B，压在纸底上刺眼，
+   而且 #FF2B2B 与项目朱红 #C8102E 是**两种红**，并排出现像配色事故。
+   做法：把气泡底色中和成卡面，用左侧 3px 竖条承载语义色。
+   ★ 若未来 Streamlit 改 DOM，最坏情况是"恢复默认气泡"——
+     本规则不依赖 :has()，降级安全。 */
+[data-testid="stAlert"] {
+  border-radius: var(--r-ctl);
+  border: 1px solid var(--line);
+  background: var(--card);
+  overflow: hidden;
+}
+[data-testid="stAlert"] > div {
+  background: transparent !important;
+}
+[data-testid="stAlert"] p,
+[data-testid="stAlert"] li {
+  color: var(--ink) !important;
+}
+/* kind 属性在部分版本存在；不存在时仅少一条左边色，不影响可读性 */
+[data-testid="stAlert"][kind="error"]   { border-left: 3px solid var(--red); }
+[data-testid="stAlert"][kind="warning"] { border-left: 3px solid var(--accent2); }
+[data-testid="stAlert"][kind="success"] { border-left: 3px solid var(--gold); }
+[data-testid="stAlert"][kind="info"]    { border-left: 3px solid var(--line); }
+
+/* ---- 3) 按钮：主按钮墨底纸字（13.8:1）----
+   ★ 为什么主按钮不用朱红：Tab2 的风险分级本来就是红/黄/绿，
+     按钮若也是红，"高"就不再是信号。红必须留给风险。 */
+.stButton > button,
+.stDownloadButton > button {
+  border-radius: var(--r-ctl);
+  border: 1px solid var(--line);
+  background: #fff;
+  color: var(--ink);
+}
+.stButton > button:hover,
+.stDownloadButton > button:hover {
+  border-color: var(--gold);
+  color: var(--ink);
+}
+.stButton > button[kind="primary"],
+.stDownloadButton > button[kind="primary"] {
+  background: var(--ink);
+  border-color: var(--ink);
+  color: var(--paper);
+}
+.stButton > button[kind="primary"]:hover,
+.stDownloadButton > button[kind="primary"]:hover {
+  background: #3D342A;
+  border-color: #3D342A;
+  color: var(--paper);
+}
+
+/* ---- 4) 标签页：激活态只留 2px 朱红下划线（不做红底块）---- */
+.stTabs [data-baseweb="tab"] {
+  color: var(--muted);
+}
+.stTabs [aria-selected="true"] {
+  color: var(--ink);
+  font-weight: 600;
+}
+
+/* ---- 5) 分组容器：卡片面 ---- */
+[data-testid="stVerticalBlockBorderWrapper"] {
+  border-radius: var(--r-card);
+}
+
+/* ---- 6) 侧栏 ---- */
+[data-testid="stSidebar"] {
+  background: var(--card);
+  border-right: 1px solid var(--line);
+}

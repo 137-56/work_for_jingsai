@@ -4,10 +4,14 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>纹初迹现 · 三维预览</title>
+<!-- ★ 配色统一取 design-tokens.css（单一真源），本文件不再自带 :root 色值。
+     运行时该文件由 app.py 的 _embed_viewer 复制到 static/viewer/，
+     直接打开 web/viewer.html 时也同目录可取。 -->
+<link rel="stylesheet" href="./design-tokens.css">
 <style>
   :root{
-    --paper:#f3eee4; --ink:#3a342c; --grey:#8b8275; --gold:#b08d3f;
-    --card:#fbf8f2; --line:#e2d9c9;
+    /* 兼容本文件历史变量名（只做映射，不重复定义色值） */
+    --grey: var(--muted);
   }
   *{box-sizing:border-box;margin:0;padding:0}
   html,body{height:100%}

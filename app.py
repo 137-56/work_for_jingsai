@@ -42,6 +42,26 @@ from src.utils import CFG
 
 st.set_page_config(page_title="纹初迹现 · 可溯源纹样生成系统", layout="wide")
 
+# ---------------------------------------------------------------- 视觉 token
+# ★ 单一真源是 web/design-tokens.css（取值来自产物 design_board.png 的逐像素采样）。
+#   这里只负责**注入**，不重复定义任何色值 —— 否则就又多出第四套配色。
+#   为什么注入 <style> 而不是 <link href="/app/static/...">：
+#   静态目录依赖 server.enableStaticServing，注入 <style> 不依赖任何静态服务，
+#   离线、headless 截图、打包分发三种场景都成立。
+_TOKENS_CSS = ROOT / "web" / "design-tokens.css"
+
+
+def _inject_tokens() -> None:
+    """把 design-tokens.css 注入页面。取不到就静默退回 Streamlit 默认主题。"""
+    try:
+        css = _TOKENS_CSS.read_text(encoding="utf-8")
+    except Exception:
+        return
+    st.markdown(f"<style>{css}</style>", unsafe_allow_html=True)
+
+
+_inject_tokens()
+
 DEFAULT_REQ = "做一个有吉祥寓意的窗花，用于春节礼品包装"
 
 # 配方槽位的中文名（用于标注"槽位保底命中"）
@@ -88,7 +108,10 @@ def _embed_viewer(glb_info, ground="neutral"):
     (static_dir / "glb").mkdir(parents=True, exist_ok=True)
 
     # 查看器与 Three.js（只需拷一次，但检查一下以防首次）
-    for rel in ("viewer.html", "vendor/three.min.js", "vendor/GLTFLoader.js"):
+    # ★ design-tokens.css 必须一起拷：viewer.html 用 <link href="./design-tokens.css">
+    #   引用它。漏拷的后果是查看器拿不到 CSS 变量，页面配色全丢（但不报错）。
+    for rel in ("viewer.html", "design-tokens.css",
+                "vendor/three.min.js", "vendor/GLTFLoader.js"):
         src = ROOT / "web" / rel
         dst = static_dir / rel
         if src.exists() and (not dst.exists()
