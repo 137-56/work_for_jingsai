@@ -17,6 +17,10 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent.parent
 SAMPLES = ROOT / "data" / "samples.json"
 
+# ★ 原图尺寸契约（源库 Wényàng 卡片图统一为 1086×1448，3:4）
+#   2026-10-28 实测：100 张全部符合。
+EXPECTED_IMG_SIZE = (1086, 1448)
+
 # 受控词表 —— 必须与 docs/schema.md §1.3 保持一致
 CATEGORIES = {"植物花卉纹", "动物瑞兽纹", "几何锦纹", "云水山石纹",
               "吉祥器物纹", "文字福寿与组合纹", "人物故事纹"}
@@ -83,10 +87,30 @@ def main() -> int:
                 if c not in CARRIERS:
                     problems.append(("④", sid, f"carrier 不在词表内：{c}"))
 
-        # ---- ⑤ image_path 指向的文件必须存在 ----
+        # ---- ⑤ image_path 指向的文件必须存在，且尺寸必须是原图尺寸 ----
+        # ★ 为什么必须验尺寸（2026-10-28 实测）：
+        #   只验"存在"的话，把 100 张图缩成 480×640（Web 演示版正是这形态）
+        #   也能全绿。而缩图之后：phash 距离 93 张为 0、7 张为 2（肉眼不可辨），
+        #   clip_vectors.npz 与 faiss.index 变成过期值，M2/M7 指标静默漂移，
+        #   现有 12 个自检脚本**没有一个会报错**。
+        #   → 尺寸断言是这条链路上唯一的防线，不能省。
         ip = s.get("image_path")
-        if isinstance(ip, str) and ip and not (ROOT / ip).exists():
-            problems.append(("⑤", sid, f"图片不存在：{ip}"))
+        if isinstance(ip, str) and ip:
+            fp = ROOT / ip
+            if not fp.exists():
+                problems.append(("⑤", sid, f"图片不存在：{ip}"))
+            else:
+                try:
+                    from PIL import Image
+                    with Image.open(fp) as im:
+                        if tuple(im.size) != EXPECTED_IMG_SIZE:
+                            problems.append(
+                                ("⑤", sid,
+                                 f"图片尺寸 {im.size[0]}×{im.size[1]} ≠ 契约 "
+                                 f"{EXPECTED_IMG_SIZE[0]}×{EXPECTED_IMG_SIZE[1]}：{ip}"))
+                except Exception as e:
+                    problems.append(
+                        ("⑤", sid, f"图片无法读取（{type(e).__name__}）：{ip}"))
 
         # ---- ⑥ occasion 每个取值必须在场合词表内，且不能被分隔符粘在一起 ----
         for o in s.get("occasion") or []:
@@ -150,7 +174,7 @@ def main() -> int:
                 problems.append(("S", s.get("id", "?"), "clip_vec_index 未回填（需先跑 build_index.py）"))
 
     # ---- 报告 ----
-    print(f"样本数 {len(samples)}｜规则：①id唯一 ②必填非空 ③数组类型 ④受控词表 ⑤图片存在 ⑥场合取值 "
+    print(f"样本数 {len(samples)}｜规则：①id唯一 ②必填非空 ③数组类型 ④受控词表 ⑤图片存在与尺寸 ⑥场合取值 "
           f"⑦elements ⑧name/meaning ⑨关联纹样 ⑩色彩建议"
           + ("｜S 严格模式" if args.strict else ""))
     if not problems:
