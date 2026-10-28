@@ -389,9 +389,20 @@ with tab_gen:
         # ---------- ③ 文化校验 ----------
         st.subheader("③ 文化规则校验")
         vs = recipe.get("violations") or []
+        # ★ 徽章三要素：**状态词 · 计数 · run id · 时间戳**。
+        #   改造前只写一句「未检出文化规则违规」——没有计数、没有 run id、
+        #   没有时间戳，读者无法判断这是"本次运行的结果"还是"写死的一句好话"。
+        #   （Web 演示版正是硬编码的「校验通过」徽章，而它的 rules 字段是空数组。）
+        #   ★ 时间戳唯一来源是 `card.generated_at`：recipe.json 没有 created_at，
+        #     且**不能用文件 mtime** —— 拷贝/解压/move 都会改变 mtime。
+        _rid = recipe.get("recipe_id") or card.get("recipe_id") or "—"
+        _ts = card.get("generated_at") or "—"
         if not vs:
-            st.success("未检出文化规则违规")
+            st.success(f"未检出违规 · 0 条 · {_rid} · {_ts}")
         else:
+            _hi = sum(1 for v in vs if v.get("severity") == "high")
+            st.warning(f"检出违规 · {len(vs)} 条 · {_rid} · {_ts}"
+                       + (f"　（其中 high {_hi} 条）" if _hi else ""))
             painter = {"high": st.error, "medium": st.warning, "low": st.info}
             for v in vs:
                 painter.get(v.get("severity"), st.info)(
@@ -494,6 +505,11 @@ with tab_gen:
             m1.metric("构图漂移（phash）", info["phash_drift"])
             m2.metric("ref_strength", info["ref_strength"])
             st.caption(f"⚠️ {info['disclaimer']}")
+        else:
+            # ★ 三态之一：本 run 未启用。必须显式写出来，否则读者不知道
+            #   是"没做"还是"做了没显示"。
+            st.caption(f"状态：本 run 未启用（无 `stylized_*.png`）"
+                       f" · {recipe.get('recipe_id') or '—'} · {card.get('generated_at') or '—'}")
 
         # ---------- ⑥ 文创效果预览（3D，载体层不参与元素级溯源） ----------
         st.divider()
@@ -525,6 +541,12 @@ with tab_gen:
             f'border-left:3px solid #C8102E;border-radius:10px;'
             f'padding:14px 16px;font-size:13px;line-height:1.85;color:#2B2318">{_rows}</div>',
             unsafe_allow_html=True)
+
+        # ★ 三态之二：以 run 目录里是否真有 GLB 为准，不靠 session_state ——
+        #   否则刷新页面后状态会"消失"，看起来像没生成过。
+        _glb_done = bool(_run_dir and list(_run_dir.glob("pattern_*.glb")))
+        st.caption(f"状态：{'已完成' if _glb_done else '本 run 未启用（尚未生成）'}"
+                   f" · {recipe.get('recipe_id') or '—'} · {card.get('generated_at') or '—'}")
 
         if comp.exists():
             st.caption(
