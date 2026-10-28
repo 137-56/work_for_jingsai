@@ -11,6 +11,10 @@
 退出码：0 = 未命中；1 = 有命中（提交前必须逐条处理）
 
 ⚠️ redline.yaml 本身含敏感串，已加入 .gitignore —— 绝不能让词表自己成为泄露源。
+
+⚠️ 使用规范见 docs/redline_notes.md。其中最要命的一条：
+   本脚本扫的是文件全文，**注释和 docstring 一样会被扫**。
+   说明文字里不得原样复述被命中的串（本项目因此返工三次）。
 """
 import argparse
 import re
