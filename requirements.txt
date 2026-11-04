@@ -25,6 +25,8 @@ ImageHash==4.3.2
 #   pip install matplotlib -i https://pypi.tuna.tsinghua.edu.cn/simple
 matplotlib==3.11.2
 scipy==1.18.1
+# 纹样谱系（app.py Tab3）的母题关联网络图依赖它
+networkx==3.6.1
 
 # office 文档读写（B8 指标一致性校验读 PPT；D 阶段生成/校验 docx/pptx）
 python-pptx==1.0.2

@@ -3,7 +3,8 @@
 """check_glb_sync.py —— 校验 GLB 在三处是否同源
 
     $PY scripts/check_glb_sync.py                 # 自动取最新的 outputs/R*
-    $PY scripts/check_glb_sync.py --dir outputs/R20261028160834-1A63
+    $PY scripts/check_glb_sync.py --dir outputs/<run-id>
+    定稿 run 以 src.run_source.FINAL_RUN 为准，本文件不硬编码。
 
 ★ 为什么需要这个脚本（实测踩过）
     GLB 存在三个位置，各自被不同环节写入：
