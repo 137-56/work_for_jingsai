@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 """check_glb_sync.py —— 校验 GLB 在三处是否同源
 
-    $PY scripts/check_glb_sync.py                 # 自动取最新的 outputs/R*
+    $PY scripts/check_glb_sync.py                 # 默认读 src.run_source.FINAL_RUN
     $PY scripts/check_glb_sync.py --dir outputs/<run-id>
     定稿 run 以 src.run_source.FINAL_RUN 为准，本文件不硬编码。
 
@@ -33,6 +33,11 @@ import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
+if str(ROOT) not in sys.path:                      # 与 check_metrics.py / check_rules.py 一致
+    sys.path.insert(0, str(ROOT))
+
+from src.run_source import FINAL_RUN            # noqa: E402
+
 FORMS = ("vase", "box", "fan")
 LABEL = {"vase": "梅瓶", "box": "方盒", "fan": "团扇"}
 
@@ -41,19 +46,17 @@ def sha12(p: Path) -> str:
     return hashlib.sha256(p.read_bytes()).hexdigest()[:12]
 
 
-def latest_run() -> Path | None:
-    cands = sorted([p for p in (ROOT / "outputs").glob("R*") if p.is_dir()])
-    return cands[-1] if cands else None
-
-
 def main() -> int:
     ap = argparse.ArgumentParser()
-    ap.add_argument("--dir", default=None, help="定稿 run 目录（默认取最新的 outputs/R*）")
+    ap.add_argument("--dir", default=None,
+                    help="覆盖定稿 run 目录（默认读 src.run_source.FINAL_RUN）")
     args = ap.parse_args()
 
-    run_dir = Path(args.dir) if args.dir else latest_run()
+    # ★ 不再按 outputs/R* 里「排序最后一个」猜定稿 run —— 新建一次 run 就会漂。
+    #   默认只读 src.run_source.FINAL_RUN；--dir 显式覆盖的行为保持不变。
+    run_dir = Path(args.dir) if args.dir else FINAL_RUN
     if run_dir is None or not run_dir.is_dir():
-        print("[FAIL] 找不到 run 目录（outputs/R*）")
+        print("[FAIL] 找不到定稿 run 目录（src.run_source.FINAL_RUN）")
         return 1
     if not run_dir.is_absolute():
         run_dir = (ROOT / run_dir).resolve()

@@ -1,15 +1,13 @@
 # scripts/check_merge_contract.py
 """两工程合并 · 结构性断言（只读）。
 
-★ 为什么是「结构」断言
-   合并的底线是：不把另一工程的数据 / 配置 / 云函数搬进本仓，也不把定稿 run
-   的目录写得到处都是。本脚本只做**可审计的结构断言**，不判断内容好坏：
-
-     ① data/samples.json 恒 100 条
-     ② rules/culture_rules.json 非空且 ≥ 25 条
-     ③ 全仓不出现另一工程的数据指纹（只按抽象结构特征识别）
-     ④ 定稿 run 的 run id 字面量在 .py 全文本中恰好 1 处，且来自 FINAL_RUN
-     ⑤ --pkg <path>：提交包不得出现另一工程的数据 / 云函数 / 配置结构标记
+★ 六项断言
+  ① data/samples.json 恒 100 条
+  ② rules/culture_rules.json 非空且 ≥ 25 条
+  ③ 全仓不出现另一工程的数据指纹（只按抽象结构特征识别）
+  ④ 定稿 run 的 run id 字面量在 .py 全文本中恰好 1 处，且来自 FINAL_RUN
+  ⑤ --pkg <path>：提交包不得出现另一工程的数据 / 云函数 / 配置结构标记
+  ⑥ 向导代码禁用项（扫描范围严格限定，见下）
 
 ★ ③ 为什么只写抽象结构特征
    项目规范（docs/redline_notes.md）要求：任何具体命中串都不得写进正则、
@@ -20,7 +18,7 @@
    那是合法说明文字、不是搬进来的数据。故结构检测只读**数据文件**；对脚本
    文档仅检测「成序列的 id 值」，单个范围端点不构成指纹。
 
-★ ④ 为什么用严格全文本计数（主理人 2026-11-04 裁定）
+★ ④ 为什么用严格全文本计数（主理人裁定）
    redline_notes.md 的规矩是不为一时变绿放宽检查器。若按「跳过 docstring」
    计数，等于把一类出现排除在外，正是放宽；而且 docstring 里硬编码定稿 run
    本身就是过期隐患（换 run 时示例失真）。故按全文本计数，不依赖 ast，
@@ -28,15 +26,32 @@
    定稿 run 的目录只由 src.run_source.FINAL_RUN 保存；本脚本自身不硬编码
    该字面量，搜索 token 由 FINAL_RUN.name 取得。
 
-★ 本批不加入针对第二批「6 步向导」代码的断言（禁 shuffle /  onerror= /
-   硬编码状态词等）—— 那些代码还不存在，且 app.py 现有合法三态文案全仓
-   扫会误报。留给第二批。
+★ ⑤ / ⑥ 为什么不许「悄悄跳过」（第二批，主理人裁定）
+   ⑤ 未给 --pkg 时原本输出 [SKIP] 却汇总「全部结构断言通过」—— 与
+   redline_check.py 曾「扫 0 文件算 PASS」同类的假绿。现改为显式 [WARN]，
+   汇总如实写「通过 N / 警告 M」，不再宣称全部通过；⑥ 范围内 0 个目标时
+   同样计为警告。未给 --pkg 时退出码仍为 0（日常仓库自检不因缺包路径变红），
+   提交门槛由 --require-pkg 显式抬高：
+       .venv/Scripts/python.exe scripts/check_merge_contract.py --require-pkg --pkg <提交包目录>
+   带 --require-pkg 却未给 --pkg → 退出码 1。
+
+★ ⑥ 为什么严格限定扫描范围
+   第三批「6 步向导」才会新增 src/wizard.py、demo/，并在
+   web/design-tokens.css 里加步骤条规则。⑥ 禁的是这几类坏味道：打乱步骤的
+   shuffle 调用、随机数、内联错误回调、把三态文案写死在代码里的字面量。
+   **绝不扫全仓** —— 主界面现有的合法三态文案全仓扫必然误报。故只扫三处：
+     · src/wizard.py
+     · web/design-tokens.css 中步骤条相关规则块（其余既有规则不动）
+     · demo/ 目录（位置可用 --demo-dir 覆盖，便于第三批与反例验证）
+   范围内 0 个目标 → [SKIP] 并计入警告，不给汇总造成假绿。
 
 用法（在工程根目录 work/ 下执行）：
     .venv/Scripts/python.exe scripts/check_merge_contract.py
     .venv/Scripts/python.exe scripts/check_merge_contract.py --pkg "D:/.../提交包"
+    .venv/Scripts/python.exe scripts/check_merge_contract.py --require-pkg --pkg "D:/.../提交包"
+    .venv/Scripts/python.exe scripts/check_merge_contract.py --demo-dir <路径>
 
-退出码：0 = 全部通过；1 = 任一项失败。
+退出码：0 = 无失败项（可含警告）；1 = 有失败项，或 --require-pkg 未给 --pkg。
 """
 from __future__ import annotations
 
@@ -52,6 +67,12 @@ if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
 from src.run_source import FINAL_RUN            # noqa: E402
+
+# ---------------------------------------------------------------- 状态
+PASS = "PASS"
+FAIL = "FAIL"
+WARN = "WARN"
+SKIP = "SKIP"
 
 # ---------------------------------------------------------------- 契约常量
 SAMPLES = ROOT / "data" / "samples.json"
@@ -93,6 +114,19 @@ PKG_CONFIG_FILES = {"netlify.toml", "config.js", "patterns.json"}
 
 RUN_SOURCE_REL = "src/run_source.py"
 
+# ⑥ 向导代码禁用项 —— 扫描范围严格限定在 _wizard_targets() 的三处。
+WIZARD_PY = ROOT / "src" / "wizard.py"
+WIZARD_CSS = ROOT / "web" / "design-tokens.css"
+DEFAULT_DEMO_DIR = ROOT / "demo"
+CSS_STEP_HINTS = ("wizard", "step", "stepper", "步骤")
+# 通用 UI 三态词（非项目专属、非敏感文案）；只用于判断「是否被写进字符串字面量」。
+WIZARD_STATUS_WORDS = ("未开始", "待开始", "进行中", "处理中", "已完成", "已失败")
+WIZARD_FORBIDDEN = (
+    ("shuffle 调用", re.compile(r"\bshuffle\s*\(")),
+    ("Math.random", re.compile(r"\bMath\s*\.\s*random\b")),
+    ("内联 onerror=", re.compile(r"\bonerror\s*=")),
+)
+
 
 def iter_scan_files() -> list[Path]:
     """遍历 work/ 全树，产出未被排除的文本文件（按路径排序，便于复现）。"""
@@ -126,36 +160,36 @@ def _iter_arrays(node: Any):
             yield from _iter_arrays(v)
 
 
-def check_samples() -> tuple[bool, str]:
+def check_samples() -> tuple[str, str]:
     """① data/samples.json 恒 100 条。"""
     label = "① data/samples.json 恒 100 条"
     if not SAMPLES.is_file():
-        return False, f"{label} —— 文件不存在：{SAMPLES}"
+        return FAIL, f"{label} —— 文件不存在：{SAMPLES}"
     try:
         data = json.loads(SAMPLES.read_text(encoding="utf-8"))
     except (OSError, json.JSONDecodeError) as e:
-        return False, f"{label} —— 读取/解析失败（{type(e).__name__}）"
+        return FAIL, f"{label} —— 读取/解析失败（{type(e).__name__}）"
     if not isinstance(data, list):
-        return False, f"{label} —— 顶层须为数组，实际 {type(data).__name__}"
+        return FAIL, f"{label} —— 顶层须为数组，实际 {type(data).__name__}"
     if len(data) != EXPECTED_SAMPLE_COUNT:
-        return False, f"{label} —— 实际 {len(data)} 条，契约 {EXPECTED_SAMPLE_COUNT} 条"
-    return True, f"{label}（{len(data)} 条）"
+        return FAIL, f"{label} —— 实际 {len(data)} 条，契约 {EXPECTED_SAMPLE_COUNT} 条"
+    return PASS, f"{label}（{len(data)} 条）"
 
 
-def check_rules() -> tuple[bool, str]:
+def check_rules() -> tuple[str, str]:
     """② rules/culture_rules.json 非空且 ≥ 25 条。"""
     label = "② rules/culture_rules.json 非空且 ≥25 条"
     if not RULES.is_file():
-        return False, f"{label} —— 文件不存在：{RULES}"
+        return FAIL, f"{label} —— 文件不存在：{RULES}"
     try:
         data = json.loads(RULES.read_text(encoding="utf-8"))
     except (OSError, json.JSONDecodeError) as e:
-        return False, f"{label} —— 读取/解析失败（{type(e).__name__}）"
+        return FAIL, f"{label} —— 读取/解析失败（{type(e).__name__}）"
     if not isinstance(data, list) or not data:
-        return False, f"{label} —— 顶层须为非空数组"
+        return FAIL, f"{label} —— 顶层须为非空数组"
     if len(data) < MIN_RULE_COUNT:
-        return False, f"{label} —— 实际 {len(data)} 条，下限 {MIN_RULE_COUNT} 条"
-    return True, f"{label}（{len(data)} 条）"
+        return FAIL, f"{label} —— 实际 {len(data)} 条，下限 {MIN_RULE_COUNT} 条"
+    return PASS, f"{label}（{len(data)} 条）"
 
 
 def _json_fingerprints(text: str, data: Any) -> list[str]:
@@ -189,7 +223,7 @@ def _json_fingerprints(text: str, data: Any) -> list[str]:
     return tags
 
 
-def check_fingerprints(files: list[Path]) -> tuple[bool, str]:
+def check_fingerprints(files: list[Path]) -> tuple[str, str]:
     """③ 全仓不出现另一工程的数据指纹（数据文件查结构，脚本文档查 id 序列）。"""
     label = "③ 全仓不出现另一工程的数据指纹"
     problems: list[tuple[str, str]] = []
@@ -214,16 +248,16 @@ def check_fingerprints(files: list[Path]) -> tuple[bool, str]:
                 problems.append((rel, "脚本文档里出现成序列的 id 值"))
     if problems:
         detail = "; ".join(f"{r} → {t}" for r, t in problems[:8])
-        return False, f"{label} —— 命中 {len(problems)} 处：{detail}"
-    return True, f"{label}（扫 {n_json} 个 .json + {n_text} 个其它文本，0 命中）"
+        return FAIL, f"{label} —— 命中 {len(problems)} 处：{detail}"
+    return PASS, f"{label}（扫 {n_json} 个 .json + {n_text} 个其它文本，0 命中）"
 
 
-def check_final_run_literal(files: list[Path]) -> tuple[bool, str]:
+def check_final_run_literal(files: list[Path]) -> tuple[str, str]:
     """④ 定稿 run 字面量在 .py **全文本**恰好 1 处，且命中行是 FINAL_RUN。"""
     label = "④ 定稿 run 字面量在 .py 全文本恰好 1 处"
     token = FINAL_RUN.name                 # 搜索 token 取自单一真源，不硬编码
     if not token:
-        return False, f"{label} —— FINAL_RUN.name 为空"
+        return FAIL, f"{label} —— FINAL_RUN.name 为空"
     hits: list[tuple[str, int, int]] = []
     n_py = 0
     for p in files:
@@ -236,24 +270,24 @@ def check_final_run_literal(files: list[Path]) -> tuple[bool, str]:
                 hits.append((p.relative_to(ROOT).as_posix(), i, n))
     total = sum(h[2] for h in hits)
     if total != 1:
-        return False, f"{label} —— 实际 {total} 处：{hits}"
+        return FAIL, f"{label} —— 实际 {total} 处：{hits}"
     rel, lineno, _ = hits[0]
     if rel != RUN_SOURCE_REL:
-        return False, f"{label} —— 唯一命中在 {rel}:{lineno}，应来自 {RUN_SOURCE_REL}"
+        return FAIL, f"{label} —— 唯一命中在 {rel}:{lineno}，应来自 {RUN_SOURCE_REL}"
     lines = _read_text(ROOT / RUN_SOURCE_REL).splitlines()
     if lineno > len(lines) or "FINAL_RUN" not in lines[lineno - 1]:
-        return False, f"{label} —— 唯一命中行不是 FINAL_RUN 定义（{rel}:{lineno}）"
-    return True, f"{label}（{rel}:{lineno} FINAL_RUN；扫 {n_py} 个 .py）"
+        return FAIL, f"{label} —— 唯一命中行不是 FINAL_RUN 定义（{rel}:{lineno}）"
+    return PASS, f"{label}（{rel}:{lineno} FINAL_RUN；扫 {n_py} 个 .py）"
 
 
-def check_pkg(pkg_arg: str | None) -> tuple[bool | None, str]:
-    """⑤ 可选：提交包不得出现另一工程的数据 / 云函数 / 配置结构标记。"""
+def check_pkg(pkg_arg: str | None) -> tuple[str, str]:
+    """⑤ 提交包结构标记；未给 --pkg 时显式 WARN（不判通过、也不判失败）。"""
     label = "⑤ 提交包不出现另一工程的数据/云函数/配置结构标记"
     if not pkg_arg:
-        return None, f"{label} —— 未指定 --pkg，跳过"
+        return WARN, "提交包未检查 —— 提交前必须带 --pkg"
     pkg = Path(pkg_arg)
     if not pkg.is_dir():
-        return False, f"{label} —— 目录不存在：{pkg}"
+        return FAIL, f"{label} —— 目录不存在：{pkg}"
     bad: list[tuple[str, str]] = []
     for q in sorted(pkg.rglob("*")):
         rel = q.relative_to(pkg).as_posix()
@@ -265,16 +299,77 @@ def check_pkg(pkg_arg: str | None) -> tuple[bool | None, str]:
             bad.append((rel, "配置/数据文件"))
     if bad:
         detail = "; ".join(f"{r}({c})" for r, c in bad[:8])
-        return False, f"{label} —— 命中 {len(bad)} 处：{detail}"
-    return True, f"{label}（0 命中）"
+        return FAIL, f"{label} —— 命中 {len(bad)} 处：{detail}"
+    return PASS, f"{label}（0 命中）"
+
+
+def _css_step_blocks(text: str) -> list[str]:
+    """只取 design-tokens.css 里步骤条相关的规则块，其余既有规则不碰。"""
+    blocks: list[str] = []
+    for chunk in text.split("}"):
+        if "{" not in chunk:
+            continue
+        selector = re.sub(r"/\*.*?\*/", "", chunk.rsplit("{", 1)[0], flags=re.S)
+        low = selector.lower()
+        if any(hint in low for hint in CSS_STEP_HINTS):
+            blocks.append(chunk)
+    return blocks
+
+
+def _has_status_literal(text: str) -> bool:
+    """文本里是否把三态词写进了字符串字面量（而非引用统一常量）。"""
+    for m in re.finditer(r"(['\"])(.*?)\1", text):
+        if any(w in m.group(2) for w in WIZARD_STATUS_WORDS):
+            return True
+    return False
+
+
+def _wizard_targets(demo_dir: Path) -> list[tuple[str, str]]:
+    """收集 ⑥ 的扫描目标：严格限定三处，绝不全仓扫。"""
+    targets: list[tuple[str, str]] = []
+    if WIZARD_PY.is_file():
+        targets.append(("src/wizard.py", _read_text(WIZARD_PY)))
+    if WIZARD_CSS.is_file():
+        for i, block in enumerate(_css_step_blocks(_read_text(WIZARD_CSS)), 1):
+            targets.append((f"web/design-tokens.css#step-block-{i}", block))
+    if demo_dir.is_dir():
+        for p in sorted(demo_dir.rglob("*")):
+            if p.is_file() and p.suffix.lower() in TEXT_EXT:
+                targets.append((f"demo/{p.relative_to(demo_dir).as_posix()}",
+                                _read_text(p)))
+    return targets
+
+
+def check_wizard(demo_dir: Path) -> tuple[str, str]:
+    """⑥ 向导代码禁用项；范围内 0 个目标 → SKIP（计入警告，不造成假绿）。"""
+    label = "⑥ 向导禁用项（限定 wizard.py / CSS 步骤条块 / demo/）"
+    targets = _wizard_targets(demo_dir)
+    if not targets:
+        return SKIP, f"{label} —— 范围内 0 个目标"
+    problems: list[tuple[str, str]] = []
+    for name, text in targets:
+        for tag, rx in WIZARD_FORBIDDEN:
+            if rx.search(text):
+                problems.append((name, tag))
+        if _has_status_literal(text):
+            problems.append((name, "硬编码状态词字面量"))
+    if problems:
+        detail = "; ".join(f"{n}({t})" for n, t in problems[:8])
+        return FAIL, f"{label} —— 命中 {len(problems)} 处：{detail}（扫 {len(targets)} 个目标）"
+    return PASS, f"{label}（扫 {len(targets)} 个目标，0 命中）"
 
 
 def main() -> int:
-    """跑完五项断言，打印 [PASS]/[FAIL]/[SKIP] 并返回退出码 0/1。"""
+    """跑完六项断言，打印 [PASS]/[FAIL]/[WARN]/[SKIP] 并返回退出码 0/1。"""
     ap = argparse.ArgumentParser(description="两工程合并 · 结构性断言（只读）")
     ap.add_argument("--pkg", default=None,
-                    help="待检查的提交包目录（可选；不给则跳过第 ⑤ 项）")
+                    help="待检查的提交包目录（可选；不给则第 ⑤ 项输出 WARN）")
+    ap.add_argument("--require-pkg", action="store_true",
+                    help="提交门槛：启用后必须提供 --pkg，否则退出码 1")
+    ap.add_argument("--demo-dir", default=str(DEFAULT_DEMO_DIR),
+                    help="⑥ 的 demo 目录位置（默认 <repo>/demo；便于第三批与反例验证）")
     args = ap.parse_args()
+    demo_dir = Path(args.demo_dir)
 
     files = iter_scan_files()
     print("=" * 68)
@@ -289,23 +384,32 @@ def main() -> int:
         check_fingerprints(files),
         check_final_run_literal(files),
         check_pkg(args.pkg),
+        check_wizard(demo_dir),
     ]
-    passed = failed = skipped = 0
-    for ok, msg in checks:
-        if ok is None:
-            skipped += 1
-            print(f"[SKIP] {msg}")
-        elif ok:
+    passed = warned = failed = 0
+    for status, msg in checks:
+        if status == PASS:
             passed += 1
             print(f"[PASS] {msg}")
-        else:
+        elif status == FAIL:
             failed += 1
             print(f"[FAIL] {msg}")
+        elif status == WARN:
+            warned += 1
+            print(f"[WARN] {msg}")
+        else:                                   # SKIP：未实际检查，同样计为警告
+            warned += 1
+            print(f"[SKIP] {msg}（未实际检查，计为警告）")
     print("-" * 68)
+    if args.require_pkg and not args.pkg:
+        failed += 1
+        print("[FAIL] --require-pkg 已启用但未提供 --pkg —— 提交门槛未满足")
     if failed:
-        print(f"[FAIL] {failed} 项未通过（通过 {passed} / 跳过 {skipped}）—— 修正后再提交")
+        print(f"[FAIL] 汇总：通过 {passed} / 警告 {warned} / 失败 {failed} —— 修正后再提交")
         return 1
-    print(f"[PASS] 全部结构断言通过（通过 {passed} / 跳过 {skipped}）")
+    print(f"[PASS] 汇总：通过 {passed} / 警告 {warned} / 失败 0（警告项不计为通过）")
+    if warned:
+        print("[WARN] 存在未检查项 —— 提交前须补齐（见上）")
     return 0
 
 
