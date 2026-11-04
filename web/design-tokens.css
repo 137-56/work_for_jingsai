@@ -140,3 +140,26 @@
   background: var(--card);
   border-right: 1px solid var(--line);
 }
+
+/* ============================================================
+   六步向导 · 步骤条（第三批追加；以上既有规则一行未动）
+   ★ 选择器走 .st-key-* / [data-testid]，禁用位置伪类选择器（见文件头硬约束）
+   ★ 色值一律 var(--*)：本文件是视觉 token 唯一真源，不在此另写色值
+   ============================================================ */
+.st-key-wizard_nav {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-left: 3px solid var(--red);
+  border-radius: var(--r-panel);
+  padding: var(--pad-panel);
+}
+.st-key-wizard_nav [data-testid="stMarkdownContainer"] p {
+  color: var(--ink);
+}
+.st-key-wizard_nav [data-testid="stRadio"] {
+  gap: var(--gap-card);
+}
+.st-key-wizard_focus [data-testid="stMarkdownContainer"] strong {
+  color: var(--ink);
+  border-bottom: 2px solid var(--red);
+}

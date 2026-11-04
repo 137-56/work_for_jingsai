@@ -40,6 +40,11 @@ from src.m7_copyright import assess
 from src.pipeline import run, save_all
 from src.utils import CFG
 from src import disclosure
+from src.run_source import FINAL_RUN
+from src.wizard import (
+    STATE_EMPTY, STATE_OPTIONAL, STATE_READY,
+    WIZARD_STEPS, derive_states, step_by_id,
+)
 
 st.set_page_config(page_title="纹初迹现 · 可溯源纹样生成系统", layout="wide")
 
@@ -320,6 +325,32 @@ with tab_gen:
         out = save_all(result)
         st.session_state["result"] = result
         st.session_state["out"] = str(out)
+
+    # ---------- 六步向导导航（外层信息架构） ----------
+    # ★ 只叠加一层「这一步回答什么问题」的叙事：下面 ①–⑥ 各区内部实现一行不动。
+    #   状态由 src.wizard 从本次 result 派生；run 事实只取 src.run_source。
+    with st.container(key="wizard_nav", border=True):
+        st.markdown("##### 六步向导 · 每一步回答什么问题")
+        _focus_id = st.radio(
+            "查看步骤",
+            options=[s.id for s in WIZARD_STEPS],
+            format_func=lambda sid: step_by_id(sid).title,
+            horizontal=True,
+            label_visibility="collapsed",
+            key="wizard_focus",
+        )
+        _focus = step_by_id(_focus_id or WIZARD_STEPS[0].id)
+        st.markdown(f"**{_focus.title}**：{_focus.question}")
+        st.caption(f"对应下方 {_focus.zone} 区 · 定稿 run 基准：{FINAL_RUN.name}")
+        _state_cn = {
+            STATE_READY: "本次结果已产出",
+            STATE_EMPTY: "尚无结果",
+            STATE_OPTIONAL: "可选 · 需手动触发",
+        }
+        with st.expander("查看 6 步状态（由本次生成结果派生）", expanded=False):
+            for _st in derive_states(st.session_state.get("result")):
+                st.caption(f"{_st['title']}｜{_state_cn.get(_st['state'], _st['state'])}"
+                           f"｜{_st['hint']}")
 
     res = st.session_state.get("result")
     if not res:
