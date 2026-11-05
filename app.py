@@ -26,6 +26,7 @@
     streamlit run app.py
 """
 import json
+import re
 import sys
 from pathlib import Path
 
@@ -39,6 +40,8 @@ from src.m6_provenance import ATTRIBUTION_SHORT, SCORE_NOTE, to_markdown
 from src.m7_copyright import assess
 from src.pipeline import run, save_all
 from src.utils import CFG
+from src.m1_intent import build_whitelist
+from src.semantic_match import explain_hits
 from src import disclosure
 from src.run_source import FINAL_RUN
 from src.wizard import (
@@ -352,6 +355,68 @@ with tab_gen:
                 st.caption(f"{_st['title']}｜{_state_cn.get(_st['state'], _st['state'])}"
                            f"｜{_st['hint']}")
 
+    # ---------- 配方人在回路（可选叠加层，整合点 ②） ----------
+    # ★ 不点「应用」时，下方 res 仍取原 run 结果，数据路径与基线完全一致；
+    #   只有点「应用」才走 run(recipe_override=edited) 这一条新增路径。
+    _cur = st.session_state.get("result")
+    if _cur:
+        with st.container(key="recipe_hitl"):
+            st.markdown("##### 配方编辑（人在回路 · 可选）")
+            st.caption("编辑后点「应用」：以本配方为准重跑 M2→M3→M6（跳过 M1）；"
+                       "不编辑则沿用上方原生成结果。")
+            _rec = _cur["recipe"]
+            _it = _rec.get("intent") or {}
+            _stc = _rec.get("structure") or {}
+            _cm = _stc.get("center_motif") or {}
+            _pal = _rec.get("palette") or {}
+            _wl = build_whitelist()
+            _names = list(_wl.keys())
+            _palette = list(CFG.get("traditional_palette") or [])
+            _hexes = [str(p.get("hex") or "") for p in _palette]
+            _hex_label = {str(p.get("hex") or ""):
+                          f"{p.get('name', '')} {p.get('hex', '')}" for p in _palette}
+            _name_idx = _names.index(_cm["name"]) if _cm.get("name") in _names else 0
+            e_name = st.selectbox("中心母题（限样本库白名单）", options=_names,
+                                  index=_name_idx, key="hitl_name")
+            e_elements = st.text_input("构成元素（逗号分隔）",
+                                       value="、".join(_cm.get("elements") or []),
+                                       key="hitl_elements")
+            e_occasion = st.text_input("适用场合（逗号分隔）",
+                                       value="、".join(_it.get("occasion") or []),
+                                       key="hitl_occasion")
+            e_blessing = st.text_input("寓意（逗号分隔）",
+                                       value="、".join(_it.get("blessing") or []),
+                                       key="hitl_blessing")
+            _cur_hex = str(_pal.get("primary") or "")
+            _hex_idx = _hexes.index(_cur_hex) if _cur_hex in _hexes else 0
+            e_primary = st.selectbox("主色（限传统色板）", options=_hexes,
+                                     index=_hex_idx,
+                                     format_func=lambda h: _hex_label.get(h, h),
+                                     key="hitl_primary")
+            if st.button("应用编辑并重新生成", key="hitl_apply", type="primary"):
+                # 色板外色值一律拒绝（防御式校验，纵使绕过下拉）。
+                if e_primary not in _hexes:
+                    st.error("主色不在传统色板内，已拒绝本次编辑（不触发重跑）。")
+                else:
+                    from copy import deepcopy
+                    edited = deepcopy(_rec)
+                    edited.setdefault("structure", {}).setdefault("center_motif", {})["name"] = e_name
+                    edited["structure"]["center_motif"]["elements"] = [
+                        x.strip() for x in re.split(r"[、,，]", e_elements) if x.strip()]
+                    edited.setdefault("intent", {})["occasion"] = [
+                        x.strip() for x in re.split(r"[、,，]", e_occasion) if x.strip()]
+                    edited["intent"]["blessing"] = [
+                        x.strip() for x in re.split(r"[、,，]", e_blessing) if x.strip()]
+                    edited.setdefault("palette", {})["primary"] = e_primary
+                    with st.status("正在按编辑后的配方重跑…", expanded=True) as _status:
+                        _new = run(req.strip(), on_step=lambda m: st.write(m),
+                                   recipe_override=edited)
+                        _status.update(label="重跑完成", state="complete", expanded=False)
+                    _out = save_all(_new)
+                    st.session_state["result"] = _new
+                    st.session_state["out"] = str(_out)
+                    st.success("已按编辑配方重跑；下方 ②③④ 展示新结果。")
+
     res = st.session_state.get("result")
     if not res:
         st.info("在上方输入需求后点击「生成纹样方案」。")
@@ -416,6 +481,16 @@ with tab_gen:
                     if h.get("slot"):
                         st.caption(f"★ 配方「{SLOT_CN.get(h['slot'], h['slot'])}」槽位保底命中")
                     st.caption(f"匹配分 {h.get('score', 0):.2f}｜{s.get('category', '')}")
+
+        # ★ 确定性语义匹配旁路（整合点 ①）：只补「理由列」，
+        #   不改动 score / matched_by / 排序；主检索仍是 faiss + cn_clip。
+        #   不编辑、不点应用时这里只是额外一个可展开的说明区，不触发任何重跑。
+        with st.expander("查看每条候选的确定性语义命中理由", expanded=False):
+            _req_explain = str(res.get("user_request") or req)
+            for _h in explain_hits(_req_explain, hits):
+                _s = _h["sample"]
+                st.caption(f"**{_s.get('name', '—')}**（{_s.get('id', '—')}）："
+                           + "；".join(_h.get("semantic") or []))
 
         # ---------- ③ 文化校验 ----------
         st.subheader("③ 文化规则校验")

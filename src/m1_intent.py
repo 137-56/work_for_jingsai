@@ -25,6 +25,7 @@ import dashscope
 from dashscope import Generation
 
 from src.utils import CFG
+from src.semantic_match import semantic_fallback_recipe
 
 SAMPLES = Path(CFG["paths"]["samples"])
 
@@ -169,17 +170,12 @@ def fix_motif(recipe, whitelist):
 
 # ---------------------------------------------------------------- 兜底
 def fallback_recipe(user_request):
-    """LLM 彻底失败时用它，保证管线不中断（指南 8.2 的降级要求）。"""
-    return {
-        "intent": {"occasion": ["节庆通用"], "purpose": "通用装饰",
-                   "blessing": ["吉祥"], "style": "传统纹样"},
-        "structure": {"center_motif": {"name": "", "elements": [], "confidence": 0.0},
-                      "border": {}, "corner": {}, "symmetry": "四轴对称"},
-        "palette": {"primary": "#C8102E", "secondary": "#F2A900",
-                    "scheme_basis": "传统配色"},
-        "user_request": user_request,
-        "parsed_by": "fallback",
-    }
+    """LLM 彻底失败时的兜底配方（薄封装，保留历史调用点兼容）。
+
+    实际构造委托给 semantic_match.semantic_fallback_recipe —— 用真源 Top1
+    填母题 / 元素 / 场合，兜底结果也可解释、可复现（整合点 ①）。
+    """
+    return semantic_fallback_recipe(user_request, build_whitelist())
 
 
 # ---------------------------------------------------------------- 主入口
@@ -211,7 +207,7 @@ def parse_intent(user_request):
         except Exception as e:
             print(f"  [M1] 第 {attempt} 次失败：{type(e).__name__}: {e}")
 
-    r = fallback_recipe(user_request)
+    r = semantic_fallback_recipe(user_request, build_whitelist())
     r["warnings"] = [f"LLM 重试 {cfg['max_retries']} 次仍失败，已使用兜底配方"]
     return r
 

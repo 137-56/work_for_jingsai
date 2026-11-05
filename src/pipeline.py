@@ -7,6 +7,7 @@
 import json
 import sys
 import uuid
+from copy import deepcopy
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
@@ -14,7 +15,7 @@ ROOT = Path(__file__).resolve().parent.parent
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
-from src.m1_intent import parse_intent
+from src.m1_intent import build_whitelist, fix_motif, parse_intent
 from src.m2_retrieve import retrieve
 from src.m3_validate import validate
 from src.m6_provenance import build_card, to_markdown
@@ -37,7 +38,7 @@ def load_rules():
         return []
 
 
-def run(user_request, top_k=None, on_step=None):
+def run(user_request, top_k=None, on_step=None, recipe_override: dict | None = None):
     """端到端管线。
 
     on_step: 可选回调（B7 界面用）。每进入一个环节就调一次，用于分步显示进度。
@@ -54,12 +55,16 @@ def run(user_request, top_k=None, on_step=None):
 
     # ---- M1 意图解析 ----
     _step("① 解析需求 →《纹样文化配方》")
-    try:
-        recipe = parse_intent(user_request)
-    except Exception as e:
-        result["errors"].append(f"M1 失败：{type(e).__name__}: {e}")
-        recipe = {"intent": {}, "structure": {"center_motif": {}}, "palette": {},
-                  "user_request": user_request, "parsed_by": "error"}
+    if recipe_override is None:
+        try:
+            recipe = parse_intent(user_request)
+        except Exception as e:
+            result["errors"].append(f"M1 失败：{type(e).__name__}: {e}")
+            recipe = {"intent": {}, "structure": {"center_motif": {}}, "palette": {},
+                      "user_request": user_request, "parsed_by": "error"}
+    else:
+        # 人在回路（整合点 ②）：以人给出的完整配方为准，跳过 M1，不联网、不调 LLM。
+        recipe = fix_motif(deepcopy(recipe_override), build_whitelist())
     recipe["recipe_id"] = gen_recipe_id(user_request)
 
     # ---- M2 元素检索 ----

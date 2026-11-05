@@ -1,13 +1,20 @@
 # scripts/check_merge_contract.py
 """两工程合并 · 结构性断言（只读）。
 
-★ 六项断言
+★ 七项断言（①–⑥ + ⑧）
   ① data/samples.json 恒 100 条
   ② rules/culture_rules.json 非空且 ≥ 25 条
   ③ 全仓不出现另一工程的数据指纹（只按抽象结构特征识别）
   ④ 定稿 run 的 run id 字面量在 .py 全文本中恰好 1 处，且来自 FINAL_RUN
   ⑤ --pkg <path>：提交包不得出现另一工程的数据 / 云函数 / 配置结构标记
   ⑥ 向导代码禁用项（扫描范围严格限定，见下）
+  ⑧ 确定性语义匹配：固定需求连跑 2 次全等，且新模块不含随机化手段
+
+★ ⑧ 为什么必须可证伪（主理人裁定）
+   静态只读 src/semantic_match.py 一个文件（范围限定新模块）；动态从同一
+   文件加载 score_request 连跑 2 次比对。--semantic-src 可指向系统临时目录
+   里的反例模块 —— 含随机化手段、或两次结果不一致，都会判 FAIL；反例用完
+   即删，不往项目里写任何测试样本。目标文件缺失直接 FAIL，不静默计通过。
 
 ★ ③ 为什么只写抽象结构特征
    项目规范（docs/redline_notes.md）要求：任何具体命中串都不得写进正则、
@@ -50,6 +57,7 @@
     .venv/Scripts/python.exe scripts/check_merge_contract.py --pkg "D:/.../提交包"
     .venv/Scripts/python.exe scripts/check_merge_contract.py --require-pkg --pkg "D:/.../提交包"
     .venv/Scripts/python.exe scripts/check_merge_contract.py --demo-dir <路径>
+    .venv/Scripts/python.exe scripts/check_merge_contract.py --semantic-src <路径>
 
 退出码：0 = 无失败项（可含警告）；1 = 有失败项，或 --require-pkg 未给 --pkg。
 """
@@ -113,6 +121,18 @@ PKG_DATA_DIRS = {"patterns"}
 PKG_CONFIG_FILES = {"netlify.toml", "config.js", "patterns.json"}
 
 RUN_SOURCE_REL = "src/run_source.py"
+
+# ⑧ 确定性语义匹配：目标模块、固定需求、随机化特征（只对该新模块判定）。
+SEMANTIC_PY = ROOT / "src" / "semantic_match.py"
+SEMANTIC_FIXED_REQUESTS = (
+    "做一个有吉祥寓意的窗花，用于春节礼品包装",
+    "祝寿贺礼用的纹样，要长寿安康的寓意",
+    "莲花与缠枝相关的青花瓷器装饰",
+    "婚庆用的喜庆纹样，寓意百年好合",
+    "书房陈设的文人雅玩纹样，清雅为主",
+)
+SEMANTIC_RANDOM_RE = re.compile(r"\brandom\b")
+SEMANTIC_SHUFFLE_RE = re.compile(r"\bshuffle\s*\(")
 
 # ⑥ 向导代码禁用项 —— 扫描范围严格限定在 _wizard_targets() 的三处。
 WIZARD_PY = ROOT / "src" / "wizard.py"
@@ -359,8 +379,60 @@ def check_wizard(demo_dir: Path) -> tuple[str, str]:
     return PASS, f"{label}（扫 {len(targets)} 个目标，0 命中）"
 
 
+def _load_score_request(path: Path):
+    """从指定文件动态加载 score_request，供 ⑧ 的正例与反例共用。
+
+    用独立模块名加载，避免与 src.semantic_match 已加载实例互相干扰；
+    目标文件可以是系统临时目录里的反例模块（用完即删）。
+    """
+    import importlib.util
+    import sys
+
+    spec = importlib.util.spec_from_file_location(
+        "_contract_semantic_probe", str(path))
+    if spec is None or spec.loader is None:
+        raise ImportError(f"无法为 {path} 建立模块规格")
+    mod = importlib.util.module_from_spec(spec)
+    # ★ 必须临时注册进 sys.modules：带 from __future__ import annotations 的
+    #   dataclass 解析注解时会回查 sys.modules[__module__].__dict__，
+    #   漏注册会抛 'NoneType' object has no attribute '__dict__'。
+    sys.modules[spec.name] = mod
+    try:
+        spec.loader.exec_module(mod)
+    finally:
+        sys.modules.pop(spec.name, None)
+    fn = getattr(mod, "score_request", None)
+    if not callable(fn):
+        raise AttributeError("目标模块缺少可调用的 score_request")
+    return fn
+
+
+def check_semantic_determinism(semantic_src: Path) -> tuple[str, str]:
+    """⑧ 确定性：连跑 2 次全等 + 新模块无随机化手段；范围限定该新模块。"""
+    label = "⑧ 确定性语义匹配（连跑 2 次全等 + 新模块无随机化）"
+    if not semantic_src.is_file():
+        return FAIL, f"{label} —— 目标模块不存在：{semantic_src}"
+    src = _read_text(semantic_src)
+    if SEMANTIC_RANDOM_RE.search(src) or SEMANTIC_SHUFFLE_RE.search(src):
+        return FAIL, f"{label} —— 目标模块含随机化手段：{semantic_src.name}"
+    try:
+        score_request = _load_score_request(semantic_src)
+    except Exception as e:
+        return FAIL, f"{label} —— 加载 score_request 失败（{type(e).__name__}: {e}）"
+    try:
+        for req in SEMANTIC_FIXED_REQUESTS:
+            a = score_request(req)
+            b = score_request(req)
+            if a != b:
+                return FAIL, f"{label} —— 两次结果不一致（需求：{req[:10]}…）"
+    except Exception as e:
+        return FAIL, f"{label} —— score_request 执行失败（{type(e).__name__}: {e}）"
+    return PASS, (f"{label}（{len(SEMANTIC_FIXED_REQUESTS)} 条需求 ×2 全等；"
+                  f"扫 1 个新模块 {semantic_src.name}）")
+
+
 def main() -> int:
-    """跑完六项断言，打印 [PASS]/[FAIL]/[WARN]/[SKIP] 并返回退出码 0/1。"""
+    """跑完七项断言，打印 [PASS]/[FAIL]/[WARN]/[SKIP] 并返回退出码 0/1。"""
     ap = argparse.ArgumentParser(description="两工程合并 · 结构性断言（只读）")
     ap.add_argument("--pkg", default=None,
                     help="待检查的提交包目录（可选；不给则第 ⑤ 项输出 WARN）")
@@ -368,8 +440,11 @@ def main() -> int:
                     help="提交门槛：启用后必须提供 --pkg，否则退出码 1")
     ap.add_argument("--demo-dir", default=str(DEFAULT_DEMO_DIR),
                     help="⑥ 的 demo 目录位置（默认 <repo>/demo；便于第三批与反例验证）")
+    ap.add_argument("--semantic-src", default=str(SEMANTIC_PY),
+                    help="⑧ 的目标模块（默认 src/semantic_match.py；可指向系统 temp 反例）")
     args = ap.parse_args()
     demo_dir = Path(args.demo_dir)
+    semantic_src = Path(args.semantic_src)
 
     files = iter_scan_files()
     print("=" * 68)
@@ -385,6 +460,7 @@ def main() -> int:
         check_final_run_literal(files),
         check_pkg(args.pkg),
         check_wizard(demo_dir),
+        check_semantic_determinism(semantic_src),
     ]
     passed = warned = failed = 0
     for status, msg in checks:
