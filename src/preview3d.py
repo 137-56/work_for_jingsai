@@ -676,7 +676,7 @@ QUALITY = {"high": (760, 920, 2), "fast": (560, 680, 1)}
 
 
 def render_preview(pattern_png, out_dir, recipe=None, hits=None, quality="high",
-                   style_img=None):
+                   style_img=None, texture_source=None):
     """渲染三形态并合成。返回 {形态: 路径}。
 
     ★★ 与旧版的根本差别（这是"美化"的核心，不只是调参数）
@@ -700,12 +700,19 @@ def render_preview(pattern_png, out_dir, recipe=None, hits=None, quality="high",
           "地子"垫在各分区底下，解决"白底太素"的问题（见 style_ground）。
           不给 = 原来的纯色地子行为。**不影响纹样层的溯源口径**——
           地子只是渲染层，上层语义纹样仍全部来自母题库。
+
+    texture_source：**批次 1 新增**的图源选择参数（`src.ai_texture.TextureSource`）。
+          None 或 traceable=True → 继续走既有「composed_pattern 分区贴附」；
+          traceable=False → 用 `fit_to_strip` / `fit_box_atlas` 产出的 AI 图。
+          ★ 只换**图像素**：atlas 几何、`_LID_DU/_LID_DV` 的取值方式、
+            `_box_hit` / `_revolve_hit` / `_fan_hit` 的 UV 公式一律不动。
     """
     out_dir = Path(out_dir); out_dir.mkdir(parents=True, exist_ok=True)
     W, H, ss = QUALITY[quality]
 
     tex_cache, meta_all = {}, {}
     use_layout = bool(recipe and hits)
+    _ai_mode = bool(texture_source is not None and not texture_source.traceable)
 
     # 地子：从 AI 风格化图抽氛围（失败/未给 → None，退回纯色）
     ground = None
@@ -727,10 +734,51 @@ def render_preview(pattern_png, out_dir, recipe=None, hits=None, quality="high",
     from src.pattern_layout import use_ground
     _gctx = use_ground(ground)
 
-    print(f"贴图方式：{'分区展开图（按配方结构）' if use_layout else '整幅贴（无检索结果，退化）'}"
+    # ★ 批次 1：AI 图源分支优先于分区贴附，日志必须如实说明（不能说"整幅贴退化"）。
+    _mode_txt = ("AI 图贴图源（fit_to_strip / fit_box_atlas，traceable=False）"
+                 if _ai_mode else
+                 ("分区展开图（按配方结构）" if use_layout
+                  else "整幅贴（无检索结果，退化）"))
+    print(f"贴图方式：{_mode_txt}"
           f"　质量档 {quality}（{W}×{H}, {ss}× 超采样）")
 
     def _tex_for(kind):
+        # ★ 批次 1：图源选择分支。只换**图像素**，atlas 几何 / UV 公式一律不动。
+        #   texture_source 为 None 或可溯源档时，逐字走下面的既有分区贴附链路。
+        _ai_path = ""
+        if texture_source is not None and not texture_source.traceable:
+            _ai_path = texture_source.path
+            if not _ai_path:
+                raise ValueError(
+                    "AI 图源没有磁盘路径，render_preview 无法取像素；"
+                    "请由 select_source 提供真实文件路径（不静默降级）")
+        if _ai_path:
+            if kind not in tex_cache:
+                from src.ai_texture import fit_box_atlas, fit_to_strip
+
+                if kind == "box":
+                    # 方盒仍用「左半 strip + 右上 lid」的 atlas，几何与 UV 同源。
+                    atlas, lid_frac = fit_box_atlas(_ai_path, height=1024)
+                    # ★ 用 globals() 回填模块级 UV 常量：既有分区贴附分支里
+                    #   已有一行 `global _LID_DU, _LID_DV`，若本分支再写一次
+                    #   global 会触发「assigned before global declaration」。
+                    #   这样既不改既有分支，也保证两条图源分支的 UV 同源。
+                    globals()["_LID_DU"], globals()["_LID_DV"] = lid_frac
+                    tex_cache[kind] = np.asarray(atlas, np.float32)
+                    meta_all[kind] = {
+                        "bands": [], "layout": "ai_texture_box_atlas",
+                        "strip_size": list(atlas.size), "traceable": False,
+                    }
+                else:
+                    im = fit_to_strip(_ai_path, kind, height=1024)
+                    tex_cache[kind] = np.asarray(im, np.float32)
+                    meta_all[kind] = {
+                        "bands": [],
+                        "layout": ("ai_texture_fan_radial" if kind == "fan"
+                                   else "ai_texture_strip"),
+                        "strip_size": list(im.size), "traceable": False,
+                    }
+            return tex_cache[kind]
         if not use_layout:
             if "raw" not in tex_cache:
                 tex_cache["raw"] = np.asarray(
@@ -796,7 +844,13 @@ def render_preview(pattern_png, out_dir, recipe=None, hits=None, quality="high",
     triptych = out_dir / "preview3d_triptych.png"
     # ★ 底注必须随"是否启用 AI 地子"而变 —— 这是溯源口径的落地点，
     #   不能让两种模式共用同一句"非 AI 生成"（会失实）。
-    if ground is not None:
+    if _ai_mode:
+        # ★ 批次 1 新增分支：AI 图贴图源不能再说「元素级可溯」（会失实）。
+        #   既有两条分支的判据与文案一行未改。
+        foot = ("纹样层：AI 生成贴图（AI 生成 · 不可溯源）　｜　"
+                "载体层：程序化生成的标准几何体，仅作形态预览")
+        title_sub = sub + "　｜　AI 图贴图源"
+    elif ground is not None:
         foot = ("纹样层：各分区纹样分别来自语义层母题库，元素级可溯　｜　"
                 "地子层：取自 AI 风格化图（仅渲染色底，不承载语义）　｜　"
                 "载体层：程序化生成的标准几何体，仅作形态预览")

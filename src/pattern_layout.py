@@ -353,8 +353,13 @@ STRIP_ASPECT = {
 
 
 def strip_size(kind, height=1024):
-    """按器型算展开图的 (宽, 高)。宽 = 高 × 该器型的「宽高比」。"""
-    ar = STRIP_ASPECT.get(kind, 1.92)
+    """按器型算展开图的 (宽, 高)。宽 = 高 × 该器型的「宽高比」。
+
+    ★ 未登记形态**明确抛 KeyError**，禁止 `.get(kind, 默认值)` 静默兜底：
+      静默套用别的器型比例会让贴图被拉伸，而页面照常打开、不报错。
+      批次 2 扩展形态集时须先在 STRIP_ASPECT 里登记，否则这里会挡住。
+    """
+    ar = STRIP_ASPECT[kind]
     return int(round(height * ar)), height
 
 

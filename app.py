@@ -28,6 +28,8 @@
 import json
 import re
 import sys
+import uuid
+from datetime import datetime, timezone
 from pathlib import Path
 
 import streamlit as st
@@ -48,6 +50,12 @@ from src.wizard import (
     STATE_EMPTY, STATE_OPTIONAL, STATE_READY,
     WIZARD_STEPS, derive_states, step_by_id,
 )
+# 批次 1：路线枚举与不变量的**单一真源**，界面不另写字面量集合。
+from src.ai_routes import (
+    AI_DISCLOSURE_LABEL, AI_ROUTES, ROUTE_AI_GENERATED, ROUTE_AI_TEXTURE,
+    ROUTE_LABELS, ROUTE_ORDER, RouteState,
+)
+from src.ai_texture import MissingAITexture, select_source
 
 st.set_page_config(page_title="纹初迹现 · 可溯源纹样生成系统", layout="wide")
 
@@ -85,7 +93,7 @@ def sample_count():
         return 0
 
 
-def _embed_viewer(glb_info, ground="neutral", disclosure_lines=None):
+def _embed_viewer(glb_info, ground="neutral", disclosure_lines=None, route=None):
     """把 GLB 复制到 Streamlit 的静态目录，并用 iframe 嵌入 Three.js 查看器。
 
     ★ 为什么必须走"静态目录 + iframe"（实测踩到）
@@ -157,9 +165,18 @@ def _embed_viewer(glb_info, ground="neutral", disclosure_lines=None):
     #   不带前导斜杠会被当成"相对当前页面的路径"而 404（实测踩到）。
     # ★ ground 参数让查看器内的溯源说明与实际贴图方案一致：
     #   启用 AI 地子时不能再说"非 AI 生成"（会失实）。
-    url = "/app/static/viewer/viewer.html"
+    # ★ 批次 1 追加 ?route=：查看器只读取它认识的 ground / base / name，
+    #   不认识的 query 参数会被 URLSearchParams 自然忽略，静态页行为不变。
+    from urllib.parse import quote
+
+    params = []
     if ground == "ai":
-        url += "?ground=ai"
+        params.append("ground=ai")
+    if route:
+        params.append(f"route={quote(str(route), safe='')}")
+    url = "/app/static/viewer/viewer.html"
+    if params:
+        url += "?" + "&".join(params)
     components.iframe(url, height=580, scrolling=False)
 
     # 下载按钮：data 直接取 outputs 里的原始字节，不必再依赖静态目录
@@ -635,7 +652,48 @@ with tab_gen:
                 _layout = {}
         _ground = (_layout.get("_render") or {}).get("ground_from") or "neutral"
 
-        _lines = [x for x in disclosure.build(recipe, ground_from=_ground)
+        # ---------- 批次 1：路线（单一真源 src/ai_routes.py） ----------
+        # ★ 默认 AI 图贴图源（ROUTE_ORDER 第一项）；既有 tile_mode 与 q 单选保留。
+        route = st.radio(
+            "3D 贴图路线",
+            options=list(ROUTE_ORDER),
+            format_func=lambda r: ROUTE_LABELS[r],
+            key="p3d_route",
+            help="枚举与不变量集中在 src/ai_routes.py。AI 两档恒不可溯源、"
+                 "边界句恒 pending；切换后声明与徽章同步切换，不混显。")
+        _sty_files = (sorted(_run_dir.glob("stylized_*.png"),
+                             key=lambda p: p.stat().st_mtime, reverse=True)
+                      if _run_dir else [])
+        _ai_png = _sty_files[0] if _sty_files else None
+        _route_state = RouteState.for_route(
+            route, ground=_ground, source=str(_ai_png or ""), form="")
+        _route_state.validate()               # 不变量不满足即抛错，不静默降级
+        st.session_state["route_state"] = _route_state
+
+        # ★ 独立标识：AI 档用新产物 id + ISO8601 UTC 时间戳，
+        #   **不沿用**定稿 run 的 recipe_id + card.generated_at。
+        _pid_key = f"p3d_product_id::{route}"
+        if _pid_key not in st.session_state:
+            _prefix = "AI3D" if route in AI_ROUTES else "TRC"
+            st.session_state[_pid_key] = f"{_prefix}-{uuid.uuid4().hex[:12]}"
+        _product_id = st.session_state[_pid_key]
+        _utc = (datetime.now(timezone.utc).isoformat(timespec="seconds")
+                .replace("+00:00", "Z"))
+
+        # ★ 常驻可见标注：仅 AI 档显示；traceable 档不显示（不留混显）。
+        if route in AI_ROUTES:
+            st.error(f"**{AI_DISCLOSURE_LABEL}** —— 本路线的 3D 贴图为 AI 生成，"
+                     "不参与元素级溯源；可溯源部分仍为 ①–④。")
+            if not _ai_png:
+                st.warning("本 run 未找到 AI 图（stylized_*.png）。本次 3D 将"
+                           "**明确降级**为可溯源分区贴附，不静默继续；"
+                           "如需 AI 贴图，请先在 ⑤ 区生成风格化图。")
+        if route == ROUTE_AI_GENERATED:
+            st.info("图转 3D 本批仅交付接口骨架，未接入外部服务、不发起网络请求；"
+                    "本次 3D 预览按上方降级规则处理。")
+
+        _lines = [x for x in disclosure.build(recipe, ground_from=_ground,
+                                              route=route)
                   if x["status"] != "pending"]
         _rows = "".join(
             f'<div style="display:flex;gap:8px;margin:3px 0">'
@@ -650,9 +708,11 @@ with tab_gen:
 
         # ★ 三态之二：以 run 目录里是否真有 GLB 为准，不靠 session_state ——
         #   否则刷新页面后状态会"消失"，看起来像没生成过。
-        _glb_done = bool(_run_dir and list(_run_dir.glob("pattern_*.glb")))
-        st.caption(f"状态：{'已完成' if _glb_done else '本 run 未启用（尚未生成）'}"
-                   f" · {recipe.get('recipe_id') or '—'} · {card.get('generated_at') or '—'}")
+        #   ★ 批次 1：补齐缺失的「计数」，并换成独立产物标识 + UTC 时间戳。
+        _glb_files = list(_run_dir.glob("pattern_*.glb")) if _run_dir else []
+        _n_glb = len(_glb_files)
+        st.caption(f"状态：{'已完成' if _n_glb else '本 run 未启用（尚未生成）'}"
+                   f" · {_n_glb}/3 个 GLB · 产物 {_product_id} · {_utc}")
 
         if comp.exists():
             st.caption(
@@ -715,12 +775,28 @@ with tab_gen:
                                    "本次仍会生成 3D，但**地子退回纯色**（纹样层本来就不变）；"
                                    "生成后下方会明确标出「本次实际采用」的方案与原因。"
                                    "如需 AI 地子，请先在 ⑤ 区生成风格化图。")
+                # ⓪c 批次 1：按路线取 3D 贴图的图源。
+                #    AI 档恒 traceable=False；缺 AI 图时**明确提示并降级**，不静默。
+                texture_source = None
+                if route == ROUTE_AI_GENERATED:
+                    st.info("图转 3D 本批仅接口骨架，未接入外部服务；"
+                            "本次 3D 预览降级为可溯源分区贴附（不静默）。")
+                elif route == ROUTE_AI_TEXTURE:
+                    if _ai_png is None:
+                        st.warning("本 run 无 AI 图（stylized_*.png）—— 本次 3D "
+                                   "已降级为可溯源分区贴附；如需 AI 贴图请先在 ⑤ 区生成。")
+                    else:
+                        try:
+                            texture_source = select_source(route, _ai_png, None, rec)
+                        except MissingAITexture as e:
+                            st.warning(f"AI 图源不可用，已降级为可溯源分区贴附：{e}")
                 # ① 静态效果图（三形态三联图）
                 with st.spinner(f"渲染三种形态静态图（{q}）…"):
                     try:
                         from src.preview3d import render_preview
                         paths = render_preview(comp, out_dir, rec, hits=hits,
-                                               quality=q, style_img=style_img)
+                                               quality=q, style_img=style_img,
+                                               texture_source=texture_source)
                         st.session_state["p3d_paths"] = {k: str(v)
                                                          for k, v in paths.items()}
                         # p3d_ground 统一在下方按「实际生效的地子」设置：
@@ -731,7 +807,8 @@ with tab_gen:
                 with st.spinner("导出 GLB（可直接下载 / 进 Blender）…"):
                     try:
                         from src.glb_export import export_all
-                        made = export_all(rec, hits, out_dir, style_img=style_img)
+                        made = export_all(rec, hits, out_dir, style_img=style_img,
+                                          texture_source=texture_source)
                         ok = sum(1 for m in made.values() if m["ok"])
                         st.session_state["glb_info"] = {
                             k: {"path": m["info"]["path"],
@@ -858,7 +935,7 @@ with tab_gen:
                 st.caption("拖拽旋转 · 滚轮缩放 · 右键平移。"
                            "下面嵌入的是**真实的 GLB 模型**（纹样贴图已打包在内）。")
                 _embed_viewer(glb, st.session_state.get("p3d_ground", "neutral"),
-                              disclosure_lines=_lines)
+                              disclosure_lines=_lines, route=route)
                 _bands_block(_layout)
                 st.caption("下载的 `.glb` 是业界通用格式，可直接拖进 Blender / Unity "
                            "或任意在线 glTF 预览器打开。")

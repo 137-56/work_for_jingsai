@@ -397,11 +397,16 @@ def read_glb_info(path):
 
 # ---------------------------------------------------------------- 纹理准备
 
-def build_textures(recipe, hits, style_img=None):
+def build_textures(recipe, hits, style_img=None, texture_source=None):
     """按形态准备 GLB 用的贴图（bytes）。**与 preview3d 共用同一套布局**。
 
     style_img：与 `preview3d.render_preview` **同一个参数、同一个含义**。
       ★ 必须两边都传同一个值，否则"静态预览看到的"≠"下载的 GLB"。
+
+    texture_source：**批次 1 新增**的图源选择参数
+      (`src.ai_texture.TextureSource`)。与 render_preview 同名同义、必须同传：
+      None / 可溯源档 → 既有分区贴附；AI 档 → `fit_to_strip` / `fit_box_atlas`。
+      ★ 只换图像素：atlas 几何、`vertex_uv()` 与全部 UV 公式一行未改。
     """
     from src.pattern_layout import (build_box_lid, build_fan_face, build_strip,
                                     ground_tile, use_ground)
@@ -421,7 +426,26 @@ def build_textures(recipe, hits, style_img=None):
             ground = None
 
     out = {}
+    ai_path = ""
+    if texture_source is not None and not texture_source.traceable:
+        ai_path = texture_source.path
+        if not ai_path:
+            raise ValueError(
+                "AI 图源没有磁盘路径，build_textures 无法取像素；"
+                "请由 select_source 提供真实文件路径（不静默降级）")
     with use_ground(ground):
+        if ai_path:
+            # ★ 批次 1 新增分支：只换**图像素**。
+            #   vase = strip、fan = 同心圆方图、box = 左半 strip + 右上 lid 的 atlas，
+            #   尺寸与既有分区贴附完全一致，故 vertex_uv() / UV 公式不用改。
+            from src.ai_texture import fit_box_atlas, fit_to_strip
+
+            out["vase"] = _png(fit_to_strip(ai_path, "vase", height=1024))
+            out["fan"] = _png(fit_to_strip(ai_path, "fan", height=1024))
+            atlas, lid_frac = fit_box_atlas(ai_path, height=1024)
+            out["box"] = _png(atlas)
+            out["_lid_frac"] = lid_frac
+            return out
         # 梅瓶：展开图（build_strip 返回 (Image, meta)，只取图）
         out["vase"] = _png(build_strip(recipe, hits, height=1024, kind="vase")[0])
         # 团扇：同心圆图
@@ -440,15 +464,18 @@ def build_textures(recipe, hits, style_img=None):
     return out
 
 
-def export_all(recipe, hits, out_dir, seg=96, style_img=None):
+def export_all(recipe, hits, out_dir, seg=96, style_img=None,
+               texture_source=None):
     """导出三种形态的 GLB。返回 {kind: info}。
 
     style_img：见 build_textures —— 与 preview3d 传同一个值才能保证一致。
+    texture_source：见 build_textures —— 与 preview3d 传同一个值才能保证一致。
     """
     from src.preview3d import form_box, form_fan, form_vase
 
     out_dir = Path(out_dir)
-    tex = build_textures(recipe, hits, style_img=style_img)
+    tex = build_textures(recipe, hits, style_img=style_img,
+                         texture_source=texture_source)
     lid_du, lid_dv = tex["_lid_frac"]
 
     builders = {

@@ -21,8 +21,24 @@
   **回答口径须由 Mr.G 确认，AI 不得自行编造**。因此 `boundary` 默认空串，
   渲染端**跳过不显示**（而不是显示占位符），由 `audit` 报 WARN。
   —— 宁可少一句，不可多一句编的。
+
+★ 批次 1：分层结构（**不写立论文案**）
+    L0 既有三层（纹样层 / 材质层 / 载体层）与授权、边界；
+    L1 新增 `key:"route"` 的路线分层条目，只标「当前走哪条路线」这一事实；
+    L2 `_ground_line` 增 `ai_texture` 分支**接入位** —— 本批不代拟说辞，
+      沿用中性底色结构位，改口位置留给 L1。
+  ★ 载体层「非 AI 生成」改为**按 route 取参的结构位**：本批所有已登记路线
+    都取同一个既有词，绝不新增文案、绝不代拟边界射程；将来按路线改口只需
+    改 `_CARRIER_SEGMENT` 这张表，不动句子结构。
+  ★ boundary 的第 6 句仍保持 `status="pending"`、`text` 空串；
+    `render_text` 跳过 pending 的规则一行未改。
 """
 from __future__ import annotations
+
+from src.ai_routes import (
+    AI_DISCLOSURE_LABEL, ROUTE_AI_GENERATED, ROUTE_AI_TEXTURE,
+    ROUTE_TRACEABLE, ROUTES,
+)
 
 # 与 m4_compose.compose_pattern(texture_strength=0.35) 保持一致。
 # ★ 它是**缩放系数**，不是幅度上限：factor = 1 + (g-1)*0.35，
@@ -65,41 +81,77 @@ def _material_line(tl: dict) -> tuple[str, str]:
     return "ok", head + tail
 
 
-def _ground_line(ground_from: str) -> str:
+# 中性底色句（L2 结构位复用，避免两处各写一份）。
+_GROUND_LINE_NEUTRAL = ("预览地子：中性底色（ground_from = neutral），仅影响 3D 背景，"
+                        "不属上述三层。")
+
+# 载体层「非 AI 生成」片段：按 route 取参的**结构位**。
+# ★ 本批所有已登记路线都取同一个既有词，绝不新增立论文案。
+_CARRIER_SEGMENT = {
+    ROUTE_TRACEABLE: "非 AI 生成",
+    ROUTE_AI_TEXTURE: "非 AI 生成",
+    ROUTE_AI_GENERATED: "非 AI 生成",
+}
+
+# L1 路线分层条目：只标「当前走哪条路线」这一事实，不写边界射程。
+_ROUTE_LINE = {
+    ROUTE_TRACEABLE: ("路线：可溯源分区贴附（traceable）—— 各分区纹样来自"
+                      "语义层母题库，元素级可溯源。"),
+    ROUTE_AI_TEXTURE: (f"路线：AI 图作 3D 贴图源（ai_texture）—— 贴图取自 AI 图，"
+                       f"{AI_DISCLOSURE_LABEL}。"),
+    ROUTE_AI_GENERATED: (f"路线：图转 3D 接口骨架（ai_generated）—— "
+                         f"{AI_DISCLOSURE_LABEL}。"),
+}
+
+
+def _ground_line(ground_from: str, route: str = ROUTE_TRACEABLE) -> str:
+    """L2 预览地子行。`ai_texture` 是**接入位**，本批不代拟说辞。"""
     if ground_from == "ai_stylized":
         return ("预览地子：底纹取自 AI 风格化图（M5 输出），仅作渲染色底、不承载语义"
                 "（3D 背景开关项，不属上述三层）。")
-    return ("预览地子：中性底色（ground_from = neutral），仅影响 3D 背景，"
-            "不属上述三层。")
+    if ground_from == "ai_texture":
+        # ★ 接入位：口径由 L1 的 route 条目承担；这里只做「route 已登记」
+        #   的显式检查（未登记抛 KeyError，不静默兜底），文案沿用中性结构位。
+        _ = _ROUTE_LINE[route]
+        return _GROUND_LINE_NEUTRAL
+    return _GROUND_LINE_NEUTRAL
 
 
 def build(recipe: dict | None,
           ground_from: str = "neutral",
           boundary: str = "",
-          forms: str = "梅瓶 / 方盒 / 团扇") -> list[dict]:
-    """生成六句声明。
+          forms: str = "梅瓶 / 方盒 / 团扇",
+          route: str = ROUTE_TRACEABLE) -> list[dict]:
+    """生成声明（既有六句 + 批次 1 的 L1 路线分层条目）。
 
-    返回 [{key, label, text, status}]，status ∈ ok / empty / pending。
+    返回 [{key, label, text, status, layer?}]，status ∈ ok / empty / pending。
     ★ pending 的条目渲染端应**跳过**（不显示占位符）——见模块 docstring 末段。
+    ★ route 默认取可溯源档：不改任何既有调用方的口径；界面按当前路线显式传参。
     """
+    from src.ai_routes import RouteValidationError
+
+    if route not in ROUTES:
+        raise RouteValidationError(f"disclosure.build 收到未登记路线：{route!r}")
     recipe = recipe or {}
     tl = recipe.get("texture_layer") or {}
     m_status, m_text = _material_line(tl)
+    carrier_segment = _CARRIER_SEGMENT[route]     # 未登记 → KeyError，不静默兜底
 
     lines = [
-        {"key": "motif", "label": "纹样层", "status": "ok",
+        {"key": "motif", "label": "纹样层", "layer": "L0", "status": "ok",
          "text": "纹样层：各分区纹样分别来自语义层母题库（100 条），元素级可溯源。"},
 
-        {"key": "material", "label": "材质层", "status": m_status, "text": m_text},
+        {"key": "material", "label": "材质层", "layer": "L0",
+         "status": m_status, "text": m_text},
 
-        {"key": "carrier", "label": "载体层", "status": "ok",
+        {"key": "carrier", "label": "载体层", "layer": "L0", "status": "ok",
          "text": f"载体层：程序化生成的标准几何体（{forms}）—— 非文物三维模型、"
-                 "非 AI 生成；仅作形态示意，不代表任何具体器物的真实形制。"},
+                 f"{carrier_segment}；仅作形态示意，不代表任何具体器物的真实形制。"},
 
-        {"key": "ground", "label": "预览地子", "status": "ok",
-         "text": _ground_line(ground_from)},
+        {"key": "ground", "label": "预览地子", "layer": "L2", "status": "ok",
+         "text": _ground_line(ground_from, route)},
 
-        {"key": "attribution", "label": "授权", "status": "ok",
+        {"key": "attribution", "label": "授权", "layer": "L0", "status": "ok",
          # ★ 不写「代码 MIT」：仓库根没有 LICENSE 文件，写了就是空头承诺。
          #   是否开源涉及赛事版权归属与独家性，须 Mr.G 定，不能先声明。
          "text": "授权：纹样层图像与文字 CC BY-NC 4.0（署名 · 限非商业）；"
@@ -107,6 +159,10 @@ def build(recipe: dict | None,
 
         {"key": "boundary", "label": "边界", "status": "pending" if not boundary else "ok",
          "text": boundary},
+
+        # ---- 批次 1 追加：L1 路线分层（不新增任何 boundary 文案）----
+        {"key": "route", "label": "路线", "layer": "L1", "status": "ok",
+         "text": _ROUTE_LINE[route]},
     ]
     return lines
 

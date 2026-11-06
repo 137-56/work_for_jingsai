@@ -65,3 +65,11 @@ paths:
   rules: rules/culture_rules.json
   index: data/index
   outputs: outputs
+
+# 批次 1 · 图转 3D 接口骨架：只登记**占位键名**，值一律留空。
+# 端点 / 域名 / 密钥 / 费用 / 授权结论都不写死、不编造；真实值由部署方在
+# .env / 环境变量中提供。本批不发起任何外部服务调用。
+ai3d:
+  endpoint: ""
+  api_key: ""
+  timeout_s: ""

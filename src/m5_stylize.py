@@ -50,6 +50,11 @@ LABEL = "AI 风格化 · 不可溯源"
 DISCLAIMER = ("本图为扩散模型重绘结果，构图与元素可能与输入不一致，"
               "不参与元素级溯源；可溯源部分见 M4a 组合纹样图与溯源卡片。")
 
+# 批次 1：输出侧**登记图源信息**，供 src.ai_texture.select_source 的
+# TextureSource.origin 读取。只加这一项登记，不改 stylize() 的调用语义、
+# 不改「不可溯源」标注、不进溯源卡片。
+TEXTURE_SOURCE_ORIGIN = "m5_stylize/AI 风格化输出（不可溯源）"
+
 
 def build_prompt(recipe):
     """从配方构造风格化提示词。"""
@@ -125,7 +130,8 @@ def stylize(ref_img, recipe, out_path, strength=EXPLORE, recipe_id=""):
 
     info = {"file": str(out_path), "model": MODEL, "prompt": prompt,
             "ref_strength": strength, "phash_drift": drift,
-            "traceability": "none", "label": LABEL, "disclaimer": DISCLAIMER}
+            "traceability": "none", "label": LABEL, "disclaimer": DISCLAIMER,
+            "texture_origin": TEXTURE_SOURCE_ORIGIN}
     print(f"  ✅ {Path(out_path).name}  漂移 phash={drift}")
     return info
 

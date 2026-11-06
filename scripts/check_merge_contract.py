@@ -93,6 +93,9 @@ EXCLUDE_DIRS = {
     ".venv", "venv", "env", "__pycache__", ".git", ".idea", ".vscode",
     "node_modules", "ckpt", "outputs", ".pytest_cache", "vendor", "libs",
     "static", "viewer", ".workbuddy",
+    # 批次 1：AI 产物只落 outputs/ai/<run>/。按目录名再排除一次，
+    # 避免它污染既有 ③「禁队友指纹」与 ④「run id 全仓计数」的扫描面。
+    "ai",
 }
 
 # 只把这些后缀当文本扫（与 redline_check.py 的 TEXT_EXT 对齐）。
@@ -431,6 +434,141 @@ def check_semantic_determinism(semantic_src: Path) -> tuple[str, str]:
                   f"扫 1 个新模块 {semantic_src.name}）")
 
 
+# ---------------------------------------------------------------- 批次 1 追加
+#
+# ⑨ / ⑩ / ⑪ 三项为**追加**：既有 ①–⑥ + ⑧ 的判定逻辑一行未改，
+# 汇总「通过 N / 警告 M / 失败 K」与 [WARN] 防假绿机制保持原样。
+# 三项都支持把目标指向系统临时目录的反例副本，以证明可证伪。
+DEFAULT_FINAL_RUN_BASELINE = ROOT / "scripts" / "final_run_baseline.json"
+DEFAULT_PKG_CHECK_SRC = ROOT / "scripts" / "check_submission_pkg.py"
+DEFAULT_AI_ROUTES_SRC = ROOT / "src" / "ai_routes.py"
+IMMUTABLE_SCRIPT = ROOT / "scripts" / "check_final_run_immutable.py"
+BOUNDARY_SCRIPT = ROOT / "scripts" / "check_ai_boundary.py"
+
+
+def _load_probe_module(path: Path, mod_name: str):
+    """按路径加载模块（反例可指向 temp）；带 from __future__ 注解的 dataclass
+    解析注解时会回查 sys.modules，故须临时注册，用完即摘。"""
+    import importlib.util
+
+    spec = importlib.util.spec_from_file_location(mod_name, str(path))
+    if spec is None or spec.loader is None:
+        raise ImportError(f"无法为 {path} 建立模块规格")
+    mod = importlib.util.module_from_spec(spec)
+    sys.modules[spec.name] = mod
+    try:
+        spec.loader.exec_module(mod)
+    finally:
+        sys.modules.pop(spec.name, None)
+    return mod
+
+
+def check_final_run_immutable(final_run: Path,
+                              baseline: Path) -> tuple[str, str]:
+    """⑨ 定稿 run 不可变：文件集合 / 每文件字节 / 逐文件 sha256 / 拼接 sha256。
+
+    基线缺失直接 FAIL（allow_freeze=False），绝不在提交门槛上临时现算放行。
+    """
+    label = "⑨ 定稿 run 不可变（集合/字节/逐文件与拼接 sha256）"
+    if not IMMUTABLE_SCRIPT.is_file():
+        return FAIL, f"{label} —— 校验脚本不存在：{IMMUTABLE_SCRIPT.name}"
+    try:
+        mod = _load_probe_module(IMMUTABLE_SCRIPT, "_contract_immutable_probe")
+        ok, msg = mod.verify(final_run, baseline, allow_freeze=False)
+    except Exception as e:
+        return FAIL, f"{label} —— 校验异常（{type(e).__name__}: {e}）"
+    return (PASS, f"{label}（{msg}）") if ok else (FAIL, f"{label} —— {msg}")
+
+
+def check_ai_boundary(pkg_check_src: Path, final_run: Path,
+                      baseline: Path) -> tuple[str, str]:
+    """⑩ 新产物边界：不进提交包 / 定稿 run / 三处同源链，且无配置值外泄。"""
+    label = "⑩ AI 新产物边界（提交包/定稿 run/同源链/配置值）"
+    if not BOUNDARY_SCRIPT.is_file():
+        return FAIL, f"{label} —— 校验脚本不存在：{BOUNDARY_SCRIPT.name}"
+    try:
+        mod = _load_probe_module(BOUNDARY_SCRIPT, "_contract_boundary_probe")
+        ok, msg = mod.verify(pkg_check_src, final_run, baseline)
+    except Exception as e:
+        return FAIL, f"{label} —— 校验异常（{type(e).__name__}: {e}）"
+    return (PASS, f"{label}（{msg}）") if ok else (FAIL, f"{label} —— {msg}")
+
+
+def check_ai_declaration(ai_routes_src: Path) -> tuple[str, str]:
+    """⑪ AI 声明完整性：路线不变量 / boundary pending / 界面常驻标注 / ?route=。
+
+    反例：把改坏的 ai_routes.py（例如让 AI 档 traceable=True）放到 temp 并
+    用 --ai-routes-src 指向它，本项即 FAIL。
+    """
+    label = "⑪ AI 声明完整性（route 不变量/boundary pending/常驻标注/?route=）"
+    problems: list[str] = []
+
+    # a) 路线单一真源：AI 两档恒不可溯源、恒 pending；traceable 档恒可溯源。
+    try:
+        mod = _load_probe_module(ai_routes_src, "_contract_ai_routes_probe")
+        routes = getattr(mod, "ROUTES", None)
+        ai_routes = getattr(mod, "AI_ROUTES", None)
+        cls = getattr(mod, "RouteState", None)
+        traceable_route = getattr(mod, "ROUTE_TRACEABLE", None)
+        pending = getattr(mod, "BOUNDARY_PENDING", None)
+        if not routes or not ai_routes or cls is None or pending != "pending":
+            problems.append("route 真源结构缺失")
+        else:
+            for r in sorted(set(ai_routes)):
+                state = cls.for_route(r)
+                state.validate()
+                if r not in routes:
+                    problems.append(f"AI 档 {r} 未登记在 ROUTES")
+                if state.traceable is not False:
+                    problems.append(f"AI 档 {r} 的 traceable 不是 False")
+                if state.boundary_status != "pending":
+                    problems.append(f"AI 档 {r} 的 boundary_status 不是 pending")
+            if traceable_route:
+                t = cls.for_route(traceable_route)
+                t.validate()
+                if t.traceable is not True:
+                    problems.append("traceable 档的 traceable 不是 True")
+    except Exception as e:
+        problems.append(f"route 真源校验异常（{type(e).__name__}）")
+
+    # b) 声明：boundary 恒 pending + 空串；L1 route 分层条目存在。
+    try:
+        from src import disclosure
+
+        lines = disclosure.build(None)
+        boundary = [x for x in lines if x.get("key") == "boundary"]
+        if (len(boundary) != 1 or boundary[0].get("status") != "pending"
+                or boundary[0].get("text") != ""):
+            problems.append("boundary 不再是 pending + 空串")
+        if not any(x.get("key") == "route" and x.get("layer") == "L1"
+                   for x in lines):
+            problems.append("缺 L1 的 route 分层条目")
+        if not any(x.get("layer") == "L2" and x.get("key") == "ground"
+                   for x in lines):
+            problems.append("缺 L2 的 ground 接入位")
+    except Exception as e:
+        problems.append(f"disclosure.build 校验异常（{type(e).__name__}）")
+
+    # c) 界面：常驻标注、route_state、?route= 透传、路线单选默认值。
+    app_text = _read_text(ROOT / "app.py")
+    if not app_text:
+        problems.append("app.py 不可读")
+    else:
+        for token, why in (
+            ("AI_DISCLOSURE_LABEL", "未引用常驻「不可溯源」标注"),
+            ("route_state", "缺 session_state 路线状态"),
+            ("ROUTE_ORDER", "缺单一真源的路线枚举"),
+            ("route=", "缺 ?route= 透传或 disclosure.build 的 route 参数"),
+            ("disclosure.build(recipe, ground_from=", "声明未按 route 取参"),
+        ):
+            if token not in app_text:
+                problems.append(why)
+
+    if problems:
+        return FAIL, f"{label} —— {'; '.join(problems[:8])}"
+    return PASS, f"{label}（3 组判据全过）"
+
+
 def main() -> int:
     """跑完七项断言，打印 [PASS]/[FAIL]/[WARN]/[SKIP] 并返回退出码 0/1。"""
     ap = argparse.ArgumentParser(description="两工程合并 · 结构性断言（只读）")
@@ -442,9 +580,22 @@ def main() -> int:
                     help="⑥ 的 demo 目录位置（默认 <repo>/demo；便于第三批与反例验证）")
     ap.add_argument("--semantic-src", default=str(SEMANTIC_PY),
                     help="⑧ 的目标模块（默认 src/semantic_match.py；可指向系统 temp 反例）")
+    # 批次 1 追加：⑨ / ⑩ / ⑪ 的反例注入点（默认指向仓库真实位置）。
+    ap.add_argument("--final-run", default=str(FINAL_RUN),
+                    help="⑨ 的定稿 run 目录（可指向 temp 副本做反例）")
+    ap.add_argument("--final-run-baseline", default=str(DEFAULT_FINAL_RUN_BASELINE),
+                    help="⑨ 的不可变基线 JSON")
+    ap.add_argument("--pkg-check-src", default=str(DEFAULT_PKG_CHECK_SRC),
+                    help="⑩ 的提交包验收模块（可指向改坏的 temp 副本）")
+    ap.add_argument("--ai-routes-src", default=str(DEFAULT_AI_ROUTES_SRC),
+                    help="⑪ 的路线真源模块（可指向改坏的 temp 副本）")
     args = ap.parse_args()
     demo_dir = Path(args.demo_dir)
     semantic_src = Path(args.semantic_src)
+    final_run = Path(args.final_run)
+    final_run_baseline = Path(args.final_run_baseline)
+    pkg_check_src = Path(args.pkg_check_src)
+    ai_routes_src = Path(args.ai_routes_src)
 
     files = iter_scan_files()
     print("=" * 68)
@@ -461,6 +612,10 @@ def main() -> int:
         check_pkg(args.pkg),
         check_wizard(demo_dir),
         check_semantic_determinism(semantic_src),
+        # 批次 1 追加三项；既有七项的判定逻辑保持原样。
+        check_final_run_immutable(final_run, final_run_baseline),
+        check_ai_boundary(pkg_check_src, final_run, final_run_baseline),
+        check_ai_declaration(ai_routes_src),
     ]
     passed = warned = failed = 0
     for status, msg in checks:

@@ -1,0 +1,66 @@
+{
+  "concat_sha256": "a8fb-2da5-b18d-2764-aea3-64b0-c08b-f272-6309-b2d2-83a4-26b1-b85c-77ab-43ef-6323",
+  "file_count": 15,
+  "files": {
+    "card.json": {
+      "bytes": 8431,
+      "sha256": "180e-8a03-e8a4-b572-e9f8-fb3f-01d0-8ad7-4257-7bc5-ab3d-4ef2-fb9e-f86c-6da8-6524"
+    },
+    "card.md": {
+      "bytes": 3107,
+      "sha256": "3ea3-03e6-6847-6168-2a4b-a7c9-20a4-84e0-a5fd-1c7f-a054-6bc7-9fd5-92bf-f59a-74e4"
+    },
+    "composed_pattern.png": {
+      "bytes": 1922178,
+      "sha256": "9c20-c659-80f0-a9bb-281e-6a8b-415e-ac5a-4d99-4a86-cce6-d852-0c44-43a7-89e2-845a"
+    },
+    "design_board.png": {
+      "bytes": 2480619,
+      "sha256": "ee62-f1f5-1490-ed35-aea2-5094-3a6c-0042-fd96-bc25-ae5c-a187-554e-facb-1775-1174"
+    },
+    "glb_check_render.png": {
+      "bytes": 828343,
+      "sha256": "1a9b-77b4-0ee4-257a-fc61-2582-883a-6b8e-17de-4e3a-12b8-419e-3c6a-56e9-849b-1cce"
+    },
+    "pattern_box.glb": {
+      "bytes": 902496,
+      "sha256": "0423-23e7-84fa-0571-d776-5ab9-8531-cde1-b0e7-b6ef-0add-252d-fb95-c191-ce93-17e5"
+    },
+    "pattern_fan.glb": {
+      "bytes": 1178640,
+      "sha256": "bb6f-a436-e23b-81f9-fbc8-3d05-2424-1b94-3a72-07e6-a274-ac24-d682-90ca-c84d-6d3b"
+    },
+    "pattern_vase.glb": {
+      "bytes": 786316,
+      "sha256": "9549-9d99-6b8b-afb0-4780-ce4d-98dc-6992-e724-0ffc-96d9-25da-6ccf-d58d-5b77-272a"
+    },
+    "preview3d_box.png": {
+      "bytes": 432686,
+      "sha256": "1043-2d58-8f31-c6e4-4212-b82c-f97e-3452-2443-3cdd-f13e-f7e1-8a86-b116-9066-e2b2"
+    },
+    "preview3d_fan.png": {
+      "bytes": 333522,
+      "sha256": "8a96-9711-8e63-eb9d-1809-27bf-93a3-741d-5f23-1bce-f5fa-cde6-8264-413b-c2a2-5c7f"
+    },
+    "preview3d_layout.json": {
+      "bytes": 3727,
+      "sha256": "dc7d-7c86-01bc-af55-034b-58da-f1cc-cca6-0344-9271-6aab-1e2e-4c2e-3b19-1af4-d6a5"
+    },
+    "preview3d_triptych.png": {
+      "bytes": 994261,
+      "sha256": "8e6d-35fd-a33f-ec55-7f58-38c0-485a-fe24-4458-5827-6f55-2ffb-b9aa-acc2-7b6b-20ec"
+    },
+    "preview3d_vase.png": {
+      "bytes": 258770,
+      "sha256": "6bc6-5f77-5b55-05d6-76b6-e195-bc39-4884-7957-4d0e-c7ab-3ef9-ce88-618c-280e-ad2f"
+    },
+    "provenance_card.png": {
+      "bytes": 398634,
+      "sha256": "4d0f-d1df-fb2f-f0ea-1e21-6222-6763-98fc-5fed-524a-f919-e626-e2ec-427d-4d8f-1602"
+    },
+    "recipe.json": {
+      "bytes": 1537,
+      "sha256": "8885-0b8c-91fc-7361-f08c-a01b-8d35-22ce-3a78-ad3a-3ca5-e3a0-2f51-ec82-e0f2-0db1"
+    }
+  }
+}
