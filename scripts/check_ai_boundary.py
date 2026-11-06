@@ -1,23 +1,29 @@
 # scripts/check_ai_boundary.py
 """AI 新产物**边界**自查（批次 1 地基，只读）。
 
-★ 三条断言
+★ 四条断言
     ① `outputs/ai/` 不得出现在提交包验收的 NEED / NEED_WEB 清单里
        （AI 产物不进提交包主线）；
     ② AI 产物不得进定稿 run：定稿 run 文件集合/字节/sha256 与基线全等、
        目录内无 AI 标记文件、打包脚本不引用 `outputs/ai/`，
        且 AI 产物不进 web/glb/ 与 static/viewer/glb/ 三处同源链；
     ③ 无 `.env` 真实密钥外泄：把 `.env` 里的实际值当**词表**扫全仓文本，
-       命中即 FAIL。报告只给路径 + 行号 + 类别，**绝不回显值或整行**。
+       命中即 FAIL。报告只给路径 + 行号 + 类别，**绝不回显值或整行**；
+    ④ AI 档徽章 / badge 生成函数 / manifest 生成函数均不含定稿 run id
+       字面量，也不读取定稿身份字段或任何文件时间；并实算校验 badge 前缀、
+       源图哈希长度与 timestamp 口径。定稿标识运行时从 FINAL_RUN 取得，
+       本脚本自身不写该字面量（保住合并契约 ④ 的「恰好 1 处」）。
 
 ★ 反例可注入
     `--pkg-check-src` 可指向系统临时目录里的 `check_submission_pkg.py` 副本
     （把 `outputs/ai` 塞进 NEED 清单），用于证明 ① 真的会 FAIL，用完即删。
     `--final-run` / `--baseline` 可指向临时副本，用于证明 ② 可证伪。
+    `--ai-routes-src` 可指向改坏的 `ai_routes.py` temp 副本，用于证明 ④ 可证伪。
 
 用法（在工程根目录 work/ 下执行）：
     .venv/Scripts/python.exe scripts/check_ai_boundary.py
     .venv/Scripts/python.exe scripts/check_ai_boundary.py --pkg-check-src <临时副本>
+    .venv/Scripts/python.exe scripts/check_ai_boundary.py --ai-routes-src <临时副本>
 
 退出码：0 = 三条全过；1 = 任一失败。
 """
@@ -38,8 +44,11 @@ from src.run_source import FINAL_RUN            # noqa: E402
 
 DEFAULT_PKG_CHECK_SRC = ROOT / "scripts" / "check_submission_pkg.py"
 DEFAULT_BASELINE = ROOT / "scripts" / "final_run_baseline.json"
+DEFAULT_AI_ROUTES_SRC = ROOT / "src" / "ai_routes.py"
 AI_DIR_TOKEN = "outputs/ai"
 AI_MARKER_PREFIXES = ("stylized_", "ai_glb_manifest.json", "ai_texture_", "ai_")
+BADGE_BEGIN = "AI_BADGE_BEGIN"
+BADGE_END = "AI_BADGE_END"
 PKG_SCRIPT_NAMES = ("check_submission_pkg.py", "make_submission_package.py",
                     "make_submission_package_web.py")
 
@@ -210,14 +219,109 @@ def check_no_env_secret_leak() -> tuple[bool, str]:
     return True, f"扫 {n_files} 个文本、{len(values)} 个配置值，0 命中"
 
 
-def verify(pkg_check_src: Path, final_run: Path,
-           baseline: Path) -> tuple[bool, str]:
-    """跑完三条断言，返回 (是否全过, 汇总说明)。"""
+def _function_source(text: str, name: str) -> str:
+    """按 AST 精确提取顶层函数源码（断言用，不把相邻的注释差异算进去）。"""
+    import ast
+
+    tree = ast.parse(text)
+    for node in tree.body:
+        if isinstance(node, ast.FunctionDef) and node.name == name:
+            lines = text.splitlines(keepends=True)
+            return "".join(lines[node.lineno - 1:node.end_lineno])
+    return ""
+
+
+def check_ai_badge_identity(ai_routes_src: Path) -> tuple[bool, str]:
+    """④ AI 档徽章 / 源码 / manifest 不含定稿 run id 字面量与定稿身份字段。
+
+    ★ 定稿 run 标识从 `src.run_source.FINAL_RUN` **运行时**取，脚本自身
+      不写该字面量 —— 保证 check_merge_contract ④ 的「全仓 .py 恰好 1 处」
+      依然成立。
+    ★ 反例可注入：`--ai-routes-src` 指向改坏的 temp 副本（如 badge 缺
+      源图哈希前 8 位），本项即 FAIL。
+    """
+    from src.run_source import FINAL_RUN
+
+    token = FINAL_RUN.name
+    # 只报「类别编号」，不回显任何命中的值（含定稿 run 标识本身）。
+    forbidden = (token, "recipe_id", "generated_at", "st_mtime",
+                 "getmtime", ".stat(")
+    problems: list[str] = []
+
+    # a) badge 生成函数：只许取当前 UTC 时间与源图字节。
+    routes_text = (ROOT / "src" / "ai_routes.py").read_text(
+        encoding="utf-8", errors="ignore")
+    seg = _function_source(routes_text, "make_ai_badge")
+    if not seg:
+        problems.append("make_ai_badge 函数缺失")
+    else:
+        for idx, f in enumerate(forbidden):
+            if f in seg:
+                problems.append(f"make_ai_badge 命中禁用来源类别 #{idx}")
+
+    # b) ⑥ 区新增的独立标识徽章控件（既有徽章在标记块之外，逐字未改）。
+    app = (ROOT / "app.py").read_text(encoding="utf-8", errors="ignore")
+    if BADGE_BEGIN not in app or BADGE_END not in app:
+        problems.append("app.py 缺 AI_BADGE 标记块")
+    else:
+        block = app[app.index(BADGE_BEGIN):app.index(BADGE_END)]
+        for idx, f in enumerate(forbidden):
+            if f in block:
+                problems.append(f"AI_BADGE 块命中禁用来源类别 #{idx}")
+        if "\"outputs\" / \"ai\"" not in block:
+            problems.append("AI 产物目录未隔离到 outputs/ai")
+    if "\"outputs\" / \"ai\" / _badge_id" not in app:
+        problems.append("go3 分支未把 AI 产物写入隔离目录")
+
+    # c) 图转 3D 的 manifest 生成函数。
+    mesh = (ROOT / "src" / "ai_mesh.py").read_text(
+        encoding="utf-8", errors="ignore")
+    mseg = _function_source(mesh, "build_manifest")
+    if not mseg:
+        problems.append("build_manifest 函数缺失")
+    else:
+        for idx, f in enumerate(forbidden):
+            if f in mseg:
+                problems.append(f"build_manifest 命中禁用来源类别 #{idx}")
+
+    # d) 实算校验：前缀 / 定稿标识 / 时间戳口径 / 源图哈希长度。
+    try:
+        mod = _load_module(Path(ai_routes_src), "_ai_badge_probe")
+        bid, ts = mod.make_ai_badge(None)
+    except Exception as e:
+        problems.append(f"badge 实算失败（{type(e).__name__}）")
+        bid, ts = "", ""
+    if bid:
+        if not bid.startswith("AI-"):
+            problems.append("badge_id 前缀不是 AI-")
+        if token in bid or token in ts:
+            problems.append("badge_id/timestamp 含定稿 run 标识")
+        if "+00:00" not in ts:
+            problems.append("timestamp 不是 isoformat(timespec=seconds)")
+        if len(bid.rsplit("-", 1)[-1]) != 8:
+            problems.append("badge_id 缺源图哈希前 8 位")
+
+    if problems:
+        return False, "；".join(problems[:8])
+    return True, (f"make_ai_badge / AI_BADGE 块 / build_manifest 均不含定稿标识"
+                  f"（扫 {len(forbidden)} 类禁用来源）；实算 badge 前缀、哈希长度、"
+                  "timestamp 口径全过")
+
+
+def verify(pkg_check_src: Path, final_run: Path, baseline: Path,
+           ai_routes_src: Path | None = None) -> tuple[bool, str]:
+    """跑完四条断言，返回 (是否全过, 汇总说明)。
+
+    ai_routes_src 为 ④ 的反例注入点；None 时取仓库真实路线真源，
+    既有的 ⑩ 调用不传此参数，行为不变。
+    """
+    src = Path(ai_routes_src) if ai_routes_src is not None else DEFAULT_AI_ROUTES_SRC
     checks = [
         ("① 提交包清单边界", check_pkg_lists(pkg_check_src)),
         ("② 定稿 run / 同源链边界",
          check_ai_not_in_final_run(final_run, baseline, pkg_check_src)),
         ("③ .env 配置值不外泄", check_no_env_secret_leak()),
+        ("④ AI 档徽章/源码/manifest 身份隔离", check_ai_badge_identity(src)),
     ]
     problems = [f"{label} —— {msg}" for label, (ok, msg) in checks if not ok]
     if problems:
@@ -233,10 +337,13 @@ def main() -> int:
                     help="定稿 run 目录（默认读 src.run_source.FINAL_RUN）")
     ap.add_argument("--baseline", default=str(DEFAULT_BASELINE),
                     help="不可变基线 JSON 路径")
+    ap.add_argument("--ai-routes-src", default=str(DEFAULT_AI_ROUTES_SRC),
+                    help="④ 的路线真源模块（可指向系统 temp 的反例副本）")
     args = ap.parse_args()
     pkg_check_src = Path(args.pkg_check_src)
     final_run = Path(args.final_run)
     baseline = Path(args.baseline)
+    ai_routes_src = Path(args.ai_routes_src)
 
     print("=" * 68)
     print("AI 新产物 · 边界自查（只读）")
@@ -246,6 +353,8 @@ def main() -> int:
         ("② 定稿 run / 同源链边界",
          check_ai_not_in_final_run(final_run, baseline, pkg_check_src)),
         ("③ .env 配置值不外泄", check_no_env_secret_leak()),
+        ("④ AI 档徽章/源码/manifest 身份隔离",
+         check_ai_badge_identity(ai_routes_src)),
     ]
     failed = 0
     for label, (ok, msg) in checks:

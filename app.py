@@ -28,8 +28,6 @@
 import json
 import re
 import sys
-import uuid
-from datetime import datetime, timezone
 from pathlib import Path
 
 import streamlit as st
@@ -53,7 +51,7 @@ from src.wizard import (
 # 批次 1：路线枚举与不变量的**单一真源**，界面不另写字面量集合。
 from src.ai_routes import (
     AI_DISCLOSURE_LABEL, AI_ROUTES, ROUTE_AI_GENERATED, ROUTE_AI_TEXTURE,
-    ROUTE_LABELS, ROUTE_ORDER, RouteState,
+    ROUTE_LABELS, ROUTE_ORDER, RouteState, make_ai_badge,
 )
 from src.ai_texture import MissingAITexture, select_source
 
@@ -670,16 +668,6 @@ with tab_gen:
         _route_state.validate()               # 不变量不满足即抛错，不静默降级
         st.session_state["route_state"] = _route_state
 
-        # ★ 独立标识：AI 档用新产物 id + ISO8601 UTC 时间戳，
-        #   **不沿用**定稿 run 的 recipe_id + card.generated_at。
-        _pid_key = f"p3d_product_id::{route}"
-        if _pid_key not in st.session_state:
-            _prefix = "AI3D" if route in AI_ROUTES else "TRC"
-            st.session_state[_pid_key] = f"{_prefix}-{uuid.uuid4().hex[:12]}"
-        _product_id = st.session_state[_pid_key]
-        _utc = (datetime.now(timezone.utc).isoformat(timespec="seconds")
-                .replace("+00:00", "Z"))
-
         # ★ 常驻可见标注：仅 AI 档显示；traceable 档不显示（不留混显）。
         if route in AI_ROUTES:
             st.error(f"**{AI_DISCLOSURE_LABEL}** —— 本路线的 3D 贴图为 AI 生成，"
@@ -708,11 +696,28 @@ with tab_gen:
 
         # ★ 三态之二：以 run 目录里是否真有 GLB 为准，不靠 session_state ——
         #   否则刷新页面后状态会"消失"，看起来像没生成过。
-        #   ★ 批次 1：补齐缺失的「计数」，并换成独立产物标识 + UTC 时间戳。
-        _glb_files = list(_run_dir.glob("pattern_*.glb")) if _run_dir else []
-        _n_glb = len(_glb_files)
-        st.caption(f"状态：{'已完成' if _n_glb else '本 run 未启用（尚未生成）'}"
-                   f" · {_n_glb}/3 个 GLB · 产物 {_product_id} · {_utc}")
+        _glb_done = bool(_run_dir and list(_run_dir.glob("pattern_*.glb")))
+        st.caption(f"状态：{'已完成' if _glb_done else '本 run 未启用（尚未生成）'}"
+                   f" · {recipe.get('recipe_id') or '—'} · {card.get('generated_at') or '—'}")
+
+        # AI_BADGE_BEGIN
+        # ★ 批次 1 新增控件：AI 档独立标识徽章。既有徽章上一行保持定稿 run
+        #   事实、逐字未改；本控件只用当前 UTC 时间与源图字节，绝不读取
+        #   定稿 run 身份字段或任何文件时间属性。
+        _badge_key = f"p3d_ai_badge::{route}::{_ai_png or 'none'}"
+        if _badge_key not in st.session_state:
+            st.session_state[_badge_key] = make_ai_badge(_ai_png)
+        _badge_id, _badge_ts = st.session_state[_badge_key]
+        if route in AI_ROUTES:
+            _ai_out_dir = ROOT / "outputs" / "ai" / _badge_id
+            _n_ai_glb = (len(list(_ai_out_dir.glob("pattern_*.glb")))
+                         if _ai_out_dir.is_dir() else 0)
+            st.caption(f"AI 产物：{_badge_id} · {_badge_ts} · {_n_ai_glb}/3 个 GLB"
+                       f" · {AI_DISCLOSURE_LABEL}")
+        else:
+            _n_glb = len(list(_run_dir.glob("pattern_*.glb"))) if _run_dir else 0
+            st.caption(f"对照档：可溯源分区贴附 · {_n_glb}/3 个 GLB · 无 AI 产物")
+        # AI_BADGE_END
 
         if comp.exists():
             st.caption(
@@ -790,11 +795,16 @@ with tab_gen:
                             texture_source = select_source(route, _ai_png, None, rec)
                         except MissingAITexture as e:
                             st.warning(f"AI 图源不可用，已降级为可溯源分区贴附：{e}")
+                # ★ AI 档产物只落 outputs/ai/<ai_id>/，不复用管线产物目录。
+                #   源图 / 配方仍从 out_dir 读，只把**写入目标**切到隔离目录。
+                _p3d_out = out_dir
+                if route in AI_ROUTES and texture_source is not None:
+                    _p3d_out = ROOT / "outputs" / "ai" / _badge_id
                 # ① 静态效果图（三形态三联图）
                 with st.spinner(f"渲染三种形态静态图（{q}）…"):
                     try:
                         from src.preview3d import render_preview
-                        paths = render_preview(comp, out_dir, rec, hits=hits,
+                        paths = render_preview(comp, _p3d_out, rec, hits=hits,
                                                quality=q, style_img=style_img,
                                                texture_source=texture_source)
                         st.session_state["p3d_paths"] = {k: str(v)
@@ -807,7 +817,7 @@ with tab_gen:
                 with st.spinner("导出 GLB（可直接下载 / 进 Blender）…"):
                     try:
                         from src.glb_export import export_all
-                        made = export_all(rec, hits, out_dir, style_img=style_img,
+                        made = export_all(rec, hits, _p3d_out, style_img=style_img,
                                           texture_source=texture_source)
                         ok = sum(1 for m in made.values() if m["ok"])
                         st.session_state["glb_info"] = {
@@ -826,7 +836,7 @@ with tab_gen:
                 #    preview3d_layout.json 为真源：它记录 make_ground 是否
                 #    **真的**产出地子，而不是"用户有没有传 style_img"。
                 #    选了 ② 却退回纯色时必须显式给出原因，不许静默退回。
-                _lay = out_dir / "preview3d_layout.json"
+                _lay = _p3d_out / "preview3d_layout.json"
                 _actual = "neutral"
                 if _lay.exists():
                     try:

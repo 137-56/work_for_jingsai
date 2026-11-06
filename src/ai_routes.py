@@ -20,7 +20,10 @@
 """
 from __future__ import annotations
 
+import hashlib
 from dataclasses import dataclass
+from datetime import datetime, timezone
+from pathlib import Path
 from typing import Final
 
 # ---------------------------------------------------------------- 路线枚举
@@ -150,3 +153,34 @@ class RouteState:
             if self.boundary_status != BOUNDARY_PENDING:
                 raise RouteValidationError(
                     "traceable 档的 boundary_status 必须恒为 pending")
+
+
+# ---------------------------------------------------------------- AI 档独立标识
+AI_BADGE_PREFIX: Final[str] = "AI-"
+AI_BADGE_HASH_LEN: Final[int] = 8
+
+
+def make_ai_badge(source_image: str | Path | None) -> tuple[str, str]:
+    """生成 AI 档独立标识（**不依赖定稿 run 身份**与任何文件时间）。
+
+    Returns:
+        (badge_id, timestamp)：
+          badge_id  = "AI-" + UTC 紧凑时间 + "-" + sha256(源图字节)[:8]；
+          timestamp = datetime.now(timezone.utc).isoformat(timespec="seconds")。
+
+    ★ 取值只有两处：当前 UTC 时间与**源图字节**。绝不读取配方标识、
+      溯源卡片时间、或任何文件的时间属性 —— 拷贝/解压/move 都会改变文件时间，
+      把它当标识会让同一份产物在不同机器上得到不同 id。
+    ★ 无源图（降级档）时对空字节取哈希，得到确定性的占位段，不静默用别的
+      文件顶替。AI 产物目录以其返回值命名，不复用管线产物目录。
+    """
+    src = Path(source_image) if source_image is not None else None
+    if src is not None and src.is_file():
+        digest = hashlib.sha256(src.read_bytes()).hexdigest()
+    else:
+        digest = hashlib.sha256(b"").hexdigest()
+    now = datetime.now(timezone.utc)
+    compact = now.strftime("%Y%m%dT%H%M%SZ")
+    badge_id = f"{AI_BADGE_PREFIX}{compact}-{digest[:AI_BADGE_HASH_LEN]}"
+    timestamp = now.isoformat(timespec="seconds")
+    return badge_id, timestamp
