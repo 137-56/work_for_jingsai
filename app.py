@@ -92,7 +92,8 @@ def sample_count():
         return 0
 
 
-def _embed_viewer(glb_info, ground="neutral", disclosure_lines=None, route=None):
+def _embed_viewer(glb_info, ground="neutral", disclosure_lines=None, route=None,
+                  glb_url=None):
     """把 GLB 复制到 Streamlit 的静态目录，并用 iframe 嵌入 Three.js 查看器。
 
     ★ 为什么必须走"静态目录 + iframe"（实测踩到）
@@ -115,6 +116,12 @@ def _embed_viewer(glb_info, ground="neutral", disclosure_lines=None, route=None)
 
       ⚠️ 副作用：每次生成 GLB 都要把文件复制进静态目录。
          仅 3 个文件、约 3 MB，成本可接受。
+
+    ★ 批次 2B：AI 档产物在 `outputs/ai/<badge_id>/`，**绝不**复制进
+      `web/glb/` 或 `static/viewer/glb/` 的三处同源链、也绝不覆盖三个既有
+      `pattern_*.glb`。改用 `static/viewer/ai_glb/<badge_id>/` 独立运行时
+      副本目录（`static/` 整体被 .gitignore 忽略，不进提交包），并通过
+      `?glb=` 指过去。`glb_url` 可显式指定任意 GLB 的 URL / 目录前缀。
     """
     import shutil
     import streamlit.components.v1 as components
@@ -122,6 +129,8 @@ def _embed_viewer(glb_info, ground="neutral", disclosure_lines=None, route=None)
     static_dir = ROOT / "static" / "viewer"
     (static_dir / "vendor").mkdir(parents=True, exist_ok=True)
     (static_dir / "glb").mkdir(parents=True, exist_ok=True)
+    # ★ 批次 2B：AI 档 GLB 的独立运行时副本目录（不在三处同源链内）。
+    (static_dir / "ai_glb").mkdir(parents=True, exist_ok=True)
 
     # ★ 把六句声明写成 JSON 交给查看器读取 —— 查看器是纯静态页，import 不了 Python，
     #   若不这么做，viewer.html 里就必须再硬编码一份（历史上正是"4 份副本"之一）。
@@ -149,12 +158,32 @@ def _embed_viewer(glb_info, ground="neutral", disclosure_lines=None, route=None)
                              or src.stat().st_mtime > dst.stat().st_mtime):
             shutil.copy2(src, dst)
 
+    # ★ 判定「产物是否来自 AI 档隔离目录」只看路径，不猜路线状态；
+    #   AI 档绝不写进 static_dir/glb/（三处同源链的运行时副本）。
+    ai_root = (ROOT / "outputs" / "ai").resolve()
+
+    def _is_ai_artifact(path: Path) -> bool:
+        try:
+            return ai_root in path.resolve().parents
+        except OSError:
+            return False
+
     ok_kinds = []
+    ai_glb_prefix = ""
     for kind, info in glb_info.items():
         if not info.get("ok"):
             continue
-        # 查看器用静态目录里的副本（iframe 需要可通过 HTTP 取到）
-        shutil.copy2(info["path"], static_dir / "glb" / f"pattern_{kind}.glb")
+        src = Path(info["path"])
+        if _is_ai_artifact(src):
+            badge = src.parent.name                 # outputs/ai/<badge_id>/
+            dest_dir = static_dir / "ai_glb" / badge
+            dest_dir.mkdir(parents=True, exist_ok=True)
+            shutil.copy2(src, dest_dir / f"pattern_{kind}.glb")
+            if not ai_glb_prefix:
+                ai_glb_prefix = f"/app/static/viewer/ai_glb/{badge}/"
+        else:
+            # 既有行为：可溯源档走三处同源链的运行时副本，行为不变。
+            shutil.copy2(src, static_dir / "glb" / f"pattern_{kind}.glb")
         ok_kinds.append(kind)
 
     if not ok_kinds:
@@ -175,6 +204,11 @@ def _embed_viewer(glb_info, ground="neutral", disclosure_lines=None, route=None)
         params.append("ground=ai")
     if route:
         params.append(f"route={quote(str(route), safe='')}")
+    # ★ 批次 2B：?glb= 优先。显式 glb_url 或 AI 档独立副本目录前缀；
+    #   不传时三形态既有加载方式（BASE + pattern_<key>.glb）一字不变。
+    chosen_glb = glb_url or ai_glb_prefix
+    if chosen_glb:
+        params.append(f"glb={quote(str(chosen_glb), safe='/')}")
     url = "/app/static/viewer/viewer.html"
     if params:
         url += "?" + "&".join(params)

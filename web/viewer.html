@@ -151,6 +151,18 @@ const BASE = (qs.get("base") || "./glb/").replace(/\/?$/, "/");
 const NAME = qs.get("name") || "";
 const GROUND = qs.get("ground") || "neutral";   // "ai" = 底纹取自 AI 风格化图
 
+/* ★ 批次 2B：任意 GLB 完整 URL 优先，?base= 语义保留不动。
+   支持非 `pattern_` 命名的 GLB（为后续图转 3D 产物留路）。
+   ?glb= 给的是**完整 URL**，故它会覆盖所有形态的默认命名路径。 */
+const GLB_OVERRIDE = qs.get("glb") || "";
+function glbURL(form){
+  if(!GLB_OVERRIDE) return BASE + "pattern_" + form.key + ".glb";
+  // 以 / 结尾视为**目录前缀**：仍按形态命名拼路径，让 AI 档的三形态副本
+  // 都能切换（例如 ?glb=/app/static/viewer/ai_glb/<badge>/）。
+  if(/\/$/.test(GLB_OVERRIDE)) return GLB_OVERRIDE + "pattern_" + form.key + ".glb";
+  return GLB_OVERRIDE;   // 完整 URL：支持任意命名（非 pattern_）的 GLB
+}
+
 const stage = document.getElementById("stage");
 const errEl = document.getElementById("err");
 const spinEl= document.getElementById("spin");
@@ -341,7 +353,7 @@ function load(form){
   errEl.style.display  = "none";
   clearCurrent();
 
-  const url = BASE + "pattern_" + form.key + ".glb";
+  const url = glbURL(form);        // ?glb= 优先，否则沿用 BASE + pattern_<key>.glb
   loader.load(url, gltf=>{
     if(token !== reloadToken) return;           // 已被更晚的请求取代
     const root = gltf.scene;
@@ -400,7 +412,15 @@ function countTris(root){
 // ★ 支持 ?form=box / fan 直接定位到某个形态 ——
 //   用途：① Streamlit 里按需嵌入某个形态；② 出报告截图时免去手点。
 const wantForm = qs.get("form");
-let active = FORMS.find(f => f.key === wantForm) || FORMS[0];
+// ★ 批次 2B：未登记 key 不许静默回退 FORMS[0]（否则用户以为看的是 A，
+//   实际加载的是 B）。明确提示 + 说明登记方法，且本次不自动加载任何模型。
+let active = wantForm ? (FORMS.find(f => f.key === wantForm) || null) : FORMS[0];
+if (wantForm && !active) {
+  errEl.textContent = "未登记形态：" + wantForm
+    + " —— 请在 src/preview3d.py 的 FORMS 登记该形态，并重跑 "
+    + "scripts/gen_forms_json.py 生成 forms.json；本次不回退到其他形态。";
+  errEl.style.display = "block";
+}
 const tabsEl = document.getElementById("tabs");
 FORMS.forEach(f=>{
   const b = document.createElement("button");
@@ -428,9 +448,11 @@ rotBtn.onclick = ()=>{
   rotBtn.style.borderColor= ctl.auto ? "var(--ink)" : "var(--line)";
 };
 document.getElementById("btn-download").onclick = ()=>{
+  if(!active) return;               // 未登记形态时未加载任何模型
   const a = document.createElement("a");
-  a.href = BASE + "pattern_" + active.key + ".glb";
-  a.download = "pattern_" + active.key + ".glb";
+  const href = glbURL(active);      // 与 viewer 实际加载的是同一个 URL
+  a.href = href;
+  a.download = href.split("/").pop() || ("pattern_" + active.key + ".glb");
   document.body.appendChild(a); a.click(); a.remove();
 };
 
@@ -456,7 +478,7 @@ function tick(now){
 if(NAME) subEl.textContent = NAME;
 resize();
 applyCamera();
-load(active);
+if(active) load(active);          // 未登记形态：只显示提示，不静默加载别的模型
 requestAnimationFrame(tick);
 
 })();
