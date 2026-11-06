@@ -123,13 +123,26 @@
 "use strict";
 
 /* ── 形态清单 ─────────────────────────────────────────────
-   ★ 与 src/preview3d.py 的 FORMS 一一对应。
-     改一处必须改另一处（形态集变更时尤其容易漏）。       */
-const FORMS = [
+   ★ 单一真源：src/preview3d.py 的 FORMS → scripts/gen_forms_json.py
+     生成 ./forms.json。两份 viewer.html 保持字节全等。
+   ★ file:// 双击时 fetch 会因 CORS 失败，**必须保留内置兜底**，
+     否则离线展廊直接白屏。兜底键集合与 forms.json 的一致性由
+     scripts/check_viewer_forms_sync.py 断言。
+   ★ HTTP 下以 forms.json 为准；本批形态集不变，故 tab 顺序与兜底一致。 */
+const FALLBACK_FORMS = [
   {key:"vase", label:"陶瓶（梅瓶）", elev:12, dist:3.35},
   {key:"box",  label:"包装方盒",     elev:16, dist:3.75},
   {key:"fan",  label:"团扇",         elev:8,  dist:3.55},
 ];
+let FORMS = FALLBACK_FORMS;
+fetch("./forms.json", {cache:"no-store"})
+  .then(r => r.ok ? r.json() : null)
+  .then(j => {
+    if (Array.isArray(j) && j.length === FALLBACK_FORMS.length) {
+      FORMS = j;
+    }
+  })
+  .catch(() => { /* 保持内置兜底：离线双击不白屏 */ });
 
 /* GLB 通过 ?base=<url> 指定目录，默认 ./glb/
    这样既能配合 Streamlit 静态目录，也能直接双击打开看图。 */

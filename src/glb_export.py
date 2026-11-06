@@ -410,11 +410,20 @@ def build_textures(recipe, hits, style_img=None, texture_source=None):
     """
     from src.pattern_layout import (build_box_lid, build_fan_face, build_strip,
                                     ground_tile, use_ground)
+    from src.preview3d import FORMS   # 形态集单一真源（延迟 import，无循环）
 
     def _png(im):
         buf = io.BytesIO()
         im.convert("RGB").save(buf, "PNG", optimize=True)
         return buf.getvalue()
+
+    def _checked(tex: dict) -> dict:
+        """贴图映射必须覆盖 FORMS 全部形态；缺一个就抛错，不静默漏形态。"""
+        missing = [k for k in FORMS if k not in tex]
+        if missing:
+            raise KeyError(
+                f"形态集 {missing} 缺 GLB 贴图构造映射（禁止静默漏形态）")
+        return tex
 
     # 地子：与 preview3d 同一套抽取逻辑
     ground = None
@@ -445,7 +454,7 @@ def build_textures(recipe, hits, style_img=None, texture_source=None):
             atlas, lid_frac = fit_box_atlas(ai_path, height=1024)
             out["box"] = _png(atlas)
             out["_lid_frac"] = lid_frac
-            return out
+            return _checked(out)
         # 梅瓶：展开图（build_strip 返回 (Image, meta)，只取图）
         out["vase"] = _png(build_strip(recipe, hits, height=1024, kind="vase")[0])
         # 团扇：同心圆图
@@ -461,7 +470,7 @@ def build_textures(recipe, hits, style_img=None, texture_source=None):
         atlas.paste(lid.resize((lw, lh), Image.LANCZOS), (sw, 0))
         out["box"] = _png(atlas)
     out["_lid_frac"] = (lw / (2 * sw), lh / sh)
-    return out
+    return _checked(out)
 
 
 def export_all(recipe, hits, out_dir, seg=96, style_img=None,
@@ -471,13 +480,15 @@ def export_all(recipe, hits, out_dir, seg=96, style_img=None,
     style_img：见 build_textures —— 与 preview3d 传同一个值才能保证一致。
     texture_source：见 build_textures —— 与 preview3d 传同一个值才能保证一致。
     """
-    from src.preview3d import form_box, form_fan, form_vase
+    from src.preview3d import FORMS, form_box, form_fan, form_vase
 
     out_dir = Path(out_dir)
     tex = build_textures(recipe, hits, style_img=style_img,
                          texture_source=texture_source)
     lid_du, lid_dv = tex["_lid_frac"]
 
+    # 几何构造映射是**合法几何特例**（每个形态的网格不同），但它的键集合
+    # 必须覆盖 FORMS 的全部形态；缺映射时明确抛错，不许静默跳过。
     builders = {
         "vase": lambda: (mesh_revolve(form_vase()[0], seg=seg), form_vase()[0],
                          None, None),
@@ -485,8 +496,12 @@ def export_all(recipe, hits, out_dir, seg=96, style_img=None,
         "fan": lambda: (mesh_fan(form_fan()[0], seg=seg), None, None,
                         form_fan()[0]),
     }
+    missing = [k for k in FORMS if k not in builders]
+    if missing:
+        raise KeyError(
+            f"形态集 {missing} 缺 GLB 网格构造映射（禁止静默漏形态）")
     made = {}
-    for kind in ("vase", "box", "fan"):
+    for kind in FORMS:                # 形态集单一真源，不再手写三形态遍历
         (pos, nrm, idx), prof, half, g = builders[kind]()
         uv = vertex_uv(kind, pos,
                        prof=(g if kind == "fan" else prof),
@@ -540,7 +555,7 @@ def main():
     if rec and hits:
         made = export_all(rec, hits, out_dir)
         from src.preview3d import FORMS
-        for kind in ("vase", "box", "fan"):
+        for kind in FORMS:           # 形态集单一真源
             m = made[kind]
             i, chk = m["info"], m["check"]
             print(f"  {'✅' if m['ok'] else '❌'} {FORMS[kind][0]:<12} "
@@ -548,15 +563,21 @@ def main():
                   f"三角 {i['triangles']:>6}  贴图 {chk['image_bytes']/1024:.0f} KB  "
                   f"校验{'通过' if m['ok'] else '失败'}")
         ok_all = all(m["ok"] for m in made.values())
-        print(f"\n共 {sum(1 for m in made.values() if m['ok'])}/3 个 GLB 通过结构校验")
+        print(f"\n共 {sum(1 for m in made.values() if m['ok'])}/{len(FORMS)} "
+              "个 GLB 通过结构校验")
     else:
         # 退化：整幅贴（保留旧行为，方便拿单张图直接试）
-        from src.preview3d import form_box, form_vase
+        from src.preview3d import FORMS, form_box, form_vase
         prof_v = form_vase()[0]
         half_b = form_box()[1]
         ok_all = True
-        jobs = [("vase", *mesh_revolve(prof_v), prof_v, None),
-                ("box", *mesh_box(half_b), None, half_b)]
+        # 整幅贴退化只支持旋转体与方盒两种几何（圆形平面载体需要同心圆
+        # 布局，属几何特例，不在退化路径内）；遍历仍从 FORMS 单一真源派生。
+        degenerate = {
+            "vase": (*mesh_revolve(prof_v), prof_v, None),
+            "box": (*mesh_box(half_b), None, half_b),
+        }
+        jobs = [(k, *degenerate[k]) for k in FORMS if k in degenerate]
         for kind, pos, nrm, idx, prof, half in jobs:
             uv = vertex_uv(kind, pos, prof=prof, half=half)
             info = write_glb(pos, nrm, uv, idx, pat,

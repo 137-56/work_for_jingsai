@@ -37,9 +37,11 @@ if str(ROOT) not in sys.path:                      # 与 check_metrics.py / chec
     sys.path.insert(0, str(ROOT))
 
 from src.run_source import FINAL_RUN            # noqa: E402
+from src.preview3d import FORMS as _FORMS_REGISTRY   # noqa: E402
 
-FORMS = ("vase", "box", "fan")
-LABEL = {"vase": "梅瓶", "box": "方盒", "fan": "团扇"}
+# 批次 2A：形态集与中文名都从 src.preview3d.FORMS 单一派生。
+FORMS = tuple(_FORMS_REGISTRY)
+LABEL = {k: _FORMS_REGISTRY[k][0] for k in FORMS}
 
 
 def sha12(p: Path) -> str:
@@ -93,7 +95,7 @@ def main() -> int:
         if verdict != "[PASS]":
             bad.append(f"{kind}（{LABEL[kind]}）{verdict}")
 
-        print(f"{LABEL[kind]:6}{row['run']:>15}{row['web']:>15}{row['static']:>15}   {verdict}")
+        print(f"{LABEL[kind]:<8}{row['run']:>15}{row['web']:>15}{row['static']:>15}   {verdict}")
 
     print()
     # 两条不变量分开报，便于定位是哪一条破了

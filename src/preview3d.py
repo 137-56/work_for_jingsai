@@ -518,6 +518,34 @@ FORMS = {
     "fan":   ("团扇", form_fan, 8.0, False),
 }
 
+# 查看器相机距离（几何特例，随 FORMS 显式登记）。★ 刻意**不**并进 FORMS
+# 元组：scripts/check_render3d.py 用 4 元素解包读取 FORMS，加元素会破坏它。
+# 新增形态必须在此登记，否则 forms_registry() 直接抛 KeyError，不静默兜底。
+FORM_CAMERA_DIST = {
+    "vase": 3.35,
+    "box": 3.75,
+    "fan": 3.55,
+}
+
+
+def forms_registry() -> list[dict]:
+    """把形态集导出成查看器注册表 —— **唯一生成入口**，不许手写键值。
+
+    Returns:
+        [{key, label, elev, dist}, ...]，顺序与 FORMS 一致。
+        `scripts/gen_forms_json.py` 只负责把这里的返回值落盘，
+        `scripts/check_viewer_forms_sync.py` 用同一函数复核一致性。
+    """
+    out: list[dict] = []
+    for key, (label, _builder, elev, _flip) in FORMS.items():
+        if key not in FORM_CAMERA_DIST:
+            raise KeyError(
+                f"形态 {key!r} 未登记查看器相机距离（FORM_CAMERA_DIST），"
+                "禁止静默给默认值")
+        out.append({"key": key, "label": label, "elev": int(elev),
+                    "dist": FORM_CAMERA_DIST[key]})
+    return out
+
 
 # ---------------------------------------------------------------- 渲染
 
@@ -825,7 +853,7 @@ def render_preview(pattern_png, out_dir, recipe=None, hits=None, quality="high",
 
     objs, labels, paths = [], [], {}
     with _gctx:                      # ★ 全程挂着地子，贴图与 atlas 底板都吃它
-        for kind in ("vase", "box", "fan"):
+        for kind in FORMS:           # 形态集单一真源，不再手写三形态遍历
             name = FORMS[kind][0]
             print(f"  · {name} …", flush=True)
             arr = render_form(kind, _tex_for(kind), W=W, H=H, ss=ss)

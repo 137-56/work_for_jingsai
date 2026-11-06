@@ -89,7 +89,7 @@ def use_ground(img, rgb=None):
         from src.style_ground import make_ground, ground_rgb
         g = make_ground(".../stylized_30.png")
         with use_ground(g, ground_rgb(...)):
-            strip, meta = build_strip(recipe, hits, kind="vase")
+            strip, meta = build_strip(recipe, hits, kind=DEFAULT_FORM)
     """
     old = (_GROUND["img"], _GROUND["rgb"])
     _GROUND["img"] = img
@@ -350,6 +350,22 @@ STRIP_ASPECT = {
     "box": 1.15,
     "fan": 1.00,       # 团扇/平面方形载体走方形图
 }
+
+# 默认形态从几何比例表首键派生，下游不再各自写死某个形态字面量。
+# ★ STRIP_ASPECT 本身是**几何比例真源**（合法几何特例），其键集合必须与
+#   src.preview3d.FORMS 一致，由 scripts/check_viewer_forms_sync.py 断言。
+DEFAULT_FORM = next(iter(STRIP_ASPECT))
+
+
+def registered_forms() -> tuple[str, ...]:
+    """从形态集**单一真源**取已登记形态（延迟 import，避免循环依赖）。
+
+    `src.preview3d` 只在函数内被引用；`pattern_layout` 顶层不依赖它，
+    因此 `preview3d -> pattern_layout` 的既有导入方向不会被反过来。
+    """
+    from src.preview3d import FORMS
+
+    return tuple(FORMS)
 
 
 def strip_size(kind, height=1024):
@@ -852,8 +868,14 @@ def _soften_bands(strip, bands, h, feather=3):
 
 # ---------------------------------------------------------------- 预览/调试
 
-def save_strip(recipe, hits, out_path, height=1024, kind="vase"):
-    """出图（调试与报告用）。"""
+def save_strip(recipe, hits, out_path, height=1024, kind=None):
+    """出图（调试与报告用）。
+
+    ★ `build_strip` 属于 UV 六函数、必须与 1cdfe88 逐字一致，故默认值
+      的「从注册表派生」放在本函数（调用侧）完成，不改动它。
+    """
+    if kind is None:
+        kind = DEFAULT_FORM
     strip, meta = build_strip(recipe, hits, height=height, kind=kind)
     out_path = Path(out_path)
     out_path.parent.mkdir(parents=True, exist_ok=True)

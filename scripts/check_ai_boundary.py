@@ -18,12 +18,14 @@
     `--pkg-check-src` 可指向系统临时目录里的 `check_submission_pkg.py` 副本
     （把 `outputs/ai` 塞进 NEED 清单），用于证明 ① 真的会 FAIL，用完即删。
     `--final-run` / `--baseline` 可指向临时副本，用于证明 ② 可证伪。
-    `--ai-routes-src` 可指向改坏的 `ai_routes.py` temp 副本，用于证明 ④ 可证伪。
+    `--ai-routes-src` / `--app-src` / `--ai-mesh-src` 可指向改坏的 temp 副本
+    （批次 2A 起 ④ 的 a/b/c/d 四段全部走注入源），用于证明静态段也可证伪。
 
 用法（在工程根目录 work/ 下执行）：
     .venv/Scripts/python.exe scripts/check_ai_boundary.py
     .venv/Scripts/python.exe scripts/check_ai_boundary.py --pkg-check-src <临时副本>
     .venv/Scripts/python.exe scripts/check_ai_boundary.py --ai-routes-src <临时副本>
+    .venv/Scripts/python.exe scripts/check_ai_boundary.py --app-src <临时副本>
 
 退出码：0 = 三条全过；1 = 任一失败。
 """
@@ -45,6 +47,8 @@ from src.run_source import FINAL_RUN            # noqa: E402
 DEFAULT_PKG_CHECK_SRC = ROOT / "scripts" / "check_submission_pkg.py"
 DEFAULT_BASELINE = ROOT / "scripts" / "final_run_baseline.json"
 DEFAULT_AI_ROUTES_SRC = ROOT / "src" / "ai_routes.py"
+DEFAULT_APP_SRC = ROOT / "app.py"
+DEFAULT_AI_MESH_SRC = ROOT / "src" / "ai_mesh.py"
 AI_DIR_TOKEN = "outputs/ai"
 AI_MARKER_PREFIXES = ("stylized_", "ai_glb_manifest.json", "ai_texture_", "ai_")
 BADGE_BEGIN = "AI_BADGE_BEGIN"
@@ -231,26 +235,31 @@ def _function_source(text: str, name: str) -> str:
     return ""
 
 
-def check_ai_badge_identity(ai_routes_src: Path) -> tuple[bool, str]:
+def check_ai_badge_identity(ai_routes_src: Path,
+                            app_src: Path | None = None,
+                            ai_mesh_src: Path | None = None) -> tuple[bool, str]:
     """④ AI 档徽章 / 源码 / manifest 不含定稿 run id 字面量与定稿身份字段。
 
     ★ 定稿 run 标识从 `src.run_source.FINAL_RUN` **运行时**取，脚本自身
       不写该字面量 —— 保证 check_merge_contract ④ 的「全仓 .py 恰好 1 处」
       依然成立。
-    ★ 反例可注入：`--ai-routes-src` 指向改坏的 temp 副本（如 badge 缺
-      源图哈希前 8 位），本项即 FAIL。
+    ★ 批次 2A 加固：a/b/c/d **四段全部走注入源**（原先只有 d 走），
+      静态段读仓库真实文件会让反例只覆盖一半逻辑。三个源都可指向系统
+      temp 副本；缺省时取仓库真实文件，主线 ⑩ 行为不变。
     """
     from src.run_source import FINAL_RUN
 
     token = FINAL_RUN.name
+    routes_path = Path(ai_routes_src)
+    app_path = Path(app_src) if app_src is not None else DEFAULT_APP_SRC
+    mesh_path = Path(ai_mesh_src) if ai_mesh_src is not None else DEFAULT_AI_MESH_SRC
     # 只报「类别编号」，不回显任何命中的值（含定稿 run 标识本身）。
     forbidden = (token, "recipe_id", "generated_at", "st_mtime",
                  "getmtime", ".stat(")
     problems: list[str] = []
 
-    # a) badge 生成函数：只许取当前 UTC 时间与源图字节。
-    routes_text = (ROOT / "src" / "ai_routes.py").read_text(
-        encoding="utf-8", errors="ignore")
+    # a) badge 生成函数：只许取当前 UTC 时间与源图字节（走注入源）。
+    routes_text = routes_path.read_text(encoding="utf-8", errors="ignore")
     seg = _function_source(routes_text, "make_ai_badge")
     if not seg:
         problems.append("make_ai_badge 函数缺失")
@@ -260,7 +269,7 @@ def check_ai_badge_identity(ai_routes_src: Path) -> tuple[bool, str]:
                 problems.append(f"make_ai_badge 命中禁用来源类别 #{idx}")
 
     # b) ⑥ 区新增的独立标识徽章控件（既有徽章在标记块之外，逐字未改）。
-    app = (ROOT / "app.py").read_text(encoding="utf-8", errors="ignore")
+    app = app_path.read_text(encoding="utf-8", errors="ignore")
     if BADGE_BEGIN not in app or BADGE_END not in app:
         problems.append("app.py 缺 AI_BADGE 标记块")
     else:
@@ -273,9 +282,8 @@ def check_ai_badge_identity(ai_routes_src: Path) -> tuple[bool, str]:
     if "\"outputs\" / \"ai\" / _badge_id" not in app:
         problems.append("go3 分支未把 AI 产物写入隔离目录")
 
-    # c) 图转 3D 的 manifest 生成函数。
-    mesh = (ROOT / "src" / "ai_mesh.py").read_text(
-        encoding="utf-8", errors="ignore")
+    # c) 图转 3D 的 manifest 生成函数（走注入源）。
+    mesh = mesh_path.read_text(encoding="utf-8", errors="ignore")
     mseg = _function_source(mesh, "build_manifest")
     if not mseg:
         problems.append("build_manifest 函数缺失")
@@ -309,11 +317,13 @@ def check_ai_badge_identity(ai_routes_src: Path) -> tuple[bool, str]:
 
 
 def verify(pkg_check_src: Path, final_run: Path, baseline: Path,
-           ai_routes_src: Path | None = None) -> tuple[bool, str]:
+           ai_routes_src: Path | None = None,
+           app_src: Path | None = None,
+           ai_mesh_src: Path | None = None) -> tuple[bool, str]:
     """跑完四条断言，返回 (是否全过, 汇总说明)。
 
-    ai_routes_src 为 ④ 的反例注入点；None 时取仓库真实路线真源，
-    既有的 ⑩ 调用不传此参数，行为不变。
+    三个 *src 是 ④ 的反例注入点（批次 2A：静态段也走注入源）；
+    None 时取仓库真实文件，既有的 ⑩ 调用不传这些参数，行为不变。
     """
     src = Path(ai_routes_src) if ai_routes_src is not None else DEFAULT_AI_ROUTES_SRC
     checks = [
@@ -321,7 +331,8 @@ def verify(pkg_check_src: Path, final_run: Path, baseline: Path,
         ("② 定稿 run / 同源链边界",
          check_ai_not_in_final_run(final_run, baseline, pkg_check_src)),
         ("③ .env 配置值不外泄", check_no_env_secret_leak()),
-        ("④ AI 档徽章/源码/manifest 身份隔离", check_ai_badge_identity(src)),
+        ("④ AI 档徽章/源码/manifest 身份隔离",
+         check_ai_badge_identity(src, app_src, ai_mesh_src)),
     ]
     problems = [f"{label} —— {msg}" for label, (ok, msg) in checks if not ok]
     if problems:
@@ -339,11 +350,17 @@ def main() -> int:
                     help="不可变基线 JSON 路径")
     ap.add_argument("--ai-routes-src", default=str(DEFAULT_AI_ROUTES_SRC),
                     help="④ 的路线真源模块（可指向系统 temp 的反例副本）")
+    ap.add_argument("--app-src", default=str(DEFAULT_APP_SRC),
+                    help="④ 的 app.py 源（批次 2A：静态段也走注入源）")
+    ap.add_argument("--ai-mesh-src", default=str(DEFAULT_AI_MESH_SRC),
+                    help="④ 的 ai_mesh.py 源（批次 2A：静态段也走注入源）")
     args = ap.parse_args()
     pkg_check_src = Path(args.pkg_check_src)
     final_run = Path(args.final_run)
     baseline = Path(args.baseline)
     ai_routes_src = Path(args.ai_routes_src)
+    app_src = Path(args.app_src)
+    ai_mesh_src = Path(args.ai_mesh_src)
 
     print("=" * 68)
     print("AI 新产物 · 边界自查（只读）")
@@ -354,7 +371,7 @@ def main() -> int:
          check_ai_not_in_final_run(final_run, baseline, pkg_check_src)),
         ("③ .env 配置值不外泄", check_no_env_secret_leak()),
         ("④ AI 档徽章/源码/manifest 身份隔离",
-         check_ai_badge_identity(ai_routes_src)),
+         check_ai_badge_identity(ai_routes_src, app_src, ai_mesh_src)),
     ]
     failed = 0
     for label, (ok, msg) in checks:

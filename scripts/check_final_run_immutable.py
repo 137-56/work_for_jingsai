@@ -10,9 +10,11 @@
 
 ★ 基线值**必须由本脚本首次运行时从当前定稿 run 实算并固化，不许手写**
     · 定稿 run 目录只从 `src.run_source.FINAL_RUN` 取（不硬编码 run id）；
-    · 首次运行：`--freeze`（或缺基线时自动）算基线写入
+    · 首次运行：必须**显式** `--freeze` 才算基线写入
       `scripts/final_run_baseline.json`，之后每次运行只做比对；
-    · 基线缺失且不允许固化 → **FAIL**（不假绿）。
+    · ★ 独立 `main()` 绝不自动固化（批次 2A 加固）：基线被删/改名时
+      自动重算等于把「有人动过基线」这件事抹平放行 —— 明确 FAIL。
+    · 基线缺失 → **FAIL**（不假绿），与主线 ⑨ 的 `allow_freeze=False` 一致。
 
 ★ sha256 为什么按 4 位分组存
     完整 64 位十六进制里可能出现连续的长数字串，会误触提交前红线自查的
@@ -101,6 +103,15 @@ def freeze(run_dir: Path, baseline_path: Path) -> dict[str, Any]:
     return baseline
 
 
+def _show(path: Path) -> str:
+    """显示路径；仓库外路径（如 temp 反例）不硬套 relative_to，
+    否则 ValueError 会把本来清晰的 FAIL 判定变成一段 traceback。"""
+    try:
+        return path.relative_to(ROOT).as_posix()
+    except ValueError:
+        return path.as_posix()
+
+
 def verify(run_dir: Path, baseline_path: Path,
            *, allow_freeze: bool = False) -> tuple[bool, str]:
     """比对当前目录与基线；返回 (是否全等, 说明)。
@@ -119,8 +130,8 @@ def verify(run_dir: Path, baseline_path: Path,
         if allow_freeze:
             baseline = freeze(run_dir, baseline_path)
             return True, (f"基线首次固化：{baseline['file_count']} 文件 → "
-                          f"{baseline_path.relative_to(ROOT).as_posix()}")
-        return False, (f"基线文件不存在：{baseline_path.relative_to(ROOT).as_posix()}"
+                          f"{_show(baseline_path)}")
+        return False, (f"基线文件不存在：{_show(baseline_path)}"
                        "（须先跑本脚本 --freeze 固化，不允许临时现算放行）")
     try:
         saved = json.loads(baseline_path.read_text(encoding="utf-8"))
@@ -198,7 +209,9 @@ def main() -> int:
         print(f"  全量拼接 sha256  {baseline['concat_sha256'][:12]}…")
         return 0
 
-    ok, msg = verify(run_dir, baseline_path, allow_freeze=True)
+    # ★ 批次 2A：独立运行绝不自动固化，与主线 ⑨ 一致。基线消失只能
+    #   显式 --freeze 重建，不能静默现算放行（QA 漏洞 1）。
+    ok, msg = verify(run_dir, baseline_path, allow_freeze=False)
     if not ok:
         print(f"[FAIL] 定稿 run 与基线不等 —— {msg}")
         return 1

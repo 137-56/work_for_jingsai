@@ -54,6 +54,7 @@ from src.ai_routes import (
     ROUTE_LABELS, ROUTE_ORDER, RouteState, make_ai_badge,
 )
 from src.ai_texture import MissingAITexture, select_source
+from src.preview3d import FORMS          # 形态集单一真源（批次 2A）
 
 st.set_page_config(page_title="纹初迹现 · 可溯源纹样生成系统", layout="wide")
 
@@ -138,7 +139,9 @@ def _embed_viewer(glb_info, ground="neutral", disclosure_lines=None, route=None)
     # 查看器与 Three.js（只需拷一次，但检查一下以防首次）
     # ★ design-tokens.css 必须一起拷：viewer.html 用 <link href="./design-tokens.css">
     #   引用它。漏拷的后果是查看器拿不到 CSS 变量，页面配色全丢（但不报错）。
-    for rel in ("viewer.html", "design-tokens.css",
+    # ★ 批次 2A：forms.json 是查看器的形态注册表，必须一起同步到运行时目录，
+    #   否则 iframe 里的 fetch("./forms.json") 会 404（只能退回内置兜底）。
+    for rel in ("viewer.html", "forms.json", "design-tokens.css",
                 "vendor/three.min.js", "vendor/GLTFLoader.js"):
         src = ROOT / "web" / rel
         dst = static_dir / rel
@@ -158,7 +161,7 @@ def _embed_viewer(glb_info, ground="neutral", disclosure_lines=None, route=None)
         st.error("没有通过校验的 GLB 可预览。")
         return
 
-    order = [k for k in ("vase", "box", "fan") if k in ok_kinds]
+    order = [k for k in FORMS if k in ok_kinds]   # 形态集单一真源
     # ★ URL 必须是**以 / 开头**的 `/app/static/...`：
     #   不带前导斜杠会被当成"相对当前页面的路径"而 404（实测踩到）。
     # ★ ground 参数让查看器内的溯源说明与实际贴图方案一致：
@@ -179,10 +182,10 @@ def _embed_viewer(glb_info, ground="neutral", disclosure_lines=None, route=None)
 
     # 下载按钮：data 直接取 outputs 里的原始字节，不必再依赖静态目录
     st.markdown("**下载 GLB**")
-    label = {"vase": "陶瓶（梅瓶）", "box": "包装方盒", "fan": "团扇"}
     for col, kind in zip(st.columns(len(order)), order):
+        label = FORMS[kind][0]        # 形态中文名从 FORMS 派生
         col.download_button(
-            f"⬇ {label[kind]}（{glb_info[kind]['kb']} KB）",
+            f"⬇ {label}（{glb_info[kind]['kb']} KB）",
             data=Path(glb_info[kind]["path"]).read_bytes(),
             file_name=f"pattern_{kind}.glb",
             mime="model/gltf-binary",
@@ -227,7 +230,7 @@ def _render_elements(items, width=150, strong=True, show_category=True):
             st.caption(sim_txt + tail)
 
 
-_FORM_CN = {"vase": "陶瓶（梅瓶）", "box": "包装方盒", "fan": "团扇"}
+_FORM_CN = {k: FORMS[k][0] for k in FORMS}   # 形态中文名单一真源
 
 
 def _band_rows(bands):
@@ -266,7 +269,7 @@ def _bands_block(layout):
     """
     if not isinstance(layout, dict):
         return
-    forms = [k for k in ("vase", "box", "fan") if isinstance(layout.get(k), dict)]
+    forms = [k for k in FORMS if isinstance(layout.get(k), dict)]
     if not forms:
         return
 
@@ -926,10 +929,9 @@ with tab_gen:
             if tri and Path(tri).exists():
                 st.image(tri, width="stretch")
                 with st.expander("查看单形态大图"):
-                    cols = st.columns(3)
-                    for col, (k, lab) in zip(cols, (("vase", "陶瓶（梅瓶）"),
-                                                    ("box", "包装方盒"),
-                                                    ("fan", "团扇"))):
+                    cols = st.columns(len(FORMS))
+                    for col, k in zip(cols, FORMS):
+                        lab = FORMS[k][0]
                         p = p3.get(k)
                         if p and Path(p).exists():
                             col.image(p, caption=lab, width="stretch")

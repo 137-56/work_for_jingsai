@@ -1,0 +1,20 @@
+[
+  {
+    "key": "vase",
+    "label": "陶瓶（梅瓶）",
+    "elev": 12,
+    "dist": 3.35
+  },
+  {
+    "key": "box",
+    "label": "包装方盒",
+    "elev": 16,
+    "dist": 3.75
+  },
+  {
+    "key": "fan",
+    "label": "团扇",
+    "elev": 8,
+    "dist": 3.55
+  }
+]

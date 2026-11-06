@@ -31,6 +31,9 @@ ROOT = Path(__file__).resolve().parent.parent
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
+from src.run_source import FINAL_RUN            # noqa: E402
+from src.preview3d import FORMS                # noqa: E402
+
 IFRAME_URL = "/app/static/viewer/viewer.html"
 
 
@@ -47,7 +50,11 @@ def http_status(url, timeout=20):
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--port", type=int, default=8794)
-    ap.add_argument("--recipe", default="outputs/R20260927005441-9126")
+    # ★ 批次 2A 加固：默认读定稿 run 单一真源。旧默认值指向历史 run，
+    #   直接跑会把旧 GLB 复制进 static/viewer/glb/ 污染三处同源链，
+    #   之后必须人工复位 check_glb_sync。现在跑完即 A/B 成立、无需复位。
+    ap.add_argument("--recipe", default=str(FINAL_RUN),
+                    help="GLB 来源目录（默认 src.run_source.FINAL_RUN）")
     args = ap.parse_args()
     base = f"http://127.0.0.1:{args.port}"
 
@@ -74,7 +81,7 @@ def main():
     # ③ GLB 复制 + 仍为合法 GLB
     src_dir = ROOT / args.recipe
     glb_ok = []
-    for kind in ("vase", "box", "fan"):
+    for kind in FORMS:                # 形态集由 src.preview3d.FORMS 单一派生
         src = src_dir / f"pattern_{kind}.glb"
         if not src.exists():
             errs.append(f"缺 GLB：{src}（先跑 python -m src.glb_export）")
@@ -94,7 +101,8 @@ def main():
     st_page = http_status(base + "/")
     st_view = http_status(base + IFRAME_URL)
     st_three = http_status(base + "/app/static/viewer/vendor/three.min.js")
-    st_glb = http_status(base + "/app/static/viewer/glb/pattern_vase.glb")
+    st_glb = http_status(base + "/app/static/viewer/glb/pattern_"
+                         + next(iter(FORMS)) + ".glb")
     # 反例：不带前导斜杠应当 404（证明这个坑真实存在）
     st_bad = http_status(base + "app/static/viewer/viewer.html")
     if st_view != 200:

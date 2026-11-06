@@ -30,6 +30,7 @@ if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
 from scripts.check_glb_uv import load_glb, read_accessor  # noqa: E402
+from src.preview3d import FORMS                            # noqa: E402
 
 PAPER = (243, 238, 228)
 INK = (58, 52, 44)
@@ -176,13 +177,13 @@ def main():
     W, H, ss = (560, 680, 1) if args.quality == "fast" else (760, 920, 2)
 
     objs, labels = [], []
-    for kind, name in (("vase", "陶瓶（梅瓶）"), ("box", "包装方盒"),
-                       ("fan", "团扇")):
+    for kind in FORMS:                 # 形态集单一真源（批次 2A）
+        name = FORMS[kind][0]
         p = d / f"pattern_{kind}.glb"
         if not p.exists():
             print(f"[跳过] {p} 不存在"); continue
         objs.append(render_glb(p, W=W, H=H, ss=ss,
-                               elev_deg={"vase": 12, "box": 16, "fan": 8}[kind]))
+                               elev_deg=int(FORMS[kind][2])))
         labels.append(name)
     if not objs:
         print("没有可渲染的 GLB"); return 1

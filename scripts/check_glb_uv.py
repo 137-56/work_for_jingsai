@@ -90,6 +90,8 @@ ROOT = Path(__file__).resolve().parent.parent
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
+from src.preview3d import FORMS            # noqa: E402 —— 形态集单一真源
+
 GLB_MAGIC = 0x46546C67
 CHUNK_JSON = 0x4E4F534A
 CHUNK_BIN = 0x004E4942
@@ -207,8 +209,10 @@ def uv_footprint(uv, idx, gw, gh):
 # 各形态的采样区有效率下限（理由见文件头 docstring 的表格）
 # ★ 0.80 是**下限**、不是质量目标：设计上主画面必须满幅，允许留白的只有弦纹占位；
 #   良品实测 86%，0.80 只用来拦住"退回大面积留白"（n=1 → 72%）。
+# ★ 批次 2A：阈值表**随 FORMS 显式登记**。每新增一个形态，必须在这里
+#   显式给出阈值；绝不设统一默认值 —— 静默套 0.35 会让新形态的坏品
+#   直接放行，自检形同虚设。键集合由 main() / check_viewer_forms_sync.py 断言。
 FILL_MIN = {"box": 0.80, "vase": 0.35, "fan": 0.35}
-FILL_MIN_DEFAULT = 0.35
 
 
 def check_one(path, expect_kind):
@@ -245,8 +249,12 @@ def check_one(path, expect_kind):
     else:
         fill_uv = 1.0 - float(bfrac[mask].mean())
 
-    thr = FILL_MIN.get(expect_kind, FILL_MIN_DEFAULT)
-    if fill_uv < thr:
+    # ★ 批次 2A：未登记阈值 → 明确 FAIL，绝不静默套用任何默认阈值。
+    thr = FILL_MIN.get(expect_kind)
+    if thr is None:
+        problems.append(
+            f"形态未登记阈值：{expect_kind}（FILL_MIN 无此键，禁止静默兜底）")
+    elif fill_uv < thr:
         problems.append(
             f"采样区有效像素只有 {fill_uv:.0%}（阈值 ≥{thr:.0%}）—— 疑似主画面留白过大")
 
@@ -271,7 +279,21 @@ def main():
     ok_all = True
     print(f"GLB 独立自检：{d}")
     print("（有效率按 **UV 实际采样到的面积** 统计；全图值为参考，含 atlas 未采样的死区）\n")
-    for kind in ("vase", "box", "fan"):
+
+    # ① 阈值表必须覆盖 FORMS 的全部形态（随形态集显式登记，不静默兜底）。
+    unregistered = [k for k in FORMS if k not in FILL_MIN]
+    if unregistered:
+        print(f"  ❌ 形态未登记阈值：{unregistered}（FILL_MIN 缺键，禁止静默兜底）")
+        ok_all = False
+
+    # ② 遍历 = FORMS 键 ∪ 目录里实际出现的 pattern_*.glb 形态。
+    #    后半部分能捕获「新登记但未给 FILL_MIN」的形态产物，不让静默漏检。
+    kinds = list(FORMS)
+    for p in sorted(d.glob("pattern_*.glb")):
+        k = p.stem[len("pattern_"):]
+        if k and k not in kinds:
+            kinds.append(k)
+    for kind in kinds:
         p = d / f"pattern_{kind}.glb"
         if not p.exists():
             print(f"  ❌ {kind:<6} 文件不存在：{p}"); ok_all = False; continue
@@ -281,7 +303,8 @@ def main():
               f"UV u[{r['uv_min'][0]:.3f},{r['uv_max'][0]:.3f}] "
               f"v[{r['uv_min'][1]:.3f},{r['uv_max'][1]:.3f}]  "
               f"贴图 {r['tex'][0]}×{r['tex'][1]}")
-        print(f"       采样区有效 {r['fill']:.0%}（阈值 ≥{r['thr']:.0%}）"
+        thr_txt = "未登记" if r["thr"] is None else f"≥{r['thr']:.0%}"
+        print(f"       采样区有效 {r['fill']:.0%}（阈值 {thr_txt}）"
               f"｜采样覆盖率 {r['covered']:.0%}｜全图有效 {r['fill_whole']:.0%}")
         for q in r["problems"]:
             print(f"        · {q}")
