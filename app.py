@@ -667,19 +667,27 @@ with tab_gen:
                                                     if v == "fast" else
                                                     "高清（约 2 分钟，适合出图）"),
                              key="p3d_q")
-                # ★ 贴图方案：让用户自己选"要不要把 AI 风格化图用进 3D"
-                #   两种方案**只在"地子（底色层）"上不同**，主题纹/边饰的来源
-                #   完全一致 —— 所以元素级溯源口径不受影响。
+                # ★ 地子（底色层）方案：只切换 3D 渲染垫底的色源。
+                #   纹样层（主题纹 / 边饰 / 角花）恒由 src/pattern_layout.py
+                #   分区贴附语义层母题库素材、元素级可溯，两种方案完全一致。
+                #   M5 的 AI 风格化图只提供"渲染层"的色彩氛围，绝不做纹样层
+                #   （M5 输出标「不可溯源」，扩散模型会重绘构图）。
                 tile_mode = st.radio(
-                    "3D 贴图方案",
+                    "3D 地子（底色层）方案 · 纹样层不变",
                     options=["plain", "style"],
                     format_func=lambda v: (
-                        "① 合成贴图（推荐·口径最简）" if v == "plain"
-                        else "② 风格化贴图（底纹取 AI 图·更饱满）"),
+                        "① 纯色地子（推荐·口径最简）" if v == "plain"
+                        else "② AI 风格化地子（仅底色层取 AI 图）"),
                     key="p3d_tex",
-                    help="两者纹样来源相同；区别只在底色层。"
-                         "② 会把 M5 风格化图的色彩氛围抽成底纹，"
-                         "解决白底太素的问题，底注会自动注明「底纹经风格化」。")
+                    help="两种方案的纹样层完全相同：各分区纹样恒来自语义层母题库，"
+                         "元素级可溯源。区别只在垫在纹样底下的「地子（底色层）」——"
+                         "② 把 M5 风格化图的色彩氛围抽成低饱和底纹，只影响渲染观感；"
+                         "AI 风格化图不会成为纹样、不进溯源链，底注与声明会自动改口。")
+                # ★ 可见说明（不能只藏在 help 里）：用户反馈"选了风格化还是拼接图"，
+                #   根因是把"贴图方案"理解成"纹样层换图"。这里在页面上直接讲清分层。
+                st.caption("说明：**纹样层恒为可溯源的组合图**（母题库分区贴附），"
+                           "两种方案都用它、不会换成 AI 图；「风格化」只改变 3D 渲染的"
+                           "**地子 / 底色层**，且纹样覆盖了大部分表面，视觉差异很轻。")
             with c4:
                 st.caption("静态图：纯 CPU 解析渲染，**无需 GPU**。")
                 go3 = st.button("生成静态效果图 + GLB", key="p3d_go", type="primary")
@@ -694,7 +702,8 @@ with tab_gen:
                 #      报错信息会完全指错方向（实测踩过）。
                 from src.m2_retrieve import retrieve
                 hits = retrieve(rec, top_k=10)
-                # ⓪b 风格化方案：找 M5 的风格化图（找不到就退回合成贴图）
+                # ⓪b 取地子素材：找 M5 的风格化图（找不到 → 地子退回纯色，
+                #    纹样层本来就不变；实际方案与原因在 ③ 处显式反馈）
                 style_img = None
                 if tile_mode == "style":
                     cands = sorted(out_dir.glob("stylized_*.png"),
@@ -702,8 +711,10 @@ with tab_gen:
                     if cands:
                         style_img = cands[0]
                     else:
-                        st.warning("没找到本配方的风格化图（stylized_*.png），"
-                                   "本次退回「合成贴图」。请先在 ⑤ 区生成风格化图。")
+                        st.warning("没找到本配方的风格化图（stylized_*.png）。"
+                                   "本次仍会生成 3D，但**地子退回纯色**（纹样层本来就不变）；"
+                                   "生成后下方会明确标出「本次实际采用」的方案与原因。"
+                                   "如需 AI 地子，请先在 ⑤ 区生成风格化图。")
                 # ① 静态效果图（三形态三联图）
                 with st.spinner(f"渲染三种形态静态图（{q}）…"):
                     try:
@@ -712,9 +723,8 @@ with tab_gen:
                                                quality=q, style_img=style_img)
                         st.session_state["p3d_paths"] = {k: str(v)
                                                          for k, v in paths.items()}
-                        # 记下本次是否真的用了 AI 地子（供查看器文案用）
-                        st.session_state["p3d_ground"] = (
-                            "ai" if style_img is not None else "neutral")
+                        # p3d_ground 统一在下方按「实际生效的地子」设置：
+                        # 只看有没有传 style_img 不够（make_ground 也可能失败）。
                     except Exception as e:
                         st.error(f"静态效果图失败：{type(e).__name__}: {e}")
                 # ② GLB（带贴图，供查看器与下载）
@@ -735,7 +745,96 @@ with tab_gen:
                         st.session_state["glb_info"] = None
                         st.error(f"GLB 导出失败：{type(e).__name__}: {e}")
 
+                # ③ 本次实际采用哪种地子 —— 以 render_preview 写出的
+                #    preview3d_layout.json 为真源：它记录 make_ground 是否
+                #    **真的**产出地子，而不是"用户有没有传 style_img"。
+                #    选了 ② 却退回纯色时必须显式给出原因，不许静默退回。
+                _lay = out_dir / "preview3d_layout.json"
+                _actual = "neutral"
+                if _lay.exists():
+                    try:
+                        _m = json.loads(_lay.read_text(encoding="utf-8"))
+                        _actual = ((_m.get("_render") or {}).get("ground_from")
+                                   or "neutral")
+                    except Exception:
+                        _actual = "neutral"
+                _has_sty = bool(list(out_dir.glob("stylized_*.png")))
+                _reason = ""
+                if tile_mode == "style" and _actual != "ai_stylized":
+                    _reason = ("本 run 未找到风格化图（stylized_*.png），请先在 ⑤ 区生成"
+                               if not _has_sty else
+                               "已找到风格化图，但地子抽取未成功（make_ground 未产出），"
+                               "已退回纯色地子")
+                st.session_state["p3d_ground_state"] = {
+                    "chosen": tile_mode, "actual": _actual,
+                    "reason": _reason, "has_sty": _has_sty,
+                }
+                # ★ 查看器 / 声明的口径必须跟「实际生效」走，而不是「选了什么」
+                st.session_state["p3d_ground"] = (
+                    "ai" if _actual == "ai_stylized" else "neutral")
+
             p3 = st.session_state.get("p3d_paths") or {}
+
+            # ---------- 本次实际采用的地子方案（不许静默退回） ----------
+            # 刷新页面后 session_state 会丢，故以 run 目录里的
+            # preview3d_layout.json 为真源恢复（与 ⑥ 区六句声明同源）。
+            _gs = st.session_state.get("p3d_ground_state")
+            if _gs is None and _run_dir \
+                    and (_run_dir / "preview3d_layout.json").exists():
+                try:
+                    _m = json.loads((_run_dir / "preview3d_layout.json")
+                                    .read_text(encoding="utf-8"))
+                    _act = (_m.get("_render") or {}).get("ground_from") or "neutral"
+                except Exception:
+                    _act = "neutral"
+                _gs = {"chosen": "", "actual": _act, "reason": "",
+                       "has_sty": bool(list(_run_dir.glob("stylized_*.png")))}
+            if _gs:
+                _is_ai = (_gs.get("actual") == "ai_stylized")
+                _label = ("AI 风格化地子（ground_from = ai_stylized）" if _is_ai
+                          else "纯色地子（ground_from = neutral）")
+                _prefix = "本次" if _gs.get("chosen") else "上次生成"
+                _cur = ("② AI 风格化地子" if tile_mode == "style"
+                        else "① 纯色地子")
+                _head = (f"**{_prefix}实际采用：{_label}**　｜　当前单选：{_cur}"
+                         "　｜　纹样层恒为可溯源组合图")
+                if _gs.get("reason"):
+                    st.warning(_head + f"。未采用所选的风格化地子，原因："
+                                       f"{_gs['reason']}；3D 已正常生成。")
+                elif _is_ai:
+                    st.info(_head + "；AI 风格化图仅用于**地子层**，不会被用作纹样。")
+                else:
+                    st.info(_head + "（本次未使用 AI 风格化图）。")
+                if _gs.get("chosen") and _gs["chosen"] != tile_mode:
+                    st.caption("⚠️ 当前单选与上次生成时不同；改动尚未生效，"
+                               "请重新点「生成静态效果图 + GLB」。")
+
+                # ★ 地子并排对比：只画"底色层"色板，不含任何纹样层内容。
+                #   3D 成品里纹样覆盖了大部分表面（实跑：变化像素仅 0.7%~4.8%），
+                #   所以把两种地子单独并排摆出来，才能让"AI 图确实用上了"可见。
+                #   纯内存生成、不落盘、不进任何提交包。
+                if _run_dir and _gs.get("has_sty"):
+                    _sty = sorted(_run_dir.glob("stylized_*.png"),
+                                  key=lambda p: p.stat().st_mtime, reverse=True)
+                    if _sty:
+                        try:
+                            from PIL import Image as _PILImage
+                            from src.style_ground import make_ground
+                            from src.pattern_layout import NEUTRAL
+                            _g = make_ground(_sty[0], size=256)
+                            if _g is not None:
+                                _plain_g = _PILImage.new("RGB", (256, 256), NEUTRAL)
+                                _gc1, _gc2 = st.columns(2)
+                                _gc1.image(_plain_g, caption="① 纯色地子（中性底色）",
+                                           width="stretch")
+                                _gc2.image(_g, caption="② AI 风格化地子（仅色彩氛围）",
+                                           width="stretch")
+                                st.caption("上面两张只是**地子 / 底色层**色板，不是 3D 贴图成品："
+                                           "可溯源纹样会盖在地子上，所以最终预览里两者差别很轻。"
+                                           "AI 风格化图**不会被用作纹样**。")
+                        except Exception as e:
+                            st.caption(f"地子色板暂不可用：{type(e).__name__}: {e}")
+
             tri = p3.get("triptych")
             if tri and Path(tri).exists():
                 st.image(tri, width="stretch")
