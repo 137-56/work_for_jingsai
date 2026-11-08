@@ -204,14 +204,19 @@ def main() -> int:
                            Path(args.forms_json), Path(args.runtime_forms_json))
                if not p.is_file()]
     if missing:
-        print("[恢复指引] 运行时副本缺失（static/ 按既有 .gitignore 不入库）：")
+        print("[恢复指引] 运行时副本缺失（static/ 按既有 .gitignore 不入库）。")
         for p in missing:
             print(f"  缺失：{p}")
-        print("  1) .venv/Scripts/python.exe scripts/gen_forms_json.py"
-              "   # 由 FORMS 生成两份 forms.json")
-        print("  2) 启动一次 app（_embed_viewer 同步 viewer.html / forms.json），"
-              "或显式把 web/viewer.html 复制到 static/viewer/viewer.html")
-        print("  3) 重跑本检查器；本脚本只读，绝不自动补文件后放行")
+        print("  在 work/ 目录下依次执行（以下命令可直接复制）：")
+        print("  1) ./.venv/Scripts/python.exe scripts/gen_forms_json.py")
+        print("  2) ./.venv/Scripts/python.exe -m streamlit run app.py")
+        print("     或只同步页面：./.venv/Scripts/python.exe -c "
+              "\"import shutil; shutil.copy2('web/viewer.html', "
+              "'static/viewer/viewer.html')\"")
+        print("  3) ./.venv/Scripts/python.exe scripts/check_viewer_forms_sync.py")
+        print("  从上一级目录执行时，解释器写 work/.venv/Scripts/python.exe、"
+              "脚本路径加 work/ 前缀即可。")
+        print("  ★ 本脚本只读、仍 FAIL (exit 1)，绝不自动补文件后放行。")
     return 0 if ok else 1
 
 

@@ -153,12 +153,24 @@ const GROUND = qs.get("ground") || "neutral";   // "ai" = 底纹取自 AI 风格
 
 /* ★ 批次 2B：任意 GLB 完整 URL 优先，?base= 语义保留不动。
    支持非 `pattern_` 命名的 GLB（为后续图转 3D 产物留路）。
-   ?glb= 给的是**完整 URL**，故它会覆盖所有形态的默认命名路径。 */
-const GLB_OVERRIDE = qs.get("glb") || "";
+★ 批次 2C 前置：?glb= 只接受**同源相对路径**（/app/static/... 或 ./...）。
+   真实外部服务接入前先把这条边界立住，避免 ?glb= 变成任意 URL 加载器。
+   拒绝 http(s)://、协议相对 //、任何 scheme、以及含 .. 的路径穿越。 */
+const GLB_RAW = qs.get("glb") || "";
+function glbSafe(v){
+  if(!v) return true;
+  if(/^[a-z][a-z0-9+.-]*:/i.test(v)) return false;    // http: / https: / javascript: / data: 等
+  if(v.indexOf("//") === 0) return false;              // 协议相对 //evil/x.glb
+  if(v.indexOf("..") !== -1) return false;             // 路径穿越（任意位置）
+  return v.charAt(0) === "/" || v.indexOf("./") === 0; // 仅同源相对路径
+}
+const GLB_INVALID = !glbSafe(GLB_RAW);
+const GLB_OVERRIDE = GLB_INVALID ? "" : GLB_RAW;
+// 完整文件路径（非目录前缀）→ 单模型模式：三个 tab 都指向同一 GLB 会误导。
+const SINGLE_MODEL = !!GLB_OVERRIDE && !/\/$/.test(GLB_OVERRIDE);
 function glbURL(form){
   if(!GLB_OVERRIDE) return BASE + "pattern_" + form.key + ".glb";
-  // 以 / 结尾视为**目录前缀**：仍按形态命名拼路径，让 AI 档的三形态副本
-  // 都能切换（例如 ?glb=/app/static/viewer/ai_glb/<badge>/）。
+  // 以 / 结尾视为**目录前缀**：仍按形态命名拼路径（三形态各一份副本）。
   if(/\/$/.test(GLB_OVERRIDE)) return GLB_OVERRIDE + "pattern_" + form.key + ".glb";
   return GLB_OVERRIDE;   // 完整 URL：支持任意命名（非 pattern_）的 GLB
 }
@@ -348,6 +360,7 @@ function fitCamera(obj, form){
 }
 
 function load(form){
+  if(GLB_INVALID) return;       // 非法 ?glb=：不发起任何 GLB 请求（错误提示已显示）
   const token = ++reloadToken;
   spinEl.style.display = "grid";
   errEl.style.display  = "none";
@@ -421,8 +434,29 @@ if (wantForm && !active) {
     + "scripts/gen_forms_json.py 生成 forms.json；本次不回退到其他形态。";
   errEl.style.display = "block";
 }
+// ★ 批次 2C 前置：非法 ?glb= 明确提示并置空 active —— 双重保证
+//   （末尾 if(active) load(active) + load() 开头的 GLB_INVALID 早退）不发请求。
+if (GLB_INVALID) {
+  errEl.textContent = "已拒绝不安全的 ?glb= 值：只允许同源相对路径"
+    + "（/app/static/... 或 ./...），禁止外部域、协议相对 URL 与 .. 路径穿越；"
+    + "本次不发起任何 GLB 请求。";
+  errEl.style.display = "block";
+  active = null;
+}
 const tabsEl = document.getElementById("tabs");
-FORMS.forEach(f=>{
+// ★ 批次 2C 前置：完整文件 URL → 单模型模式，只保留一个标签 + 明确说明；
+//   目录前缀 / 无 ?glb= 时仍保留三形态切换（不静默）。
+if (SINGLE_MODEL && active) active = FORMS[0];
+const shownForms = SINGLE_MODEL ? FORMS.slice(0, 1) : FORMS;
+if (SINGLE_MODEL) {
+  const hint = document.createElement("div");
+  hint.className = "meta";
+  hint.id = "single-model-hint";
+  hint.textContent = "单模型模式：?glb= 指向单个 GLB，已隐藏其余形态标签；"
+    + "目录前缀形式的 ?glb= 仍可切换三形态。";
+  tabsEl.parentNode.insertBefore(hint, tabsEl);
+}
+shownForms.forEach(f=>{
   const b = document.createElement("button");
   b.textContent = f.label.replace(/（.*?）/,"");
   b.title = f.label;
