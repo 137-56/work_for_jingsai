@@ -28,6 +28,50 @@ AI 生成传统纹样已不稀奇，但结果普遍"三不"：**不可解释、�
 
 ---
 
+## 赛事阶段与提交状态
+
+> 本节只写可核对的事实；赛方未写明的项不推测、不补齐。
+
+**当前阶段：全国半决赛**（第八届全球校园人工智能算法精英大赛 · 算法主题赛 · 智能文化）
+
+| 节点 | 时间 |
+|---|---|
+| 材料提交截止 | **2026-11-19 23:59**（逾期视为弃赛） |
+| 半决赛评审 | 2026-11-20 至 11-22，线上材料评审（答辩视频提前上传，评委集中评审） |
+| 晋级规则 | 设 **60 分**基准分数线，**前 40%** 晋级全国总决赛 |
+
+### 源码冻结声明
+
+**主线代码冻结在 HEAD，不再接受功能性改动。** 原因不是"没时间"，而是规则决定的：半决赛答辩视频
+要求**一镜到底、无剪辑**，录制完成后无法重剪，任何未经全量回归的改动都是**不可逆风险**。
+因此本仓库当前状态即提交状态 —— `src/` / `scripts/` / `config.yaml` 与数据集不再变动；
+除外的只有文档修正与指标复算。
+
+### 定稿产物：材料取数只有唯一来源
+
+**`outputs/R20261028160834-1A63`**，由 `src/run_source.py` 的 `FINAL_RUN` 常量固定指向
+（仓库根绝对定位，不依赖当前工作目录）。
+
+报告、PPT、作品简介里出现的每一个数值、每一张截图，**均出自这一个 run，不混用其他 run**。
+`outputs/` 下另有历次调试 run，仅作过程留痕，**材料取数一律不引用**。
+`scripts/check_final_run_immutable.py` 对定稿 run 做**逐字节不可变**基线校验。
+
+### 提交物（报名系统，三类）
+
+| 序号 | 提交物 | 说明 |
+|---|---|---|
+| 1 | 答辩 PPT | `../文档/半决赛/半决赛_终稿.pptx`，16 页 |
+| 2 | 答辩视频 | 腾讯会议录制，一镜到底、全员出镜、**≤6 分钟**、内含作品演示；**替换**原视频，不并存 |
+| 3 | 作品文件 | 赛题规则要求的作品文件（含本仓库代码与定稿 run 产物） |
+
+### 材料为何不在本仓库
+
+`../文档/` 目录在**本仓库之外**（与 `work/` 同级），不纳入版本控制。
+原因：该目录存放赛方通知原件、内部备赛方案、历次沟通与核查记录，
+**含机构与人员信息的内部文档不入库**。本仓库只保证"能跑出材料"，不承载材料本身。
+
+---
+
 ## 快速开始
 
 ### 1. 环境
@@ -111,7 +155,7 @@ save_all(run('做一个春节用的窗花，要喜庆'))"
 产物 `.glb` 是业界通用格式，可拖进 Blender / Unity 或任意在线 glTF 预览器。
 界面 ⑥ 区也内嵌了 Three.js 查看器，可直接旋转查看并下载。
 
-> ★ 改 3D 代码前**先读** `文档/B8_3D交付说明.md`（三条铁律 + 自检脚本 + 已踩的坑）。
+> ★ 改 3D 代码前**先读** `../文档/省赛/B8_3D交付说明.md`（三条铁律 + 自检脚本 + 已踩的坑）。
 
 ### 6. 重新生成纹样谱系图
 
@@ -197,47 +241,82 @@ work/
 ├── app.py                   Streamlit 界面（B7）
 ├── config.yaml              统一配置：模型名 / 阈值 / 路径 / 传统色板
 ├── requirements.txt         运行依赖
-├── src/                     处理管线
-│   ├── m1_intent.py         ① 需求解析
-│   ├── m2_retrieve.py       ② 元素检索（三招调优）
-│   ├── m3_validate.py       ③ 文化校验
-│   ├── m4_compose.py        ④ 设计依据板（compose_board）+ ④a 组合纹样合成（compose_pattern）
-│   ├── m5_stylize.py        ⑤ AI 风格化（可选）
-│   ├── m6_provenance.py     ⑥ 溯源卡片
-│   ├── m7_copyright.py      ⑦ 版权预警
-│   ├── artifact_layer.py    实物佐证层读取（材质层）
-│   ├── clip_model.py        CLIP 加载与编码（`lru_cache` 单例，M2 / M7 共用）
-│   ├── pipeline.py          端到端编排（单点失败不中断）
-│   ├── pattern_layout.py    3D 分区贴图（展开图 / 极坐标 / 盒盖）
-│   ├── preview3d.py         3D 静态渲染（前向光线投射，纯 CPU）
-│   ├── glb_export.py        glTF 2.0 / GLB 导出
-│   ├── style_ground.py      从 AI 风格化图提取 3D 地子
-│   └── utils.py             配置与路径解析
-├── scripts/                 工具与自检
+├── redline.yaml             红线词表（**不入库**，仅本地保留）
+├── src/                     处理管线（22 个模块 + __init__.py）
+│   ├── m1_intent.py         ① 需求解析：一句话 → 《纹样文化配方》（LLM + 规则兜底）
+│   ├── m2_retrieve.py       ② 元素检索：CLIP + faiss 三招调优（类别前缀 / 多查询 / 元素二次筛选）
+│   ├── m3_validate.py       ③ 文化校验：25 条规则的约束引擎
+│   ├── m4_compose.py        ④ 设计依据板（compose_board）+ ④a 组合纹样真合成（compose_pattern）
+│   ├── m5_stylize.py        ⑤ AI 风格化（**可选、默认不启用**，输出不进溯源卡片）
+│   ├── m6_provenance.py     ⑥ 溯源卡片：元素 → 出处 → 寓意 → 授权
+│   ├── m7_copyright.py      ⑦ 版权预警：pHash + CLIP 双路相似度，输出风险分级
+│   ├── pipeline.py          端到端编排（任单点失败不中断整条链路）
+│   ├── artifact_layer.py    实物佐证层读取：只提供织物肌理（材质层），不参与语义检索
+│   ├── clip_model.py        CLIP 加载与编码（lru_cache 单例，M2 / M7 共用同一份权重）
+│   ├── semantic_match.py    确定性语义匹配：用 100 条真源给出可复现的匹配理由
+│   ├── pattern_layout.py    语义结构 → 器物装饰结构：3D 分区贴图（展开图 / 极坐标 / 盒盖）
+│   ├── preview3d.py         3D 静态预览：自写解析求交光线投射（纯 CPU、零新依赖、确定性）
+│   ├── glb_export.py        glTF 2.0 二进制（.glb）导出，纹样作为贴图嵌入
+│   ├── ai_texture.py        方案 1：AI 生成图作 3D 贴图源（默认档，只换像素不换几何）
+│   ├── ai_mesh.py           方案 2：图转 3D 的**接口骨架**（不接外部服务、零网络调用）
+│   ├── ai_routes.py         3D 能力路线注册表：哪条路线可用 / 默认档是什么的单一真源
+│   ├── style_ground.py      从 M5 风格化图提取 3D 贴图"地子"（底纹 / 底色）
+│   ├── disclosure.py        溯源声明文案的单一真源（界面与 3D 查看器共用）
+│   ├── run_source.py        定稿 run（FINAL_RUN）的单一真源，绝对定位不依赖 cwd
+│   ├── wizard.py            六步向导的叙事编排（纯数据 + 状态派生，不含渲染）
+│   └── utils.py             相对路径 → 绝对路径解析
+├── scripts/                 工具与自检（44 个脚本）
 │   ├── 【数据构建】
-│   │   wenyang_to_samples.py   源数据 → samples.json（支持 --append）
-│   │   enrich_samples.py       补录源数据未用字段（关联纹样 / 色彩建议）
-│   │   auto_annotate.py        LLM 批量标注 occasion / elements
-│   │   review_annotation.py    标注抽检清单（只读）
-│   │   apply_annotation.py     抽检结果合并回 samples.json（带写盘前体检）
-│   │   fix_carriers.py         载体字段格式修复
-│   │   fetch_artifacts.py      （The Met，备用）
-│   │   fetch_cleveland.py      克利夫兰 303 件实物佐证层
-│   │   filter_cleveland.py     内容筛选
-│   │   build_index.py          建向量索引
-│   │   build_kinship_graph.py  纹样谱系图（五族谱系 + 母题关联网络 + 元素共现）
-│   │   exp_related_motifs.py   关联数据消融实验（负结论的出处）
-│   ├── 【自检 · 数据】
-│   │   validate_samples.py     契约校验（10 条规则）
-│   │   check_rules.py          文化规则结构校验（25 条 / 5 类 / 约束类型分布）
-│   │   check_metrics.py        指标一致性校验（跨报告/PPT/简介取数）
-│   └── 【自检 · 3D 与界面】
-│       check_render3d.py       法线朝向 + NaN 污染
-│       check_glb_uv.py         从 .glb 字节流独立重解析（UV 越界 / 采空白 / 索引）
-│       preview_glb.py          独立 z-buffer 渲染（交叉验证贴图方向）
-│       check_board_layout.py   设计板版面：元素遮挡 / 出框 / 幂等 / 取值长度变体
-│       check_style_ground.py   贴图双路线均可渲染 + 地子来源必须不同
-│       check_app_embed.py      界面 ⑥ 区嵌入链路（★ 需服务已在跑）
+│   │   wenyang_to_samples.py     源数据 patterns.json → samples.json（只做机械转换）
+│   │   enrich_samples.py         补录源数据未用字段（关联纹样 / 色彩建议），只增不改
+│   │   auto_annotate.py          LLM 批量标注 occasion / elements
+│   │   review_annotation.py      生成人工抽检清单（只读，不改数据）
+│   │   apply_annotation.py       把人工确认结果合并回 samples.json（只动 occasion/elements）
+│   │   fix_carriers.py           一次性修正：按新拆分逻辑重跑指定范围的 carrier / applications
+│   │   fetch_artifacts.py        The Met 公版中国文物（备用佐证层），不碰 samples.json
+│   │   fetch_cleveland.py        克利夫兰 Open Access 中国织物 303 件（实物佐证层）
+│   │   filter_cleveland.py       纹理丰富度打分，筛出可作纹样素材的那部分
+│   │   eval_filter_methods.py    用 20 张人工标注比对几种筛选方法（选方法的证据脚本）
+│   │   build_index.py            建 faiss 向量索引 + id_order 行号反查表
+│   │   build_kinship_graph.py    纹样谱系图（五族谱系 + 母题关联网络 + 元素共现）
+│   │   exp_related_motifs.py     关联纹样检索增强实验（负结论的出处）
+│   │   merge_report.py           把报告分片按固定顺序合并成完整报告 + 缺章体检
+│   │   make_arch_diagrams.py     生成架构图 / 流程图 / 三种溯源层次图
+│   │   make_data_summary.py      JSON 数据 → 报告可直接引用的 Markdown 摘要
+│   │   gen_forms_json.py         由 preview3d.FORMS 生成形态集注册表（禁止手写键值）
+│   ├── 【自检 · 数据与指标】
+│   │   validate_samples.py       样本库契约校验（schema §1.4，失败即拒绝入库）
+│   │   check_rules.py            规则库结构校验（25 条 / 唯一 id / 约束类型分布）
+│   │   check_m3_differential.py  M3 规则引擎差分回归（黄金快照，证明重构没改判定）
+│   │   calibrate_m7.py           M7 阈值标定 + 按改动类型拆解诊断（B6 / B6b，产出 m7_calibration.json）
+│   │   check_metrics.py          报告 / PPT / 作品简介三处取数一致性
+│   │   check_ai_boundary.py      AI 新产物边界四条断言（只读）
+│   │   check_merge_contract.py   两工程合并的七项结构性断言（只读）
+│   │   check_final_run_immutable.py  定稿 run 逐字节不可变基线
+│   │   test_culture_rules.py     规则检出率与**真实配方上的误报率**
+│   ├── 【自检 · 3D 与界面】
+│   │   check_render3d.py         法线朝向 + NaN 污染
+│   │   check_glb_uv.py           从 .glb 字节流独立重解析（UV 越界 / 采空白 / 索引）
+│   │   preview_glb.py            独立 z-buffer 渲染（交叉验证贴图方向）
+│   │   check_glb_sync.py         GLB 在三处（产物 / static / web）是否同源
+│   │   check_style_ground.py     贴图双路线均可渲染 + 地子来源必须不同
+│   │   check_board_layout.py     设计板版面：元素遮挡 / 出框 / 幂等 / 取值长度变体
+│   │   check_viewer_forms_sync.py 形态集注册表一致性门卫（只读）
+│   │   check_app_embed.py        界面 ⑥ 区嵌入链路（★ 需服务已在跑）
+│   ├── 【验收 · 冒烟】
+│   │   smoke_clip.py             读一张图 → 512 维向量 → 检查 L2 范数 ≈ 1.0
+│   │   smoke_m1.py               20 个请求跑 M1，统计结构完整率等三项
+│   │   smoke_retrieve.py         用库内母题检索自身，看 Top-1 是不是它自己
+│   ├── 【截图 · 自动化】
+│   │   shots.py                  CDP 驱动界面截图（报告用全套）
+│   │   shots_step.py             专抓「04 分步进度」（st.status 只在生成过程中存在）
+│   │   shots_web.py              驱动 Web 版走到「文化配方」「元素溯源卡片」
+│   ├── 【打包 · 合规】
+│   │   redline_check.py          红线自查：扫描目录全文，命中即报错退出
+│   │   make_submission_package.py     按赛方四分类打包主版本（可执行 / 模型数据 / 源码 / 图纸）
+│   │   make_submission_package_web.py 打包 Web 演示版（work_two）提交材料
+│   │   check_submission_pkg.py        模拟"三份材料合并"，核对路径齐备与冲突
+│   └── final_run_baseline.json   定稿 run 基线数据（**数据文件，非脚本**）
 ├── data/
 │   ├── samples.json         纹样母题库（100 条，契约见 docs/schema.md）
 │   ├── images/              母题参考图
@@ -250,13 +329,15 @@ work/
 │   ├── metrics.json            ★ 指标单一事实来源
 │   ├── m7_calibration.json     M7 阈值标定
 │   ├── exp_related_motifs.json 关联数据消融实验（含负结论）
+│   ├── m3_guard_matrix.md      规则-场景矩阵
+│   ├── redline_notes.md        红线自查口径与历史命中说明
 │   └── figures/                图表产物（含 kinship_*.png / kinship_stats.json）
 ├── web/                     Three.js 查看器（源码，必须入库）
 │   ├── viewer.html
 │   └── vendor/              three.min.js r147 + GLTFLoader.js
 ├── static/                  web/ 的运行时副本（不入库，自动生成）
-├── tests/                   单元测试（test_rules.py 覆盖 M3 规则引擎，50 例通过；test_retrieval.py 待补）
-└── outputs/                 运行产物（不入库）
+├── tests/                   单元测试：test_rules.py（M3 规则引擎，50 例通过）、test_retrieval.py（检索契约，9 例通过）；均以 `python tests/xxx.py` 直接运行，环境未装 pytest
+└── outputs/                 运行产物（不入库；定稿 run 见上文「赛事阶段与提交状态」）
 ```
 
 ---
@@ -271,7 +352,7 @@ work/
 | 元素溯源覆盖率 | **100%** | 已达成（架构保证） |
 | 元素溯源准确率 | — | ★ 待测（依赖 C3 测试集） |
 | 文化规则检出率 | **100%**（5/5） | 已达成（误报 0/3） |
-| 检索 Top-5 命中率 | **100%** | 已达成（索引层自检索，100 条全量） |
+| 检索 Top-5 命中率 | **100%** | 已达成（**索引层自检索、非端到端**，100 条全量） |
 | 检索 Top-1 命中率 | **97%** | 已达成 |
 | 版权预警检出（语义层） | **100%** | 已达成 |
 | 版权预警检出（结构层） | 49.2% | ★ 未达标：对几何类改动完全失效 |
@@ -332,7 +413,7 @@ https://github.com/dososo/chinese-traditional-patterns ，授权协议 **CC BY-N
 
 **故宫博物院数字文物库**：其授权条款明确禁止"利用画面作为素材进行 AI 创作、全部二次创作行为"
 以及"制作 VR / AR / 小程序 / APP / H5 等具有线上、线下数字展示行为"，与本作品的用法直接冲突，
-故**未采用**。详见 `文档/B1-5_外部数据源可行性验证.md`。
+故**未采用**。详见 `../文档/省赛/B1-5_外部数据源可行性验证.md`。
 
 ---
 
@@ -373,14 +454,14 @@ https://github.com/dososo/chinese-traditional-patterns ，授权协议 **CC BY-N
 能。M1 会退化为规则兜底解析，M5 风格化不可用，其余模块正常。
 
 **Q：⑥ 区 3D 查看器白屏？**
-依次检查三处（详见 `文档/B8_3D交付说明.md`）：
+依次检查三处（详见 `../文档/省赛/B8_3D交付说明.md`）：
 ① 静态目录必须是 `<app_dir>/static`（**不是** `.streamlit/static/`）；
 ② `.streamlit/config.toml` 里 `server.enableStaticServing = true`；
 ③ iframe URL 必须带前导斜杠 `/app/static/...`。
 启动日志里的 `no static folder found at ...` 是唯一线索。
 
 **Q：改 3D 贴图后要跑什么？**
-五个自检脚本（用法见 `文档/B8_3D交付说明.md` 第五节）：
+五个自检脚本（用法见 `../文档/省赛/B8_3D交付说明.md` 第五节）：
 
 ```bash
 PY=.venv/Scripts/python.exe
@@ -413,18 +494,18 @@ $PY scripts/check_app_embed.py --port 8794                 # ⑤ 界面嵌入（
 
 ## 相关文档
 
-`文档/` 目录（仓库外，不含机构信息）：
+`../文档/省赛/` 目录（**仓库外**，与 `work/` 同级，不含机构信息）。下列路径相对本 README 所在目录书写：
 
 | 文档 | 内容 |
 |---|---|
-| `B8_3D交付说明.md` | ★ 3D 部分：三条铁律、自检脚本、环境坑 |
-| `B7_Streamlit界面_实施指引.md` | 界面搭建过程 |
-| `B3_文化规则库设计方案.md` | 25 条规则的分类与约束类型 |
-| `B6_版权预警双路与阈值标定_实施指引.md` | M7 双路与阈值标定方法 |
-| `B6b_按改动类型拆解_实施指引.md` | 按改动类型诊断 phash/CLIP 表现 |
-| `B1-5_外部数据源可行性验证.md` | 数据源选型与授权核查 |
-| `实物佐证层_数据说明.md` | 克利夫兰 303 件字段与筛选口径 |
-| `数据来源署名规范.md` | 署名要求 |
+| `../文档/省赛/B8_3D交付说明.md` | ★ 3D 部分：三条铁律、自检脚本、环境坑 |
+| `../文档/省赛/B7_Streamlit界面_实施指引.md` | 界面搭建过程 |
+| `../文档/省赛/B3_文化规则库设计方案.md` | 25 条规则的分类与约束类型 |
+| `../文档/省赛/B6_版权预警双路与阈值标定_实施指引.md` | M7 双路与阈值标定方法 |
+| `../文档/省赛/B6b_按改动类型拆解_实施指引.md` | 按改动类型诊断 phash/CLIP 表现 |
+| `../文档/省赛/B1-5_外部数据源可行性验证.md` | 数据源选型与授权核查 |
+| `../文档/省赛/实物佐证层_数据说明.md` | 克利夫兰 303 件字段与筛选口径 |
+| `../文档/省赛/数据来源署名规范.md` | 署名要求 |
 
 ---
 
